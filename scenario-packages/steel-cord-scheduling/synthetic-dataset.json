@@ -1,0 +1,8 @@
+{
+  "fixtureId": "SYN-SCH-CONTRACT-001",
+  "classification": "SYNTHETIC",
+  "businessValidated": false,
+  "items": [{ "itemRef": "SYNTHETIC-ITEM-1", "durationMinutes": 30 }],
+  "resources": ["SYNTHETIC-RESOURCE-1"],
+  "notice": "Contract shape only. No scheduling rules, solver, factory data, or business claim."
+}

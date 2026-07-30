@@ -1,0 +1,12 @@
+{
+  "fixtureId": "SYN-ANO-CONTRACT-001",
+  "classification": "SYNTHETIC",
+  "businessValidated": false,
+  "eventRefs": ["synthetic-event://1"],
+  "observationRefs": ["synthetic-observation://1"],
+  "hypothesisSchemaRef": "urn:fixture:hypothesis:1",
+  "counterEvidenceSchemaRef": "urn:fixture:counter-evidence:1",
+  "impactSchemaRef": "urn:fixture:impact:1",
+  "humanHandoff": true,
+  "notice": "Contract shape only. No diagnosis, root-cause claim, real alarm, or time-series data."
+}

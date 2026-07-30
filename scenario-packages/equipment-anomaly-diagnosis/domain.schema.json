@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:forgeops:equipment-anomaly-diagnosis:contract-fixture:1.0.0",
+  "title": "Synthetic anomaly evidence contract fixture — no diagnostic validity",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["fixtureId", "classification", "eventRefs", "observationRefs", "humanHandoff"],
+  "properties": {
+    "fixtureId": { "type": "string" },
+    "classification": { "const": "SYNTHETIC" },
+    "eventRefs": { "type": "array", "items": { "type": "string" } },
+    "observationRefs": { "type": "array", "items": { "type": "string" } },
+    "hypothesisSchemaRef": { "type": "string" },
+    "counterEvidenceSchemaRef": { "type": "string" },
+    "impactSchemaRef": { "type": "string" },
+    "humanHandoff": { "type": "boolean" }
+  }
+}

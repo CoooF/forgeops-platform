@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:forgeops:steel-cord-scheduling:contract-fixture:1.0.0",
+  "title": "Synthetic scheduling contract fixture — not business validated",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["fixtureId", "classification", "items", "resources"],
+  "properties": {
+    "fixtureId": { "type": "string" },
+    "classification": { "const": "SYNTHETIC" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["itemRef", "durationMinutes"],
+        "properties": {
+          "itemRef": { "type": "string" },
+          "durationMinutes": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

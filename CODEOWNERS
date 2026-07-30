@@ -1,0 +1,6 @@
+* @local-product-engineering-owner
+/src/forgeops/platform_core/ @local-product-engineering-owner @enterprise-security-tbd
+/src/forgeops/scenario_sdk/ @local-product-engineering-owner @independent-architecture-reviewer-tbd
+/migrations/ @local-product-engineering-owner @independent-database-reviewer-tbd
+/deploy/ @local-product-engineering-owner @enterprise-operations-tbd @enterprise-security-tbd
+/scenario-packages/ @local-product-engineering-owner @domain-owner-tbd

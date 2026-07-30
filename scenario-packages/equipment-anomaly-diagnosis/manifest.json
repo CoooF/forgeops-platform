@@ -1,0 +1,190 @@
+{
+  "manifestVersion": "1.0.0",
+  "packageId": "equipment-anomaly-diagnosis",
+  "packageVersion": "0.1.0",
+  "scenarioSdk": ">=0.1.0,<0.2.0",
+  "publisher": "FIRST_PARTY_LOCAL",
+  "artifact": {
+    "artifactRef": "file://artifact.json",
+    "contentDigest": "sha256:0b25f22687556250073f57f3c84b14d5777dabe7e8ae7ddd9dfee9e54c24c6b0",
+    "signature": "local-sha256:0b25f22687556250073f57f3c84b14d5777dabe7e8ae7ddd9dfee9e54c24c6b0",
+    "sbomRef": "local://contract-fixture/no-executable-dependencies",
+    "executable": false,
+    "workerBoundary": null
+  },
+  "domainSchemas": [
+    {
+      "ref": {
+        "contractId": "equipment-anomaly-diagnosis.synthetic-evidence-contract",
+        "version": "1.0.0",
+        "schemaRef": "file://domain.schema.json"
+      },
+      "title": "Synthetic anomaly evidence contract — no diagnostic validity",
+      "jsonSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["fixtureId", "classification", "eventRefs", "observationRefs", "humanHandoff"],
+        "properties": {
+          "fixtureId": { "type": "string" },
+          "classification": { "const": "SYNTHETIC" },
+          "eventRefs": { "type": "array", "items": { "type": "string" } },
+          "observationRefs": { "type": "array", "items": { "type": "string" } },
+          "hypothesisSchemaRef": { "type": "string" },
+          "counterEvidenceSchemaRef": { "type": "string" },
+          "impactSchemaRef": { "type": "string" },
+          "humanHandoff": { "type": "boolean" }
+        }
+      },
+      "compatibility": "BACKWARD"
+    }
+  ],
+  "nodePacks": [
+    {
+      "ref": {
+        "contractId": "equipment-anomaly-diagnosis.contract-nodes",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:node-pack:1"
+      },
+      "title": "Event/evidence/handoff declarations only",
+      "nodeRefs": ["contract.receive-event", "contract.collect-evidence-refs", "contract.human-handoff"],
+      "artifact": null
+    }
+  ],
+  "workflowTemplates": [
+    {
+      "ref": {
+        "contractId": "equipment-anomaly-diagnosis.contract-workflow",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:workflow-template:1"
+      },
+      "title": "Contract-only event workflow; no diagnosis",
+      "nodeRefs": ["contract.receive-event", "contract.collect-evidence-refs", "contract.human-handoff"],
+      "inputSchemaRef": "file://domain.schema.json",
+      "outputSchemaRef": "urn:forgeops:proposal:not-executed:1"
+    }
+  ],
+  "agentProfilePacks": [
+    {
+      "ref": {
+        "contractId": "equipment-anomaly-diagnosis.template-profile",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:agent-profile:1"
+      },
+      "title": "Deterministic evidence-gap template only",
+      "outputSchemaRef": "urn:forgeops:template-result:1",
+      "deterministicFallbackTemplate": "Synthetic evidence fixture {{fixture_id}} requires domain-expert review; no diagnosis produced.",
+      "externalModelRequired": false
+    }
+  ],
+  "skillPacks": [],
+  "dataContractPacks": [
+    {
+      "ref": {
+        "contractId": "equipment.synthetic-anomaly-evidence-window",
+        "version": "1.0.0",
+        "schemaRef": "file://domain.schema.json"
+      },
+      "title": "Synthetic event/observation references only",
+      "productSchemaRefs": ["file://domain.schema.json"],
+      "syntheticOnly": true
+    }
+  ],
+  "solverAdapters": [],
+  "simulationModels": [],
+  "evaluationProfiles": [
+    {
+      "ref": {
+        "contractId": "equipment-anomaly-diagnosis.contract-evaluation",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:evaluation-profile:1"
+      },
+      "title": "Contract completeness and human-handoff gate only",
+      "metricSchemaRef": "urn:forgeops:contract-completeness:1",
+      "hardGateRefs": ["synthetic-only", "no-diagnostic-claim", "human-handoff-required"]
+    }
+  ],
+  "syntheticDatasets": [
+    {
+      "ref": {
+        "contractId": "equipment-anomaly-diagnosis.synthetic-dataset",
+        "version": "1.0.0",
+        "schemaRef": "file://domain.schema.json"
+      },
+      "title": "Synthetic contract fixture",
+      "artifact": {
+        "artifactRef": "file://synthetic-dataset.json",
+        "contentDigest": "sha256:63e9bb9fc60fd3323f8014898c51d7c5a087532c6b631baf5725001301fd2bea",
+        "signature": "local-sha256:63e9bb9fc60fd3323f8014898c51d7c5a087532c6b631baf5725001301fd2bea",
+        "sbomRef": "local://data-fixture/no-dependencies",
+        "executable": false,
+        "workerBoundary": null
+      },
+      "classification": "SYNTHETIC",
+      "businessValidated": false
+    }
+  ],
+  "goldenTestCases": [
+    {
+      "ref": {
+        "contractId": "equipment-anomaly-diagnosis.contract-tests",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:contract-test-cases:1"
+      },
+      "title": "Schema and lifecycle tests only",
+      "artifact": {
+        "artifactRef": "file://synthetic-dataset.json",
+        "contentDigest": "sha256:63e9bb9fc60fd3323f8014898c51d7c5a087532c6b631baf5725001301fd2bea",
+        "signature": "local-sha256:63e9bb9fc60fd3323f8014898c51d7c5a087532c6b631baf5725001301fd2bea",
+        "sbomRef": "local://contract-tests/no-dependencies",
+        "executable": false,
+        "workerBoundary": null
+      },
+      "purpose": "CONTRACT_ONLY",
+      "businessValidated": false
+    }
+  ],
+  "uiExtensions": [
+    {
+      "ref": {
+        "contractId": "equipment-anomaly-diagnosis.contract-ui",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:declarative-ui:1"
+      },
+      "title": "Declarative evidence reference viewer",
+      "route": "/scenarios/equipment-anomaly-diagnosis/contract",
+      "navigationLabel": "Synthetic evidence contract",
+      "components": [
+        {
+          "componentId": "evidence.references",
+          "kind": "TABLE",
+          "schemaRef": "file://domain.schema.json"
+        }
+      ],
+      "runtimeScript": null
+    }
+  ],
+  "permissions": [
+    "synthetic-data.read",
+    "evidence.read",
+    "evaluation.create",
+    "agent-template.execute",
+    "node.execute",
+    "ui-extension.declare"
+  ],
+  "resourceBudget": {
+    "cpuMillis": 500,
+    "memoryMiB": 256,
+    "timeoutSeconds": 30,
+    "maxOutputBytes": 1000000,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "migrations": [],
+  "uninstallPolicy": {
+    "mode": "PRESERVE_HISTORY",
+    "retainManifest": true,
+    "retainAudit": true,
+    "retainHistoricalRuns": true
+  }
+}

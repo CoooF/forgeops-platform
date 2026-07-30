@@ -1,0 +1,850 @@
+{
+  "$defs": {
+    "AgentProfilePack": {
+      "additionalProperties": false,
+      "properties": {
+        "deterministicFallbackTemplate": {
+          "minLength": 1,
+          "title": "Deterministicfallbacktemplate",
+          "type": "string"
+        },
+        "externalModelRequired": {
+          "const": false,
+          "default": false,
+          "title": "Externalmodelrequired",
+          "type": "boolean"
+        },
+        "outputSchemaRef": {
+          "title": "Outputschemaref",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "outputSchemaRef",
+        "deterministicFallbackTemplate"
+      ],
+      "title": "AgentProfilePack",
+      "type": "object"
+    },
+    "ArtifactAttestation": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactRef": {
+          "minLength": 1,
+          "title": "Artifactref",
+          "type": "string"
+        },
+        "contentDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Contentdigest",
+          "type": "string"
+        },
+        "executable": {
+          "default": false,
+          "title": "Executable",
+          "type": "boolean"
+        },
+        "sbomRef": {
+          "minLength": 1,
+          "title": "Sbomref",
+          "type": "string"
+        },
+        "signature": {
+          "pattern": "^local-sha256:[0-9a-f]{64}$",
+          "title": "Signature",
+          "type": "string"
+        },
+        "workerBoundary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workerboundary"
+        }
+      },
+      "required": [
+        "artifactRef",
+        "contentDigest",
+        "signature",
+        "sbomRef"
+      ],
+      "title": "ArtifactAttestation",
+      "type": "object"
+    },
+    "CompatibilityPolicy": {
+      "enum": [
+        "BACKWARD",
+        "STRICT"
+      ],
+      "title": "CompatibilityPolicy",
+      "type": "string"
+    },
+    "ContractRef": {
+      "additionalProperties": false,
+      "properties": {
+        "contractId": {
+          "maxLength": 128,
+          "minLength": 3,
+          "title": "Contractid",
+          "type": "string"
+        },
+        "schemaRef": {
+          "minLength": 1,
+          "title": "Schemaref",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "contractId",
+        "version",
+        "schemaRef"
+      ],
+      "title": "ContractRef",
+      "type": "object"
+    },
+    "DataContractPack": {
+      "additionalProperties": false,
+      "properties": {
+        "productSchemaRefs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Productschemarefs",
+          "type": "array"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "syntheticOnly": {
+          "const": true,
+          "default": true,
+          "title": "Syntheticonly",
+          "type": "boolean"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "productSchemaRefs"
+      ],
+      "title": "DataContractPack",
+      "type": "object"
+    },
+    "DomainSchema": {
+      "additionalProperties": false,
+      "properties": {
+        "compatibility": {
+          "$ref": "#/$defs/CompatibilityPolicy",
+          "default": "BACKWARD"
+        },
+        "jsonSchema": {
+          "additionalProperties": true,
+          "title": "Jsonschema",
+          "type": "object"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "jsonSchema"
+      ],
+      "title": "DomainSchema",
+      "type": "object"
+    },
+    "EvaluationProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "hardGateRefs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Hardgaterefs",
+          "type": "array"
+        },
+        "metricSchemaRef": {
+          "title": "Metricschemaref",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "metricSchemaRef",
+        "hardGateRefs"
+      ],
+      "title": "EvaluationProfile",
+      "type": "object"
+    },
+    "GoldenTestCases": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/ArtifactAttestation"
+        },
+        "businessValidated": {
+          "const": false,
+          "default": false,
+          "title": "Businessvalidated",
+          "type": "boolean"
+        },
+        "purpose": {
+          "const": "CONTRACT_ONLY",
+          "default": "CONTRACT_ONLY",
+          "title": "Purpose",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "artifact"
+      ],
+      "title": "GoldenTestCases",
+      "type": "object"
+    },
+    "MigrationKind": {
+      "enum": [
+        "PACKAGE_PRIVATE_SCHEMA",
+        "CONTRACT_UPCASTER"
+      ],
+      "title": "MigrationKind",
+      "type": "string"
+    },
+    "NodePack": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactAttestation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "nodeRefs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Noderefs",
+          "type": "array"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "nodeRefs"
+      ],
+      "title": "NodePack",
+      "type": "object"
+    },
+    "PackageMigration": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/ArtifactAttestation"
+        },
+        "fromVersion": {
+          "title": "Fromversion",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/MigrationKind"
+        },
+        "migrationId": {
+          "pattern": "^[a-z0-9.-]+$",
+          "title": "Migrationid",
+          "type": "string"
+        },
+        "toVersion": {
+          "title": "Toversion",
+          "type": "string"
+        }
+      },
+      "required": [
+        "migrationId",
+        "kind",
+        "fromVersion",
+        "toVersion",
+        "artifact"
+      ],
+      "title": "PackageMigration",
+      "type": "object"
+    },
+    "ResourceBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "cpuMillis": {
+          "maximum": 16000,
+          "minimum": 1,
+          "title": "Cpumillis",
+          "type": "integer"
+        },
+        "maxOutputBytes": {
+          "maximum": 100000000,
+          "minimum": 1,
+          "title": "Maxoutputbytes",
+          "type": "integer"
+        },
+        "memoryMiB": {
+          "maximum": 65536,
+          "minimum": 16,
+          "title": "Memorymib",
+          "type": "integer"
+        },
+        "networkAccess": {
+          "default": false,
+          "title": "Networkaccess",
+          "type": "boolean"
+        },
+        "secretRefs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Secretrefs",
+          "type": "array"
+        },
+        "timeoutSeconds": {
+          "maximum": 86400,
+          "minimum": 1,
+          "title": "Timeoutseconds",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cpuMillis",
+        "memoryMiB",
+        "timeoutSeconds",
+        "maxOutputBytes"
+      ],
+      "title": "ResourceBudget",
+      "type": "object"
+    },
+    "SimulationModel": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/ArtifactAttestation"
+        },
+        "inputSchemaRef": {
+          "title": "Inputschemaref",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "resultSchemaRef": {
+          "title": "Resultschemaref",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "artifact",
+        "inputSchemaRef",
+        "resultSchemaRef"
+      ],
+      "title": "SimulationModel",
+      "type": "object"
+    },
+    "SkillPack": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ArtifactAttestation"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "skillRefs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Skillrefs",
+          "type": "array"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "skillRefs"
+      ],
+      "title": "SkillPack",
+      "type": "object"
+    },
+    "SolverAdapter": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/ArtifactAttestation"
+        },
+        "problemSchemaRef": {
+          "title": "Problemschemaref",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "resultSchemaRef": {
+          "title": "Resultschemaref",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "artifact",
+        "problemSchemaRef",
+        "resultSchemaRef"
+      ],
+      "title": "SolverAdapter",
+      "type": "object"
+    },
+    "SyntheticDataset": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/ArtifactAttestation"
+        },
+        "businessValidated": {
+          "const": false,
+          "default": false,
+          "title": "Businessvalidated",
+          "type": "boolean"
+        },
+        "classification": {
+          "const": "SYNTHETIC",
+          "default": "SYNTHETIC",
+          "title": "Classification",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "artifact"
+      ],
+      "title": "SyntheticDataset",
+      "type": "object"
+    },
+    "UIComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "componentId": {
+          "pattern": "^[a-z][a-z0-9.-]+$",
+          "title": "Componentid",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/UIComponentKind"
+        },
+        "schemaRef": {
+          "title": "Schemaref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "componentId",
+        "kind",
+        "schemaRef"
+      ],
+      "title": "UIComponent",
+      "type": "object"
+    },
+    "UIComponentKind": {
+      "enum": [
+        "FORM",
+        "TABLE",
+        "METRIC_CARD",
+        "CHART",
+        "GENERIC_SLOT"
+      ],
+      "title": "UIComponentKind",
+      "type": "string"
+    },
+    "UIExtension": {
+      "additionalProperties": false,
+      "properties": {
+        "components": {
+          "items": {
+            "$ref": "#/$defs/UIComponent"
+          },
+          "title": "Components",
+          "type": "array"
+        },
+        "navigationLabel": {
+          "minLength": 1,
+          "title": "Navigationlabel",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "route": {
+          "pattern": "^/scenarios/[a-z0-9-]+(?:/[a-z0-9-]+)*$",
+          "title": "Route",
+          "type": "string"
+        },
+        "runtimeScript": {
+          "const": null,
+          "default": null,
+          "title": "Runtimescript",
+          "type": "null"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "route",
+        "navigationLabel",
+        "components"
+      ],
+      "title": "UIExtension",
+      "type": "object"
+    },
+    "UninstallMode": {
+      "enum": [
+        "PRESERVE_HISTORY"
+      ],
+      "title": "UninstallMode",
+      "type": "string"
+    },
+    "UninstallPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/UninstallMode",
+          "default": "PRESERVE_HISTORY"
+        },
+        "retainAudit": {
+          "const": true,
+          "default": true,
+          "title": "Retainaudit",
+          "type": "boolean"
+        },
+        "retainHistoricalRuns": {
+          "const": true,
+          "default": true,
+          "title": "Retainhistoricalruns",
+          "type": "boolean"
+        },
+        "retainManifest": {
+          "const": true,
+          "default": true,
+          "title": "Retainmanifest",
+          "type": "boolean"
+        }
+      },
+      "title": "UninstallPolicy",
+      "type": "object"
+    },
+    "WorkflowTemplate": {
+      "additionalProperties": false,
+      "properties": {
+        "inputSchemaRef": {
+          "title": "Inputschemaref",
+          "type": "string"
+        },
+        "nodeRefs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Noderefs",
+          "type": "array"
+        },
+        "outputSchemaRef": {
+          "title": "Outputschemaref",
+          "type": "string"
+        },
+        "ref": {
+          "$ref": "#/$defs/ContractRef"
+        },
+        "title": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ref",
+        "title",
+        "nodeRefs",
+        "inputSchemaRef",
+        "outputSchemaRef"
+      ],
+      "title": "WorkflowTemplate",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "agentProfilePacks": {
+      "items": {
+        "$ref": "#/$defs/AgentProfilePack"
+      },
+      "title": "Agentprofilepacks",
+      "type": "array"
+    },
+    "artifact": {
+      "$ref": "#/$defs/ArtifactAttestation"
+    },
+    "dataContractPacks": {
+      "items": {
+        "$ref": "#/$defs/DataContractPack"
+      },
+      "title": "Datacontractpacks",
+      "type": "array"
+    },
+    "domainSchemas": {
+      "items": {
+        "$ref": "#/$defs/DomainSchema"
+      },
+      "title": "Domainschemas",
+      "type": "array"
+    },
+    "evaluationProfiles": {
+      "items": {
+        "$ref": "#/$defs/EvaluationProfile"
+      },
+      "title": "Evaluationprofiles",
+      "type": "array"
+    },
+    "goldenTestCases": {
+      "items": {
+        "$ref": "#/$defs/GoldenTestCases"
+      },
+      "title": "Goldentestcases",
+      "type": "array"
+    },
+    "manifestVersion": {
+      "const": "1.0.0",
+      "title": "Manifestversion",
+      "type": "string"
+    },
+    "migrations": {
+      "items": {
+        "$ref": "#/$defs/PackageMigration"
+      },
+      "title": "Migrations",
+      "type": "array"
+    },
+    "nodePacks": {
+      "items": {
+        "$ref": "#/$defs/NodePack"
+      },
+      "title": "Nodepacks",
+      "type": "array"
+    },
+    "packageId": {
+      "maxLength": 64,
+      "pattern": "^[a-z][a-z0-9-]{2,63}$",
+      "title": "Packageid",
+      "type": "string"
+    },
+    "packageVersion": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "title": "Packageversion",
+      "type": "string"
+    },
+    "permissions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Permissions",
+      "type": "array"
+    },
+    "publisher": {
+      "const": "FIRST_PARTY_LOCAL",
+      "title": "Publisher",
+      "type": "string"
+    },
+    "resourceBudget": {
+      "$ref": "#/$defs/ResourceBudget"
+    },
+    "scenarioSdk": {
+      "minLength": 1,
+      "title": "Scenariosdk",
+      "type": "string"
+    },
+    "simulationModels": {
+      "items": {
+        "$ref": "#/$defs/SimulationModel"
+      },
+      "title": "Simulationmodels",
+      "type": "array"
+    },
+    "skillPacks": {
+      "items": {
+        "$ref": "#/$defs/SkillPack"
+      },
+      "title": "Skillpacks",
+      "type": "array"
+    },
+    "solverAdapters": {
+      "items": {
+        "$ref": "#/$defs/SolverAdapter"
+      },
+      "title": "Solveradapters",
+      "type": "array"
+    },
+    "syntheticDatasets": {
+      "items": {
+        "$ref": "#/$defs/SyntheticDataset"
+      },
+      "title": "Syntheticdatasets",
+      "type": "array"
+    },
+    "uiExtensions": {
+      "items": {
+        "$ref": "#/$defs/UIExtension"
+      },
+      "title": "Uiextensions",
+      "type": "array"
+    },
+    "uninstallPolicy": {
+      "$ref": "#/$defs/UninstallPolicy"
+    },
+    "workflowTemplates": {
+      "items": {
+        "$ref": "#/$defs/WorkflowTemplate"
+      },
+      "title": "Workflowtemplates",
+      "type": "array"
+    }
+  },
+  "required": [
+    "manifestVersion",
+    "packageId",
+    "packageVersion",
+    "scenarioSdk",
+    "publisher",
+    "artifact",
+    "domainSchemas",
+    "nodePacks",
+    "workflowTemplates",
+    "agentProfilePacks",
+    "skillPacks",
+    "dataContractPacks",
+    "solverAdapters",
+    "simulationModels",
+    "evaluationProfiles",
+    "syntheticDatasets",
+    "goldenTestCases",
+    "uiExtensions",
+    "permissions",
+    "resourceBudget",
+    "migrations",
+    "uninstallPolicy"
+  ],
+  "title": "ScenarioManifest",
+  "type": "object"
+}

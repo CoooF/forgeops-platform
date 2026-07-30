@@ -1,0 +1,130 @@
+name: forgeops-local-synthetic
+
+services:
+  postgres:
+    image: postgres:17.5-alpine
+    environment:
+      POSTGRES_USER: forgeops_local
+      POSTGRES_PASSWORD: local-synthetic-only
+      POSTGRES_DB: forgeops
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U forgeops_local -d forgeops"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - forgeops-postgres:/var/lib/postgresql/data
+    networks: [forgeops-local]
+
+  temporal:
+    image: temporalio/auto-setup:1.27.2
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB: postgres12
+      DB_PORT: 5432
+      POSTGRES_USER: forgeops_local
+      POSTGRES_PWD: local-synthetic-only
+      POSTGRES_SEEDS: postgres
+      DYNAMIC_CONFIG_FILE_PATH: config/dynamicconfig/development-sql.yaml
+    ports:
+      - "127.0.0.1:7233:7233"
+    networks: [forgeops-local]
+
+  object-store:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: forgeops_local
+      MINIO_ROOT_PASSWORD: local-synthetic-object-store
+    ports:
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - forgeops-objects:/data
+    networks: [forgeops-local]
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.127.0
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    ports:
+      - "127.0.0.1:4318:4318"
+    networks: [forgeops-local]
+
+  migrate:
+    build:
+      context: ../..
+      dockerfile: deploy/containers/api.Dockerfile
+    command: ["uv", "run", "alembic", "upgrade", "head"]
+    environment: &forgeops-environment
+      FORGEOPS_ENVIRONMENT: DEV
+      FORGEOPS_ACTION_ADAPTER: MOCK
+      FORGEOPS_DATABASE_URL: postgresql+psycopg://forgeops_local:local-synthetic-only@postgres:5432/forgeops
+      FORGEOPS_EXTERNAL_MODEL_ENABLED: "false"
+      FORGEOPS_REAL_DATA_ENABLED: "false"
+      FORGEOPS_RUNTIME_PLUGINS_ENABLED: "false"
+      FORGEOPS_LOCAL_SYNTHETIC_ONLY: "true"
+      FORGEOPS_TEMPORAL_ADDRESS: temporal:7233
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [forgeops-local]
+
+  api:
+    build:
+      context: ../..
+      dockerfile: deploy/containers/api.Dockerfile
+    environment: *forgeops-environment
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      temporal:
+        condition: service_started
+    ports:
+      - "127.0.0.1:8000:8000"
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: ["no-new-privileges:true"]
+    networks: [forgeops-local]
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: deploy/containers/api.Dockerfile
+    command: ["uv", "run", "python", "-m", "forgeops.worker"]
+    environment: *forgeops-environment
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      temporal:
+        condition: service_started
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: ["no-new-privileges:true"]
+    networks: [forgeops-local]
+
+  web:
+    build:
+      context: ../..
+      dockerfile: deploy/containers/web.Dockerfile
+    depends_on:
+      api:
+        condition: service_started
+    environment:
+      FORGEOPS_API_PROXY_TARGET: http://api:8000
+    ports:
+      - "127.0.0.1:4173:4173"
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: ["no-new-privileges:true"]
+    networks: [forgeops-local]
+
+volumes:
+  forgeops-postgres:
+  forgeops-objects:
+
+networks:
+  forgeops-local:
+    internal: true

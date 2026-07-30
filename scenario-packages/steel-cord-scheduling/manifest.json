@@ -1,0 +1,186 @@
+{
+  "manifestVersion": "1.0.0",
+  "packageId": "steel-cord-scheduling",
+  "packageVersion": "0.1.0",
+  "scenarioSdk": ">=0.1.0,<0.2.0",
+  "publisher": "FIRST_PARTY_LOCAL",
+  "artifact": {
+    "artifactRef": "file://artifact.json",
+    "contentDigest": "sha256:0e7cccc74c538c33e7f79ef18e0acd9bcfe8318fb6bbce02a6db4931dd94e17b",
+    "signature": "local-sha256:0e7cccc74c538c33e7f79ef18e0acd9bcfe8318fb6bbce02a6db4931dd94e17b",
+    "sbomRef": "local://contract-fixture/no-executable-dependencies",
+    "executable": false,
+    "workerBoundary": null
+  },
+  "domainSchemas": [
+    {
+      "ref": {
+        "contractId": "steel-cord-scheduling.synthetic-contract",
+        "version": "1.0.0",
+        "schemaRef": "file://domain.schema.json"
+      },
+      "title": "Synthetic scheduling contract fixture — not business validated",
+      "jsonSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["fixtureId", "classification", "items", "resources"],
+        "properties": {
+          "fixtureId": { "type": "string" },
+          "classification": { "const": "SYNTHETIC" },
+          "items": { "type": "array", "items": { "type": "object" } },
+          "resources": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "compatibility": "BACKWARD"
+    }
+  ],
+  "nodePacks": [
+    {
+      "ref": {
+        "contractId": "steel-cord-scheduling.contract-nodes",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:node-pack:1"
+      },
+      "title": "Contract-only node declarations",
+      "nodeRefs": ["contract.validate-synthetic-input", "contract.human-review"],
+      "artifact": null
+    }
+  ],
+  "workflowTemplates": [
+    {
+      "ref": {
+        "contractId": "steel-cord-scheduling.contract-workflow",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:workflow-template:1"
+      },
+      "title": "Contract-only workflow; not executable business logic",
+      "nodeRefs": ["contract.validate-synthetic-input", "contract.human-review"],
+      "inputSchemaRef": "file://domain.schema.json",
+      "outputSchemaRef": "urn:forgeops:proposal:not-executed:1"
+    }
+  ],
+  "agentProfilePacks": [
+    {
+      "ref": {
+        "contractId": "steel-cord-scheduling.template-profile",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:agent-profile:1"
+      },
+      "title": "Deterministic contract summary only",
+      "outputSchemaRef": "urn:forgeops:template-result:1",
+      "deterministicFallbackTemplate": "Synthetic contract fixture {{fixture_id}} requires human review.",
+      "externalModelRequired": false
+    }
+  ],
+  "skillPacks": [],
+  "dataContractPacks": [
+    {
+      "ref": {
+        "contractId": "schedule.synthetic-contract-context",
+        "version": "1.0.0",
+        "schemaRef": "file://domain.schema.json"
+      },
+      "title": "Synthetic contract data only",
+      "productSchemaRefs": ["file://domain.schema.json"],
+      "syntheticOnly": true
+    }
+  ],
+  "solverAdapters": [],
+  "simulationModels": [],
+  "evaluationProfiles": [
+    {
+      "ref": {
+        "contractId": "steel-cord-scheduling.contract-evaluation",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:evaluation-profile:1"
+      },
+      "title": "Schema completeness only; no scheduling KPI",
+      "metricSchemaRef": "urn:forgeops:contract-completeness:1",
+      "hardGateRefs": ["synthetic-only", "human-review-required"]
+    }
+  ],
+  "syntheticDatasets": [
+    {
+      "ref": {
+        "contractId": "steel-cord-scheduling.synthetic-dataset",
+        "version": "1.0.0",
+        "schemaRef": "file://domain.schema.json"
+      },
+      "title": "Synthetic contract fixture",
+      "artifact": {
+        "artifactRef": "file://synthetic-dataset.json",
+        "contentDigest": "sha256:2a67067208975c5018a1476ba5c704326a2cac3c27748a4ddd9b840e538a6070",
+        "signature": "local-sha256:2a67067208975c5018a1476ba5c704326a2cac3c27748a4ddd9b840e538a6070",
+        "sbomRef": "local://data-fixture/no-dependencies",
+        "executable": false,
+        "workerBoundary": null
+      },
+      "classification": "SYNTHETIC",
+      "businessValidated": false
+    }
+  ],
+  "goldenTestCases": [
+    {
+      "ref": {
+        "contractId": "steel-cord-scheduling.contract-tests",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:contract-test-cases:1"
+      },
+      "title": "Contract tests only",
+      "artifact": {
+        "artifactRef": "file://synthetic-dataset.json",
+        "contentDigest": "sha256:2a67067208975c5018a1476ba5c704326a2cac3c27748a4ddd9b840e538a6070",
+        "signature": "local-sha256:2a67067208975c5018a1476ba5c704326a2cac3c27748a4ddd9b840e538a6070",
+        "sbomRef": "local://contract-tests/no-dependencies",
+        "executable": false,
+        "workerBoundary": null
+      },
+      "purpose": "CONTRACT_ONLY",
+      "businessValidated": false
+    }
+  ],
+  "uiExtensions": [
+    {
+      "ref": {
+        "contractId": "steel-cord-scheduling.contract-ui",
+        "version": "1.0.0",
+        "schemaRef": "urn:forgeops:declarative-ui:1"
+      },
+      "title": "Declarative contract fixture viewer",
+      "route": "/scenarios/steel-cord-scheduling/contract",
+      "navigationLabel": "Synthetic contract",
+      "components": [
+        {
+          "componentId": "contract.summary",
+          "kind": "TABLE",
+          "schemaRef": "file://domain.schema.json"
+        }
+      ],
+      "runtimeScript": null
+    }
+  ],
+  "permissions": [
+    "synthetic-data.read",
+    "evidence.read",
+    "evaluation.create",
+    "agent-template.execute",
+    "node.execute",
+    "ui-extension.declare"
+  ],
+  "resourceBudget": {
+    "cpuMillis": 500,
+    "memoryMiB": 256,
+    "timeoutSeconds": 30,
+    "maxOutputBytes": 1000000,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "migrations": [],
+  "uninstallPolicy": {
+    "mode": "PRESERVE_HISTORY",
+    "retainManifest": true,
+    "retainAudit": true,
+    "retainHistoricalRuns": true
+  }
+}
