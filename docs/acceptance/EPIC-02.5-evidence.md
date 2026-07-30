@@ -53,6 +53,10 @@ Status: `VERIFIED_FOR_LOCAL_SYNTHETIC_ENGINEERING` on 2026-07-30. This is not en
 
 After the verified source commit, `make evidence` creates `docs/acceptance/generated-epic-02.5-evidence.json` and binds the source commit, locks, fixture/contract/SBOM digests, environment and limitations. The generated file is committed separately so it cannot claim a dirty or mutable source tree.
 
+- Verified source baseline: `18bee65b20689068d6dd29f485133b9129c60385`.
+- Machine evidence SHA-256: `05c43b3d176a79c318cb9cb142e36a4e4a495c29d3518400145ce6b73d4d313c`.
+- Coverage is the combined covered line/branch total (`2268 / 2589 = 87.60%`), matching the full `make verify` gate rather than the line-only Cobertura rate.
+
 ## Not verified / blocked
 
 - Docker-backed PostgreSQL/Temporal/MinIO/OTel runtime, PostgreSQL constraints/roles/RLS, backup/restore and service failure injection;

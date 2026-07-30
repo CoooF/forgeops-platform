@@ -1,0 +1,94 @@
+{
+  "contracts": {
+    "contracts/jsonschema/scenario-manifest.schema.json": "sha256:0460bb463a32a3e107e8b8362a852e0c01ca01e53be2255b3c35a0844fc5e24f",
+    "contracts/openapi/forgeops.openapi.json": "sha256:591076d8e5032e06db0f7ae97b6b0efb629ca31327c93ed3d1469bc71fcaf030"
+  },
+  "createdAt": "2026-07-30T14:48:30.166079+00:00",
+  "enterpriseApproval": "NOT_GRANTED",
+  "evidenceId": "EPIC-02.5-20260730T144830Z",
+  "fixtures": {
+    "scenario-packages/equipment-anomaly-diagnosis/artifact.json": "sha256:0b25f22687556250073f57f3c84b14d5777dabe7e8ae7ddd9dfee9e54c24c6b0",
+    "scenario-packages/steel-cord-scheduling/artifact.json": "sha256:0e7cccc74c538c33e7f79ef18e0acd9bcfe8318fb6bbce02a6db4931dd94e17b"
+  },
+  "gitCommit": "18bee65b20689068d6dd29f485133b9129c60385",
+  "locks": {
+    "pnpm-lock.yaml": "sha256:4da6e73e1ae02854f69add80be2765873c5dca977646d5424deca9854f5b4154",
+    "uv.lock": "sha256:b54eb9e799d9348bce8b21315ed7623e285611b30f7c6e5e1e6fe30df21176ce"
+  },
+  "node": "24.14.0",
+  "notVerified": [
+    "PostgreSQL Compose runtime (requires Docker)",
+    "Temporal restart/replay (EPIC-03 and Docker runtime)",
+    "enterprise OIDC/SCIM/policy/Secret/network/artifact signing",
+    "FDS/semantic runtime (EPIC-02.6)",
+    "G4/G5/G6/G7 and business validity"
+  ],
+  "pnpm": "pnpm@11.1.2",
+  "python": "3.13.14",
+  "results": {
+    "advisoryOnly": true,
+    "apiPersistedAcrossRestart": true,
+    "architectureViolations": 0,
+    "contractTests": {
+      "passed": 17
+    },
+    "enterpriseIdentityConnected": false,
+    "externalWrites": false,
+    "identityMode": "LOCAL_SYNTHETIC",
+    "migrationHead": "0005",
+    "migrationRoundTrip": "PASSED",
+    "nodeKnownVulnerabilities": 0,
+    "permissionMatrixCases": {
+      "passed": 160
+    },
+    "playwrightTests": {
+      "passed": 1
+    },
+    "projectPersistedAcrossRestart": true,
+    "pytestTotal": {
+      "coverageMetric": "combined-lines-and-branches",
+      "coveragePercent": 87.6,
+      "passed": 214
+    },
+    "pythonKnownVulnerabilities": 0,
+    "pythonTestsExcludingContract": {
+      "passed": 197
+    },
+    "webPreviewProxiedRealApiState": true,
+    "webTests": {
+      "passed": 4
+    }
+  },
+  "sboms": {
+    "artifacts/generated/node-sbom.cdx.json": "sha256:ff9d09bc48282d9e5256ed699ed34809c8e90988d295ffc5cc3dca22c0fb77ff",
+    "artifacts/generated/python-sbom.cdx.json": "sha256:7c52dd9d638190e1dee9f3d2c3b96ae66d99302b75343446bcb8a6f2234ab29c"
+  },
+  "scope": "LOCAL_SYNTHETIC_ENGINEERING",
+  "uv": "0.12.0 (CI-pinned)",
+  "verified": [
+    "TEST-DOM-001",
+    "TEST-SCHEMA-001",
+    "TEST-CONTRACT-001",
+    "TEST-ARCH-001",
+    "TEST-ARCH-ARTIFACT-001",
+    "TEST-SDK-001",
+    "TEST-SDK-002",
+    "TEST-ACT-001",
+    "TEST-OPS-MIGRATION-001",
+    "TEST-OPS-API-SMOKE-001",
+    "TEST-OPS-WEB-SMOKE-001",
+    "TEST-IAM-DOMAIN-001",
+    "TEST-IAM-POLICY-001",
+    "TEST-IAM-AUTH-001",
+    "TEST-IAM-ISOLATION-001",
+    "TEST-IAM-API-001",
+    "TEST-IAM-MEMBERSHIP-001",
+    "TEST-IAM-AUDIT-001",
+    "TEST-PKG-PROJECT-BINDING-001",
+    "TEST-OPS-MIGRATION-002",
+    "TEST-OPS-PROJECT-RESTART-001",
+    "TEST-WEB-PROJECT-001",
+    "TEST-WEB-PROJECT-E2E-001",
+    "TEST-ARCH-002"
+  ]
+}
