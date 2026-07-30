@@ -1,12 +1,12 @@
 {
-  "createdAt": "2026-07-30T15:50:29.042087+00:00",
+  "createdAt": "2026-07-30T15:54:08.492707+00:00",
   "enterpriseApproval": "NOT_GRANTED",
   "epicStatus": {
     "EPIC-02.6A": "VERIFIED_FOR_LOCAL_SYNTHETIC_CONTRACT_ENGINEERING",
     "EPIC-02.6B": "NOT_STARTED",
     "EPIC-02.6C": "NOT_STARTED"
   },
-  "evidenceId": "EPIC-02.6A-20260730T155029Z",
+  "evidenceId": "EPIC-02.6A-20260730T155408Z",
   "fdsContractsAndExamples": {
     "contracts/fds/compatibility-report.schema.json": "sha256:06196a98c423c97e2295acf745d5a9081cc7b8bfd72832a56f17970c41b80598",
     "contracts/fds/component-manifest.schema.json": "sha256:898259f1ccba958464ffcb1725d2494d86d7da3962fab5e8c98dea0b55f65a87",
@@ -26,7 +26,7 @@
     "contracts/fds/organization-overlay-manifest.schema.json": "sha256:2d11403a847d75d6d9e5d7e24195854e9f57365edbf1f124670d28fb5c15adf1",
     "contracts/fds/scenario-descriptor.schema.json": "sha256:3ee574c28d6a1827e5b7ea2c66e920961c22461d7ba7182d8fc4030b509ed6dd"
   },
-  "gitCommit": "c73237a0fd82c24ad1a1e53b11796811f4e4e002",
+  "gitCommit": "f06f60145a402b6669baf12ad0b561a77c00a82f",
   "legacyScenarioManifests": {
     "scenario-packages/equipment-anomaly-diagnosis/manifest.json": "sha256:a357f28f171b7d2df8d81ee8a97ccd65b9ba796b36cfb4c58ad8a26c720bb0aa",
     "scenario-packages/steel-cord-scheduling/manifest.json": "sha256:096bdf28f56e05ecf687bb8d4b984c4caeaa5b51255316d13972e3a7f7b5ec28"

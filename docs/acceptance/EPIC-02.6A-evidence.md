@@ -76,9 +76,9 @@ FDS schemas/examples, legacy fixtures, wheel, SBOM and coverage digests. The gen
 file and this section are committed separately; the exact source/evidence commit hashes
 are recorded there after generation.
 
-- Verified source baseline: `c73237a0fd82c24ad1a1e53b11796811f4e4e002`.
+- Verified source baseline: `f06f60145a402b6669baf12ad0b561a77c00a82f`.
 - Machine evidence SHA-256:
-  `c6864dae64f9cc9304a8c9fe8d933b8b9c6cc833fda5a368969cb01a412db9f0`.
+  `3381778550a68809608b1da7c7aa769102c226b62991bab548c6da92695dd5dc`.
 
 ## Not verified / blocked
 
