@@ -2,6 +2,11 @@
 
 Independent EPIC-01/02, EPIC-02.5, and EPIC-02.6A engineering baseline for the ForgeOps Platform Core, Scenario SDK, generic project boundary, and FDS v0.1 contract kernel. It is runnable with local synthetic fixtures and is not approved for enterprise, preproduction, production, real-data, business-UAT, scheduling, anomaly-diagnosis, FDS Registry, Project DomainLock, or semantic-runtime use.
 
+## 产品负责人进度与五分钟验证
+
+从 [产品负责人进度总览](docs/acceptance/PRODUCT-OWNER-PROGRESS.md) 进入各 Epic 的大白话说明、
+成功/拒绝案例、五分钟验证路径、明确未实现项和证据提交。当前结果均不代表企业验收或生产发布。
+
 ## What is implemented
 
 - strict domain-neutral platform contracts and versioned execution envelopes;
