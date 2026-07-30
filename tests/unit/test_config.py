@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from forgeops.config import ActionAdapterKind, Settings, assert_release_adapter
 from forgeops.platform_contracts.domain import Environment
 from forgeops.platform_contracts.errors import ErrorCode, ForgeOpsError
+from forgeops.platform_core.identity_access.auth import auth_adapter_for_environment
 
 
 def test_prod_requires_deny_all_and_postgres() -> None:
@@ -51,3 +52,15 @@ def test_prod_release_policy_is_not_a_feature_flag() -> None:
     with pytest.raises(ForgeOpsError) as captured:
         assert_release_adapter(Environment.PROD, ActionAdapterKind.MOCK)
     assert captured.value.code == ErrorCode.ENVIRONMENT_POLICY_VIOLATION
+
+
+@pytest.mark.parametrize("environment", [Environment.DEV, Environment.TEST])
+def test_local_header_auth_is_limited_to_local_test_modes(environment: Environment) -> None:
+    resolved = auth_adapter_for_environment(environment).authenticate("local-owner")
+    assert resolved is not None
+    assert resolved.subject_ref == "local-owner"
+
+
+@pytest.mark.parametrize("environment", [Environment.INT, Environment.PREPROD, Environment.PROD])
+def test_unconnected_enterprise_identity_fails_closed(environment: Environment) -> None:
+    assert auth_adapter_for_environment(environment).authenticate("local-owner") is None

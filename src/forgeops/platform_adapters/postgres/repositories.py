@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from datetime import UTC, datetime
 from uuid import UUID
 
 from packaging.version import Version
@@ -184,6 +185,8 @@ class SqlAuditRepository:
                     requirement_ids=list(event.requirement_ids),
                     test_ids=list(event.test_ids),
                     details=event.details,
+                    scope_ref=event.scope_ref,
+                    policy_version=event.policy_version,
                 )
             )
 
@@ -200,11 +203,17 @@ class SqlAuditRepository:
                     resource_ref=row.resource_ref,
                     result=row.result,
                     reason_code=row.reason_code,
-                    occurred_at=row.occurred_at,
+                    occurred_at=_as_utc(row.occurred_at),
                     trace_id=row.trace_id,
                     requirement_ids=tuple(row.requirement_ids),
                     test_ids=tuple(row.test_ids),
                     details=row.details,
+                    scope_ref=row.scope_ref,
+                    policy_version=row.policy_version,
                 )
                 for row in rows
             )
+
+
+def _as_utc(value: datetime) -> datetime:
+    return value.replace(tzinfo=UTC) if value.tzinfo is None else value.astimezone(UTC)

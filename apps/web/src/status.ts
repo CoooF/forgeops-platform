@@ -8,6 +8,9 @@ export interface PlatformStatus {
   actionAdapter: "MOCK" | "DENY_ALL";
   sdkVersion: string;
   enterpriseApproval: "NOT_GRANTED";
+  identityMode: "LOCAL_SYNTHETIC";
+  enterpriseIdentityConnected: false;
+  projectScopeEnabled: true;
 }
 
 export interface Installation {
@@ -30,7 +33,10 @@ export function assertPlatformStatus(value: unknown): PlatformStatus {
     value.dataMode !== "SYNTHETIC_ONLY" ||
     value.externalModelEnabled !== false ||
     value.runtimePluginsEnabled !== false ||
-    value.enterpriseApproval !== "NOT_GRANTED"
+    value.enterpriseApproval !== "NOT_GRANTED" ||
+    value.identityMode !== "LOCAL_SYNTHETIC" ||
+    value.enterpriseIdentityConnected !== false ||
+    value.projectScopeEnabled !== true
   ) {
     throw new Error("unsafe or incompatible platform status response");
   }

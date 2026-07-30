@@ -1,15 +1,18 @@
 # ForgeOps Platform
 
-Independent EPIC-01/02 engineering baseline for the ForgeOps Platform Core and Scenario SDK. It is runnable with local synthetic fixtures and is not approved for enterprise, preproduction, production, real-data, business-UAT, scheduling, or anomaly-diagnosis use.
+Independent EPIC-01/02 plus EPIC-02.5 engineering baseline for the ForgeOps Platform Core, Scenario SDK and generic project boundary. It is runnable with local synthetic fixtures and is not approved for enterprise, preproduction, production, real-data, business-UAT, scheduling, or anomaly-diagnosis use.
 
 ## What is implemented
 
 - strict domain-neutral platform contracts and versioned execution envelopes;
 - strict Scenario Manifest/pack contracts, compatibility validation, local digest attestation, permissions, budgets, migrations, disable/revoke/uninstall semantics;
 - package lifecycle with installation, permission grant, binding, environment release, and enablement kept separate;
+- persisted Principal, Organization, Workspace, Project, Membership and real Project-to-package binding models with fail-closed scoped authorization;
+- replaceable `AuthPort`, centralized `AuthorizationPort`, local synthetic identity adapter, explicit role/permission inheritance and append-only decision evidence;
 - FastAPI health, package-registry, eligibility, audit, status, and metric endpoints, plus an offline deterministic-template fallback component;
 - SQLAlchemy persistence with PostgreSQL Compose configuration and a file-backed SQLite direct-run profile;
 - append-only audit API/repository skeleton, structured JSON logs, trace correlation, Prometheus metrics, content-addressed local object-store replacement;
+- a real-API React Project Center for hierarchy switching, project lifecycle, members, packages and scoped audit, with Playwright isolation/restart coverage;
 - locked Python/TypeScript workspaces, migrations, CI, SBOM/security/architecture checks;
 - two reference-package contract fixtures only—no scenario business logic.
 
@@ -31,7 +34,11 @@ The direct profile persists metadata to `.local/forgeops.db` and blobs to `.loca
 curl http://127.0.0.1:8000/health/live
 curl http://127.0.0.1:8000/health/ready
 curl -H 'X-ForgeOps-Actor: local-owner' http://127.0.0.1:8000/v1/platform/status
+curl -H 'X-ForgeOps-Actor: local-owner' http://127.0.0.1:8000/v1/me
+curl -H 'X-ForgeOps-Actor: local-owner' http://127.0.0.1:8000/v1/organizations
 ```
+
+`X-ForgeOps-Actor` is a DEV/TEST subject lookup only and grants nothing. Controlled seeded subjects include `local-owner`, `local-editor`, `local-viewer`, `local-outsider` and `local-disabled`; their persisted memberships, not the header value, determine access. Enterprise identity is not connected.
 
 ## Local service topology
 
@@ -52,8 +59,10 @@ make verify
 make migration-proof
 make smoke
 make web-smoke
+make e2e
+make epic-02-5
 make sbom
 make evidence
 ```
 
-See `docs/acceptance/EPIC-01-02-evidence.md` for the exact evidence/status rules and `docs/runbooks/local-development.md` for operating steps.
+See `docs/acceptance/EPIC-02.5-evidence.md` and `docs/requirements/EPIC-02.5-identity-project-scope.md` for exact evidence, permission and status rules. `docs/runbooks/local-development.md` contains operating steps.

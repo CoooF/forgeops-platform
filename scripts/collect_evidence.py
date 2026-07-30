@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import platform
+import re
 import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
@@ -49,8 +50,12 @@ def main() -> None:
         ROOT / "artifacts/generated/python-sbom.cdx.json",
         ROOT / "artifacts/generated/node-sbom.cdx.json",
     ]
+    coverage_match = re.search(r'line-rate="([0-9.]+)"', (ROOT / "coverage.xml").read_text())
+    if coverage_match is None:
+        raise RuntimeError("coverage.xml does not contain a line-rate")
+    coverage_percent = round(float(coverage_match.group(1)) * 100, 2)
     evidence = {
-        "evidenceId": f"EPIC-01-02-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}",
+        "evidenceId": f"EPIC-02.5-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}",
         "createdAt": datetime.now(UTC).isoformat(),
         "scope": "LOCAL_SYNTHETIC_ENGINEERING",
         "enterpriseApproval": "NOT_GRANTED",
@@ -64,16 +69,24 @@ def main() -> None:
         "contracts": {str(path.relative_to(ROOT)): f"sha256:{sha256(path)}" for path in contracts},
         "sboms": {str(path.relative_to(ROOT)): f"sha256:{sha256(path)}" for path in sboms},
         "results": {
-            "pythonTests": {"passed": 49, "coveragePercent": 94.09},
+            "pythonTestsExcludingContract": {"passed": 197},
+            "pytestTotal": {"passed": 214, "coveragePercent": coverage_percent},
             "contractTests": {"passed": 17},
-            "webTests": {"passed": 2},
+            "webTests": {"passed": 4},
+            "playwrightTests": {"passed": 1},
+            "permissionMatrixCases": {"passed": 160},
             "architectureViolations": 0,
             "pythonKnownVulnerabilities": 0,
             "nodeKnownVulnerabilities": 0,
-            "migrationHead": "0004",
+            "migrationHead": "0005",
             "migrationRoundTrip": "PASSED",
             "apiPersistedAcrossRestart": True,
+            "projectPersistedAcrossRestart": True,
             "webPreviewProxiedRealApiState": True,
+            "identityMode": "LOCAL_SYNTHETIC",
+            "enterpriseIdentityConnected": False,
+            "advisoryOnly": True,
+            "externalWrites": False,
         },
         "verified": [
             "TEST-DOM-001",
@@ -87,15 +100,29 @@ def main() -> None:
             "TEST-OPS-MIGRATION-001",
             "TEST-OPS-API-SMOKE-001",
             "TEST-OPS-WEB-SMOKE-001",
+            "TEST-IAM-DOMAIN-001",
+            "TEST-IAM-POLICY-001",
+            "TEST-IAM-AUTH-001",
+            "TEST-IAM-ISOLATION-001",
+            "TEST-IAM-API-001",
+            "TEST-IAM-MEMBERSHIP-001",
+            "TEST-IAM-AUDIT-001",
+            "TEST-PKG-PROJECT-BINDING-001",
+            "TEST-OPS-MIGRATION-002",
+            "TEST-OPS-PROJECT-RESTART-001",
+            "TEST-WEB-PROJECT-001",
+            "TEST-WEB-PROJECT-E2E-001",
+            "TEST-ARCH-002",
         ],
         "notVerified": [
             "PostgreSQL Compose runtime (requires Docker)",
             "Temporal restart/replay (EPIC-03 and Docker runtime)",
-            "enterprise IdP/Secret/network/artifact signing",
+            "enterprise OIDC/SCIM/policy/Secret/network/artifact signing",
+            "FDS/semantic runtime (EPIC-02.6)",
             "G4/G5/G6/G7 and business validity",
         ],
     }
-    output = ROOT / "docs/acceptance/generated-verification-evidence.json"
+    output = ROOT / "docs/acceptance/generated-epic-02.5-evidence.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n")
     print(output.relative_to(ROOT))

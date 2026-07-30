@@ -160,6 +160,45 @@ class ScenarioPackageService:
         actor_ref: str,
         trace_id: str,
     ) -> InstallationRecord:
+        if binding_ref.startswith("project://"):
+            raise ForgeOpsError(
+                ErrorCode.INPUT_INVALID,
+                "project bindings must use the project package binding API",
+                http_status=422,
+            )
+        return self._bind(
+            installation_id,
+            binding_ref,
+            actor_ref=actor_ref,
+            trace_id=trace_id,
+            legacy=True,
+        )
+
+    def bind_project(
+        self,
+        installation_id: UUID,
+        project_id: UUID,
+        *,
+        actor_ref: str,
+        trace_id: str,
+    ) -> InstallationRecord:
+        return self._bind(
+            installation_id,
+            f"project://{project_id}",
+            actor_ref=actor_ref,
+            trace_id=trace_id,
+            legacy=False,
+        )
+
+    def _bind(
+        self,
+        installation_id: UUID,
+        binding_ref: str,
+        *,
+        actor_ref: str,
+        trace_id: str,
+        legacy: bool,
+    ) -> InstallationRecord:
         record = self._require_active_record(installation_id)
         bindings = tuple(sorted(set(record.binding_refs) | {binding_ref}))
         saved = self._repository.save(record.model_copy(update={"binding_refs": bindings}))
@@ -170,7 +209,7 @@ class ScenarioPackageService:
             "SUCCESS",
             "BINDING_RECORDED",
             trace_id,
-            details={"bindingRef": binding_ref},
+            details={"bindingRef": binding_ref, "legacy": legacy},
         )
         return saved
 

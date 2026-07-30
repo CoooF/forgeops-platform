@@ -17,20 +17,30 @@ from sqlalchemy import Engine, text
 from sqlalchemy.exc import SQLAlchemyError
 
 from forgeops.config import ActionAdapterKind, Settings
+from forgeops.identity_api import register_identity_routes
 from forgeops.observability import configure_observability
 from forgeops.platform_adapters.postgres.database import create_engine_and_session
+from forgeops.platform_adapters.postgres.identity_repository import SqlIdentityRepository
 from forgeops.platform_adapters.postgres.repositories import (
     SqlAuditRepository,
     SqlInstallationRepository,
 )
 from forgeops.platform_contracts.domain import Environment
 from forgeops.platform_contracts.errors import ErrorCode, ForgeOpsError
+from forgeops.platform_core.identity_access.auth import auth_adapter_for_environment
+from forgeops.platform_core.identity_access.policy import Permission
+from forgeops.platform_core.identity_access.service import ActorContext, IdentityAccessService
 from forgeops.platform_core.scenario_registry.service import ScenarioPackageService
 
 LOGGER = logging.getLogger("forgeops.api")
 REQUESTS = Counter("forgeops_http_requests_total", "HTTP requests", ("method", "path", "status"))
 PACKAGE_OPERATIONS = Counter(
     "forgeops_package_operations_total", "Package operations", ("operation", "result")
+)
+AUTHORIZATION_DECISIONS = Counter(
+    "forgeops_authorization_decisions_total",
+    "Authentication and authorization decisions",
+    ("action", "result"),
 )
 
 
@@ -66,16 +76,12 @@ class ReleaseRequest(ApiModel):
     action_adapter: ActionAdapterKind = Field(alias="actionAdapter")
 
 
-def require_local_actor(
+def require_current_actor(
+    request: Request,
     x_forgeops_actor: Annotated[str | None, Header()] = None,
-) -> str:
-    if not x_forgeops_actor:
-        raise ForgeOpsError(
-            ErrorCode.UNAUTHORIZED,
-            "X-ForgeOps-Actor is required for local engineering API access",
-            http_status=401,
-        )
-    return x_forgeops_actor
+) -> ActorContext:
+    identity = cast(IdentityAccessService, request.app.state.identity)
+    return identity.authenticate(x_forgeops_actor, _trace_id(request))
 
 
 def _trace_id(request: Request) -> str:
@@ -89,6 +95,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     installations = SqlInstallationRepository(session_factory)
     audit = SqlAuditRepository(session_factory)
     packages = ScenarioPackageService(installations, audit)
+    identity_repository = SqlIdentityRepository(session_factory)
+    identity = IdentityAccessService(
+        identity_repository,
+        installations,
+        packages,
+        audit,
+        auth_adapter_for_environment(resolved.environment),
+        resolved.environment,
+        lambda action, result: AUTHORIZATION_DECISIONS.labels(action, result).inc(),
+    )
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -105,8 +121,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="ForgeOps Platform API",
-        version="0.1.0",
-        description="Local synthetic EPIC-01/02 baseline; advisory-only",
+        version="0.2.5",
+        description="Local synthetic EPIC-01/02.5 baseline; advisory-only",
         lifespan=lifespan,
     )
     app.state.settings = resolved
@@ -114,6 +130,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.installations = installations
     app.state.audit = audit
     app.state.packages = packages
+    app.state.identity = identity
+    register_identity_routes(app, identity)
 
     @app.exception_handler(ForgeOpsError)
     async def forgeops_error_handler(_: Request, exc: ForgeOpsError) -> JSONResponse:
@@ -126,7 +144,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         with tracer.start_as_current_span(f"{request.method} {request.url.path}"):
             response: Response = await call_next(request)
         response.headers["X-Trace-ID"] = request.state.trace_id
-        REQUESTS.labels(request.method, request.url.path, str(response.status_code)).inc()
+        route = request.scope.get("route")
+        route_template = str(getattr(route, "path", "unmatched"))
+        REQUESTS.labels(request.method, route_template, str(response.status_code)).inc()
         LOGGER.info(
             "http_request",
             extra={
@@ -159,7 +179,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
     @app.get("/v1/platform/status", tags=["platform"])
-    def platform_status(_: Annotated[str, Depends(require_local_actor)]) -> dict[str, Any]:
+    def platform_status(
+        _: Annotated[ActorContext, Depends(require_current_actor)],
+    ) -> dict[str, Any]:
         return {
             "environment": resolved.environment.value,
             "scope": "LOCAL_SYNTHETIC_ENGINEERING",
@@ -170,13 +192,18 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "actionAdapter": resolved.action_adapter.value,
             "sdkVersion": resolved.sdk_version,
             "enterpriseApproval": "NOT_GRANTED",
+            "identityMode": "LOCAL_SYNTHETIC",
+            "enterpriseIdentityConnected": False,
+            "projectScopeEnabled": True,
         }
 
     @app.post("/v1/scenario-packages:validate", tags=["scenario-packages"])
     def validate_package(
         submission: ManifestSubmission,
-        _: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
+        request: Request,
     ) -> dict[str, Any]:
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_MANAGE, _trace_id(request))
         report = packages.validate(submission.manifest, submission.artifact_payload())
         PACKAGE_OPERATIONS.labels("validate", "valid" if report.valid else "invalid").inc()
         return report.model_dump(mode="json", by_alias=True)
@@ -184,13 +211,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post("/v1/scenario-package-installations", status_code=201, tags=["scenario-packages"])
     def install_package(
         submission: ManifestSubmission,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_MANAGE, _trace_id(request))
         record = packages.install(
             submission.manifest,
             submission.artifact_payload(),
-            actor_ref=actor,
+            actor_ref=actor.principal.subject_ref,
             trace_id=_trace_id(request),
         )
         PACKAGE_OPERATIONS.labels("install", "success").inc()
@@ -198,18 +226,25 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/v1/scenario-package-installations", tags=["scenario-packages"])
     def list_installations(
-        _: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
+        request: Request,
     ) -> list[dict[str, Any]]:
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_VIEW, _trace_id(request))
         return [
             item.model_dump(mode="json", by_alias=True)
             for item in installations.list_installations()
         ]
 
     def transition(
-        operation: str, installation_id: UUID, actor: str, request: Request
+        operation: str, installation_id: UUID, actor: ActorContext, request: Request
     ) -> dict[str, Any]:
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_MANAGE, _trace_id(request))
         handler = packages.mark_tested if operation == "mark-tested" else packages.approve
-        result = handler(installation_id, actor_ref=actor, trace_id=_trace_id(request))
+        result = handler(
+            installation_id,
+            actor_ref=actor.principal.subject_ref,
+            trace_id=_trace_id(request),
+        )
         return result.model_dump(mode="json", by_alias=True)
 
     @app.post(
@@ -218,7 +253,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     def mark_tested(
         installation_id: UUID,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
         return transition("mark-tested", installation_id, actor, request)
@@ -229,7 +264,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     def approve(
         installation_id: UUID,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
         return transition("approve", installation_id, actor, request)
@@ -241,13 +276,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def grant_permissions(
         installation_id: UUID,
         body: PermissionGrantRequest,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_MANAGE, _trace_id(request))
         result = packages.grant_permissions(
             installation_id,
             body.permissions,
-            actor_ref=actor,
+            actor_ref=actor.principal.subject_ref,
             trace_id=_trace_id(request),
         )
         return result.model_dump(mode="json", by_alias=True)
@@ -259,13 +295,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def bind_package(
         installation_id: UUID,
         body: BindingRequest,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_MANAGE, _trace_id(request))
         result = packages.bind(
             installation_id,
             body.binding_ref,
-            actor_ref=actor,
+            actor_ref=actor.principal.subject_ref,
             trace_id=_trace_id(request),
         )
         return result.model_dump(mode="json", by_alias=True)
@@ -278,14 +315,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def release_package(
         installation_id: UUID,
         body: ReleaseRequest,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_MANAGE, _trace_id(request))
         result = packages.release(
             installation_id,
             body.environment,
             body.action_adapter,
-            actor_ref=actor,
+            actor_ref=actor.principal.subject_ref,
             trace_id=_trace_id(request),
         )
         return result.model_dump(mode="json", by_alias=True)
@@ -294,7 +332,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         operation: str,
         installation_id: UUID,
         environment: Environment,
-        actor: str,
+        actor: ActorContext,
         request: Request,
     ) -> dict[str, Any]:
         handlers = {
@@ -302,8 +340,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "disable": packages.disable,
             "revoke": packages.revoke,
         }
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_MANAGE, _trace_id(request))
         result = handlers[operation](
-            installation_id, environment, actor_ref=actor, trace_id=_trace_id(request)
+            installation_id,
+            environment,
+            actor_ref=actor.principal.subject_ref,
+            trace_id=_trace_id(request),
         )
         return result.model_dump(mode="json", by_alias=True)
 
@@ -314,7 +356,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def enable_release(
         installation_id: UUID,
         environment: Environment,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
         return release_transition("enable", installation_id, environment, actor, request)
@@ -326,7 +368,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def disable_release(
         installation_id: UUID,
         environment: Environment,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
         return release_transition("disable", installation_id, environment, actor, request)
@@ -338,7 +380,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def revoke_release(
         installation_id: UUID,
         environment: Environment,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
         return release_transition("revoke", installation_id, environment, actor, request)
@@ -349,12 +391,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     def uninstall_package(
         installation_id: UUID,
-        actor: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
         request: Request,
     ) -> dict[str, Any]:
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_MANAGE, _trace_id(request))
         result = packages.uninstall(
             installation_id,
-            actor_ref=actor,
+            actor_ref=actor.principal.subject_ref,
             trace_id=_trace_id(request),
         )
         return result.model_dump(mode="json", by_alias=True)
@@ -366,15 +409,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def run_eligibility(
         installation_id: UUID,
         environment: Environment,
-        _: Annotated[str, Depends(require_local_actor)],
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
+        request: Request,
     ) -> dict[str, bool]:
+        identity.authorize_platform(actor, Permission.PACKAGE_REGISTRY_VIEW, _trace_id(request))
         packages.assert_new_run_allowed(installation_id, environment)
         return {"newRunAllowed": True}
 
     @app.get("/v1/audit-events", tags=["audit"])
     def list_audit_events(
-        _: Annotated[str, Depends(require_local_actor)], limit: int = 100
+        actor: Annotated[ActorContext, Depends(require_current_actor)],
+        request: Request,
+        limit: int = 100,
     ) -> list[dict[str, Any]]:
+        identity.authorize_platform(actor, Permission.AUDIT_READ, _trace_id(request))
         return [
             event.model_dump(mode="json", by_alias=True)
             for event in audit.list_events(limit=min(max(limit, 1), 500))

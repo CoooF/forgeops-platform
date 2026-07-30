@@ -8,3 +8,4 @@ These decisions are `ACCEPTED_FOR_LOCAL_SYNTHETIC_ENGINEERING` only. They are no
 | 0002 | Domain-neutral core and one-way Scenario SDK dependency |
 | 0003 | Fail-closed package lifecycle and isolated/declarative extensions |
 | 0004 | PostgreSQL target with file-backed direct-run fallback |
+| 0005 | Local identity, scoped authorization and non-destructive project boundary |

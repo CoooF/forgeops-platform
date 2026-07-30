@@ -44,22 +44,33 @@ curl --fail --silent --show-error \
   -H 'X-ForgeOps-Actor: local-web-smoke' \
   -H 'X-Trace-ID: standalone-web-smoke-trace' \
   http://127.0.0.1:14731/v1/platform/status >.local/web-smoke-status.json
+curl --fail --silent --show-error \
+  -H 'X-ForgeOps-Actor: local-web-smoke' \
+  -H 'X-Trace-ID: standalone-web-smoke-identity-trace' \
+  http://127.0.0.1:14731/v1/me >.local/web-smoke-me.json
 
 uv run python - <<'PY'
 import json
 from pathlib import Path
 
 status = json.loads(Path('.local/web-smoke-status.json').read_text())
+me = json.loads(Path('.local/web-smoke-me.json').read_text())
 assert status['scope'] == 'LOCAL_SYNTHETIC_ENGINEERING'
 assert status['advisoryMode'] is True
 assert status['dataMode'] == 'SYNTHETIC_ONLY'
 assert status['externalModelEnabled'] is False
 assert status['enterpriseApproval'] == 'NOT_GRANTED'
+assert status['identityMode'] == 'LOCAL_SYNTHETIC'
+assert status['enterpriseIdentityConnected'] is False
+assert status['projectScopeEnabled'] is True
+assert me['principal']['subjectRef'] == 'local-web-smoke'
 print(json.dumps({
     'testId': 'TEST-OPS-WEB-SMOKE-001',
     'requirementIds': ['REQ-OPS-001', 'REQ-UIX-001'],
     'scope': status['scope'],
     'previewProxiedRealApiState': True,
+    'previewProxiedPersistedIdentity': True,
+    'identityMode': status['identityMode'],
     'enterpriseApproval': status['enterpriseApproval'],
     'passed': True,
 }, indent=2))

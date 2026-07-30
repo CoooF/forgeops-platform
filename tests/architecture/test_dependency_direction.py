@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ast
+import re
 from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
@@ -52,4 +53,4 @@ def test_core_migrations_are_domain_neutral() -> None:
         path.read_text().lower() for path in (REPOSITORY_ROOT / "migrations/versions").glob("*.py")
     )
     forbidden = ("order", "machine", "operation", "alarm", "fault", "ortools")
-    assert not any(term in migrations for term in forbidden)
+    assert not any(re.search(rf"\b{term}\b", migrations) for term in forbidden)

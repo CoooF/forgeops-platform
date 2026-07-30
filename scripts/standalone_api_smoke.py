@@ -22,7 +22,7 @@ DATABASE_PATH = ROOT / ".local" / "standalone-smoke.db"
 DATABASE_URL = f"sqlite+pysqlite:///{DATABASE_PATH}"
 HEADERS = {
     "Content-Type": "application/json",
-    "X-ForgeOps-Actor": "standalone-smoke",
+    "X-ForgeOps-Actor": "local-owner",
     "X-Trace-ID": "standalone-smoke-trace",
 }
 
@@ -37,10 +37,19 @@ def run_server() -> None:
     uvicorn.run(create_app(settings), host=HOST, port=PORT, log_level="warning")
 
 
-def request_json(path: str, *, method: str = "GET", body: object | None = None) -> Any:
+def request_json(
+    path: str,
+    *,
+    method: str = "GET",
+    body: object | None = None,
+    idempotency_key: str | None = None,
+) -> Any:
     data = json.dumps(body).encode() if body is not None else None
+    headers = dict(HEADERS)
+    if idempotency_key:
+        headers["Idempotency-Key"] = idempotency_key
     request = Request(  # noqa: S310 - fixed loopback URL
-        f"{BASE_URL}{path}", data=data, headers=HEADERS, method=method
+        f"{BASE_URL}{path}", data=data, headers=headers, method=method
     )
     with urlopen(request, timeout=5) as response:  # noqa: S310 - fixed loopback URL
         return json.loads(response.read())
@@ -95,6 +104,29 @@ def main() -> None:
             body=manifest_submission(),
         )
         installation_id = installed["installationId"]
+        organization = request_json(
+            "/v1/organizations",
+            method="POST",
+            body={"name": "Standalone Synthetic", "slug": "standalone-synthetic"},
+            idempotency_key="standalone-smoke-organization",
+        )
+        workspace = request_json(
+            f"/v1/organizations/{organization['organizationId']}/workspaces",
+            method="POST",
+            body={"name": "Standalone Workspace", "slug": "standalone-workspace"},
+            idempotency_key="standalone-smoke-workspace",
+        )
+        project = request_json(
+            f"/v1/workspaces/{workspace['workspaceId']}/projects",
+            method="POST",
+            body={
+                "name": "Standalone Project",
+                "slug": "standalone-project",
+                "description": "SYNTHETIC restart evidence",
+            },
+            idempotency_key="standalone-smoke-project",
+        )
+        project_id = project["projectId"]
     finally:
         stop_server(first)
 
@@ -104,16 +136,23 @@ def main() -> None:
         persisted = any(item["installationId"] == installation_id for item in installations)
         if not persisted:
             raise RuntimeError("installation state was not persisted across API restart")
+        persisted_project = request_json(f"/v1/projects/{project_id}")
+        project_persisted = persisted_project["projectId"] == project_id
+        if not project_persisted:
+            raise RuntimeError("project state was not persisted across API restart")
     finally:
         stop_server(second)
 
     evidence = {
         "testId": "TEST-OPS-API-SMOKE-001",
-        "requirementIds": ["REQ-PKG-001", "REQ-OPS-001"],
+        "requirementIds": ["REQ-IAM-001", "REQ-POL-001", "REQ-PKG-001", "REQ-OPS-001"],
         "scope": status["scope"],
         "enterpriseApproval": status["enterpriseApproval"],
         "installationId": installation_id,
+        "projectId": project_id,
         "persistedAcrossRestart": persisted,
+        "projectPersistedAcrossRestart": project_persisted,
+        "identityMode": status["identityMode"],
         "database": str(DATABASE_PATH.relative_to(ROOT)),
         "passed": True,
     }

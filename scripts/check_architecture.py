@@ -11,6 +11,7 @@ PLATFORM_ROOTS = (
     ROOT / "src/forgeops/scenario_sdk",
 )
 FORBIDDEN_IMPORTS = ("scenario_packages", "steel_cord", "equipment_anomaly", "ortools")
+FORBIDDEN_WEB_TERMS = ("steel-cord", "equipment-anomaly", "manufacturing", "plc", "rpa")
 
 
 def main() -> None:
@@ -34,10 +35,24 @@ def main() -> None:
                             "modules": modules,
                         }
                     )
+    web_root = ROOT / "apps/web/src"
+    scanned_web_files = 0
+    for source_file in (*web_root.rglob("*.ts"), *web_root.rglob("*.tsx")):
+        scanned_web_files += 1
+        lowered = source_file.read_text().lower()
+        for term in FORBIDDEN_WEB_TERMS:
+            if term in lowered:
+                violations.append(
+                    {
+                        "file": str(source_file.relative_to(ROOT)),
+                        "term": term,
+                    }
+                )
     result = {
         "testId": "TEST-ARCH-001",
         "requirementIds": ["REQ-SDK-001", "REQ-PKG-001", "NFR-EXT-001"],
         "scannedPythonFiles": scanned,
+        "scannedWebFiles": scanned_web_files,
         "platformToReferenceScenarioDependencies": len(violations),
         "violations": violations,
         "passed": not violations,

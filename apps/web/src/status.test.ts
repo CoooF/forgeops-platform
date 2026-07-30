@@ -14,6 +14,9 @@ describe("platform status contract", () => {
       actionAdapter: "MOCK",
       sdkVersion: "1.0.0",
       enterpriseApproval: "NOT_GRANTED",
+      identityMode: "LOCAL_SYNTHETIC",
+      enterpriseIdentityConnected: false,
+      projectScopeEnabled: true,
     });
     expect(result.advisoryMode).toBe(true);
   });
@@ -27,6 +30,9 @@ describe("platform status contract", () => {
         externalModelEnabled: false,
         runtimePluginsEnabled: false,
         enterpriseApproval: "GRANTED",
+        identityMode: "LOCAL_SYNTHETIC",
+        enterpriseIdentityConnected: false,
+        projectScopeEnabled: true,
       }),
     ).toThrow(/unsafe or incompatible/);
   });

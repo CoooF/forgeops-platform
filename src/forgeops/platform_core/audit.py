@@ -21,6 +21,8 @@ class AuditEvent(StrictModel):
     requirement_ids: tuple[str, ...] = Field(alias="requirementIds")
     test_ids: tuple[str, ...] = Field(default=(), alias="testIds")
     details: dict[str, Any] = Field(default_factory=dict)
+    scope_ref: str = Field(default="platform://local", alias="scopeRef")
+    policy_version: str = Field(default="package-lifecycle-v1", alias="policyVersion")
 
 
 class AuditRepository(Protocol):

@@ -1,4 +1,4 @@
-.PHONY: bootstrap format lint type test contract security architecture build artifact-architecture sbom migration-proof smoke web-smoke verify evidence
+.PHONY: bootstrap format lint type test contract security architecture build artifact-architecture sbom migration-proof smoke web-smoke e2e epic-02-5 verify evidence
 
 bootstrap:
 	uv sync --frozen --all-groups
@@ -57,6 +57,12 @@ smoke:
 
 web-smoke:
 	sh scripts/standalone_web_smoke.sh
+
+e2e:
+	pnpm --filter @forgeops/web run e2e
+
+epic-02-5: migration-proof smoke web-smoke e2e
+	uv run pytest -q tests/unit/test_identity_policy.py tests/integration/test_identity_access_api.py
 
 verify: format lint type test contract security architecture artifact-architecture
 
