@@ -37,6 +37,25 @@ def require_clean_versioned_source() -> None:
         raise RuntimeError("commit the verified source before generating immutable evidence")
 
 
+def combined_coverage_percent(path: Path) -> float:
+    root_match = re.search(r"<coverage\b(?P<attributes>[^>]*)>", path.read_text())
+    if root_match is None:
+        raise RuntimeError("coverage.xml does not contain a coverage root")
+    attributes = root_match.group("attributes")
+    required = ("lines-valid", "lines-covered", "branches-valid", "branches-covered")
+    values: dict[str, int] = {}
+    for name in required:
+        value_match = re.search(rf'\b{name}="(\d+)"', attributes)
+        if value_match is None:
+            raise RuntimeError("coverage.xml does not contain valid line/branch totals")
+        values[name] = int(value_match.group(1))
+    valid = values["lines-valid"] + values["branches-valid"]
+    covered = values["lines-covered"] + values["branches-covered"]
+    if valid <= 0 or covered < 0 or covered > valid:
+        raise RuntimeError("coverage.xml contains inconsistent line/branch totals")
+    return round(covered / valid * 100, 2)
+
+
 def main() -> None:
     require_clean_versioned_source()
     locks = [ROOT / "uv.lock", ROOT / "pnpm-lock.yaml"]
@@ -50,10 +69,7 @@ def main() -> None:
         ROOT / "artifacts/generated/python-sbom.cdx.json",
         ROOT / "artifacts/generated/node-sbom.cdx.json",
     ]
-    coverage_match = re.search(r'line-rate="([0-9.]+)"', (ROOT / "coverage.xml").read_text())
-    if coverage_match is None:
-        raise RuntimeError("coverage.xml does not contain a line-rate")
-    coverage_percent = round(float(coverage_match.group(1)) * 100, 2)
+    coverage_percent = combined_coverage_percent(ROOT / "coverage.xml")
     evidence = {
         "evidenceId": f"EPIC-02.5-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}",
         "createdAt": datetime.now(UTC).isoformat(),
@@ -70,7 +86,11 @@ def main() -> None:
         "sboms": {str(path.relative_to(ROOT)): f"sha256:{sha256(path)}" for path in sboms},
         "results": {
             "pythonTestsExcludingContract": {"passed": 197},
-            "pytestTotal": {"passed": 214, "coveragePercent": coverage_percent},
+            "pytestTotal": {
+                "passed": 214,
+                "coveragePercent": coverage_percent,
+                "coverageMetric": "combined-lines-and-branches",
+            },
             "contractTests": {"passed": 17},
             "webTests": {"passed": 4},
             "playwrightTests": {"passed": 1},
