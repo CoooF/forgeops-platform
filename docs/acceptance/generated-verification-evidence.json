@@ -1,0 +1,65 @@
+{
+  "contracts": {
+    "contracts/jsonschema/scenario-manifest.schema.json": "sha256:0460bb463a32a3e107e8b8362a852e0c01ca01e53be2255b3c35a0844fc5e24f",
+    "contracts/openapi/forgeops.openapi.json": "sha256:51e83b05c1e274f10c245ce30ccd20267cd4c200a8097d4ac6e0e6e77128d7d2"
+  },
+  "createdAt": "2026-07-30T12:50:12.576594+00:00",
+  "enterpriseApproval": "NOT_GRANTED",
+  "evidenceId": "EPIC-01-02-20260730T125012Z",
+  "fixtures": {
+    "scenario-packages/equipment-anomaly-diagnosis/artifact.json": "sha256:0b25f22687556250073f57f3c84b14d5777dabe7e8ae7ddd9dfee9e54c24c6b0",
+    "scenario-packages/steel-cord-scheduling/artifact.json": "sha256:0e7cccc74c538c33e7f79ef18e0acd9bcfe8318fb6bbce02a6db4931dd94e17b"
+  },
+  "gitCommit": "5474f948abd31f5d3856315e1c95ef819fa732bb",
+  "locks": {
+    "pnpm-lock.yaml": "sha256:d26aaa117c37c86e6e60fb253e23e94ac415ba2fd2425d1fbbfdb434280c8931",
+    "uv.lock": "sha256:b54eb9e799d9348bce8b21315ed7623e285611b30f7c6e5e1e6fe30df21176ce"
+  },
+  "node": "24.14.0",
+  "notVerified": [
+    "PostgreSQL Compose runtime (requires Docker)",
+    "Temporal restart/replay (EPIC-03 and Docker runtime)",
+    "enterprise IdP/Secret/network/artifact signing",
+    "G4/G5/G6/G7 and business validity"
+  ],
+  "pnpm": "pnpm@11.1.2",
+  "python": "3.13.14",
+  "results": {
+    "apiPersistedAcrossRestart": true,
+    "architectureViolations": 0,
+    "contractTests": {
+      "passed": 17
+    },
+    "migrationHead": "0004",
+    "migrationRoundTrip": "PASSED",
+    "nodeKnownVulnerabilities": 0,
+    "pythonKnownVulnerabilities": 0,
+    "pythonTests": {
+      "coveragePercent": 94.09,
+      "passed": 49
+    },
+    "webPreviewProxiedRealApiState": true,
+    "webTests": {
+      "passed": 2
+    }
+  },
+  "sboms": {
+    "artifacts/generated/node-sbom.cdx.json": "sha256:bef3b4ec7b1a273074969202703a09a0637dd3f06850259253b25067feefdd2a",
+    "artifacts/generated/python-sbom.cdx.json": "sha256:372e74dfb9979c66fe360217690dd13ddacac73522c17237a9eda917eb72661e"
+  },
+  "scope": "LOCAL_SYNTHETIC_ENGINEERING",
+  "uv": "0.12.0 (CI-pinned)",
+  "verified": [
+    "TEST-DOM-001",
+    "TEST-SCHEMA-001",
+    "TEST-CONTRACT-001",
+    "TEST-ARCH-001",
+    "TEST-ARCH-ARTIFACT-001",
+    "TEST-SDK-001",
+    "TEST-SDK-002",
+    "TEST-ACT-001",
+    "TEST-OPS-MIGRATION-001",
+    "TEST-OPS-API-SMOKE-001",
+    "TEST-OPS-WEB-SMOKE-001"
+  ]
+}
