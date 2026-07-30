@@ -1,0 +1,84 @@
+{
+  "apiVersion": "forgeops.ai/fds/v1alpha1",
+  "kind": "DOMAIN",
+  "packageId": "org.forgeops.domain.steel-cord-shape",
+  "packageVersion": "0.1.0",
+  "publisher": "FIRST_PARTY_LOCAL",
+  "namespaceOwner": "org.forgeops",
+  "license": {
+    "licenseId": "LOCAL-SYNTHETIC-ONLY",
+    "licenseRef": "local://licenses/synthetic-contract",
+    "redistributionAllowed": false,
+    "derivativeWorkAllowed": false,
+    "verified": false
+  },
+  "provenance": {
+    "sourceRef": "local://fds-fixtures/steel-cord-shape",
+    "provenanceDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "synthetic": true
+  },
+  "visibility": "PUBLIC",
+  "trustTier": "FIRST_PARTY_LOCAL",
+  "contentClassification": "SYNTHETIC",
+  "publicReleaseApproved": false,
+  "contentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "artifact": {
+    "artifactRef": "local://fds-fixtures/steel-cord-shape/artifact",
+    "contentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "signature": "local-sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "sbomRef": "local://fds-fixtures/no-executable-dependencies",
+    "executable": false,
+    "workerBoundary": null
+  },
+  "compatibility": {
+    "platform": ">=0.1.0,<0.2.0",
+    "fds": ">=0.1.0,<0.2.0",
+    "scenarioSdk": ">=0.1.0,<0.2.0"
+  },
+  "applicability": ["CONTRACT_ONLY", "SYNTHETIC_SHAPE"],
+  "prohibitedUses": ["BUSINESS_DECISION", "REAL_DATA"],
+  "supportStatus": "EXPERIMENTAL",
+  "permissions": [],
+  "resourceBudget": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "acceptedDependencyPermissions": [],
+  "dependencyResourceBudgetAllowance": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "lifecycle": {
+    "disablePolicy": "PRESERVE_HISTORY",
+    "uninstallPolicy": "PRESERVE_HISTORY",
+    "retainManifest": true,
+    "retainAudit": true,
+    "retainHistoricalRuns": true
+  },
+  "evaluationRefs": [],
+  "dependencies": [],
+  "conflicts": [],
+  "providedCapabilities": ["domain.steel-cord-shape"],
+  "providedNamespaces": ["org.forgeops.domain.steel-cord-shape"],
+  "domainNamespace": "org.forgeops.domain.steel-cord-shape",
+  "extends": [
+    {
+      "packageId": "org.forgeops.domain.manufacturing-shape",
+      "versionConstraint": "==0.1.0",
+      "expectedKind": "DOMAIN",
+      "expectedCapability": "domain.manufacturing-shape",
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "imports": [],
+  "components": [],
+  "competencyQuestionRefs": ["urn:forgeops:synthetic:steel-cord-shape:cq-1"]
+}

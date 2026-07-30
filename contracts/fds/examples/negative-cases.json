@@ -1,0 +1,19 @@
+{
+  "classification": "SYNTHETIC_CONTRACT_ONLY",
+  "cases": [
+    {"caseId": "missing-required", "expectedCode": "DEPENDENCY_MISSING"},
+    {"caseId": "version-unsatisfied", "expectedCode": "DEPENDENCY_VERSION_UNSATISFIED"},
+    {"caseId": "ambiguous-candidate", "expectedCode": "DEPENDENCY_AMBIGUOUS"},
+    {"caseId": "digest-conflict", "expectedCode": "PACKAGE_VERSION_DIGEST_CONFLICT"},
+    {"caseId": "cycle", "expectedCode": "DEPENDENCY_CYCLE"},
+    {"caseId": "direct-conflict", "expectedCode": "DEPENDENCY_CONFLICT"},
+    {"caseId": "layer-reversal", "expectedCode": "DEPENDENCY_LAYER_VIOLATION"},
+    {"caseId": "private-dependency", "expectedCode": "VISIBILITY_VIOLATION"},
+    {"caseId": "permission-expansion", "expectedCode": "PERMISSION_EXPANSION"},
+    {"caseId": "budget-expansion", "expectedCode": "RESOURCE_BUDGET_EXPANSION"},
+    {"caseId": "incompatible-fds", "expectedCode": "FDS_INCOMPATIBLE"},
+    {"caseId": "lock-tamper", "expectedCode": "LOCK_DIGEST_MISMATCH"}
+  ],
+  "containsBusinessKnowledge": false,
+  "containsRealData": false
+}

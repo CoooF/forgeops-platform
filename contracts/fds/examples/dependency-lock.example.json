@@ -1,0 +1,114 @@
+{
+  "acceptedDependencyPermissions": [],
+  "authorizationEffect": "NONE",
+  "edges": [
+    {
+      "fromPackageId": "org.forgeops.domain.manufacturing-shape",
+      "required": true,
+      "toPackageId": "org.forgeops.component.core-semantics",
+      "versionConstraint": "==0.1.0"
+    },
+    {
+      "fromPackageId": "org.forgeops.domain.steel-cord-shape",
+      "required": true,
+      "toPackageId": "org.forgeops.domain.manufacturing-shape",
+      "versionConstraint": "==0.1.0"
+    },
+    {
+      "fromPackageId": "org.forgeops.overlay.synthetic-shape",
+      "required": true,
+      "toPackageId": "org.forgeops.domain.steel-cord-shape",
+      "versionConstraint": "==0.1.0"
+    },
+    {
+      "fromPackageId": "org.forgeops.scenario.contract-shape",
+      "required": true,
+      "toPackageId": "org.forgeops.domain.steel-cord-shape",
+      "versionConstraint": "==0.1.0"
+    },
+    {
+      "fromPackageId": "org.forgeops.scenario.contract-shape",
+      "required": true,
+      "toPackageId": "org.forgeops.overlay.synthetic-shape",
+      "versionConstraint": "==0.1.0"
+    }
+  ],
+  "lockDigest": "sha256:39dd6be726ec8d0fd303e9ff324df2eebc9b5ecfe7531cdc490b5d40b164530b",
+  "lockVersion": "forgeops.ai/fds-lock/v1alpha1",
+  "nodes": [
+    {
+      "componentKind": "ONTOLOGY",
+      "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "kind": "COMPONENT",
+      "packageId": "org.forgeops.component.core-semantics",
+      "packageVersion": "0.1.0",
+      "publisher": "FIRST_PARTY_LOCAL",
+      "sourceRef": "local://fds-fixtures/core-semantics"
+    },
+    {
+      "componentKind": null,
+      "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "kind": "DOMAIN",
+      "packageId": "org.forgeops.domain.manufacturing-shape",
+      "packageVersion": "0.1.0",
+      "publisher": "FIRST_PARTY_LOCAL",
+      "sourceRef": "local://fds-fixtures/manufacturing-shape"
+    },
+    {
+      "componentKind": null,
+      "contentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "kind": "DOMAIN",
+      "packageId": "org.forgeops.domain.steel-cord-shape",
+      "packageVersion": "0.1.0",
+      "publisher": "FIRST_PARTY_LOCAL",
+      "sourceRef": "local://fds-fixtures/steel-cord-shape"
+    },
+    {
+      "componentKind": null,
+      "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "kind": "ORGANIZATION_OVERLAY",
+      "packageId": "org.forgeops.overlay.synthetic-shape",
+      "packageVersion": "0.1.0",
+      "publisher": "FIRST_PARTY_LOCAL",
+      "sourceRef": "local://fds-fixtures/synthetic-overlay"
+    },
+    {
+      "componentKind": null,
+      "contentDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "kind": "SCENARIO",
+      "packageId": "org.forgeops.scenario.contract-shape",
+      "packageVersion": "0.1.0",
+      "publisher": "FIRST_PARTY_LOCAL",
+      "sourceRef": "local://fds-fixtures/contract-shape-scenario"
+    }
+  ],
+  "permissionDelta": [],
+  "requestedPermissions": [
+    "evidence.read"
+  ],
+  "resourceBudget": {
+    "cpuMillis": 100,
+    "maxOutputBytes": 10000,
+    "memoryMiB": 64,
+    "networkAccess": false,
+    "secretRefs": [],
+    "timeoutSeconds": 10
+  },
+  "resourceBudgetDelta": {
+    "cpuMillis": 0,
+    "maxOutputBytes": 0,
+    "memoryMiB": 0,
+    "networkAccess": false,
+    "secretRefs": [],
+    "timeoutSeconds": 0
+  },
+  "rootPackageId": "org.forgeops.scenario.contract-shape",
+  "rootPackageVersion": "0.1.0",
+  "runtimeStateCreated": false,
+  "skippedOptionalDependencies": [],
+  "targetVersions": {
+    "fds": "0.1.0",
+    "platform": "0.1.0",
+    "scenarioSdk": "0.1.0"
+  }
+}

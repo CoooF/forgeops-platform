@@ -1,0 +1,99 @@
+{
+  "apiVersion": "forgeops.ai/fds/v1alpha1",
+  "kind": "SCENARIO",
+  "packageId": "org.forgeops.scenario.contract-shape",
+  "packageVersion": "0.1.0",
+  "publisher": "FIRST_PARTY_LOCAL",
+  "namespaceOwner": "org.forgeops",
+  "license": {
+    "licenseId": "LOCAL-SYNTHETIC-ONLY",
+    "licenseRef": "local://licenses/synthetic-contract",
+    "redistributionAllowed": false,
+    "derivativeWorkAllowed": false,
+    "verified": false
+  },
+  "provenance": {
+    "sourceRef": "local://fds-fixtures/contract-shape-scenario",
+    "provenanceDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "synthetic": true
+  },
+  "visibility": "PRIVATE",
+  "trustTier": "FIRST_PARTY_LOCAL",
+  "contentClassification": "SYNTHETIC",
+  "publicReleaseApproved": false,
+  "contentDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "artifact": {
+    "artifactRef": "local://fds-fixtures/contract-shape-scenario/artifact",
+    "contentDigest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "signature": "local-sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "sbomRef": "local://fds-fixtures/no-executable-dependencies",
+    "executable": false,
+    "workerBoundary": null
+  },
+  "compatibility": {
+    "platform": ">=0.1.0,<0.2.0",
+    "fds": ">=0.1.0,<0.2.0",
+    "scenarioSdk": ">=0.1.0,<0.2.0"
+  },
+  "applicability": ["CONTRACT_ONLY", "SYNTHETIC_SHAPE"],
+  "prohibitedUses": ["BUSINESS_DECISION", "REAL_DATA", "EXTERNAL_EXECUTION"],
+  "supportStatus": "EXPERIMENTAL",
+  "permissions": ["evidence.read"],
+  "resourceBudget": {
+    "cpuMillis": 100,
+    "memoryMiB": 64,
+    "timeoutSeconds": 10,
+    "maxOutputBytes": 10000,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "acceptedDependencyPermissions": [],
+  "dependencyResourceBudgetAllowance": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "lifecycle": {
+    "disablePolicy": "PRESERVE_HISTORY",
+    "uninstallPolicy": "PRESERVE_HISTORY",
+    "retainManifest": true,
+    "retainAudit": true,
+    "retainHistoricalRuns": true
+  },
+  "evaluationRefs": ["urn:forgeops:synthetic:contract-completeness"],
+  "dependencies": [
+    {
+      "package": {
+        "packageId": "org.forgeops.domain.steel-cord-shape",
+        "versionConstraint": "==0.1.0",
+        "expectedKind": "DOMAIN",
+        "expectedCapability": "domain.steel-cord-shape",
+        "contentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "required": true,
+      "expectedComponentKind": null
+    },
+    {
+      "package": {
+        "packageId": "org.forgeops.overlay.synthetic-shape",
+        "versionConstraint": "==0.1.0",
+        "expectedKind": "ORGANIZATION_OVERLAY",
+        "expectedCapability": "overlay.synthetic-shape",
+        "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+      },
+      "required": true,
+      "expectedComponentKind": null
+    }
+  ],
+  "conflicts": [],
+  "providedCapabilities": ["scenario.contract-shape"],
+  "providedNamespaces": ["org.forgeops.scenario.contract-shape"],
+  "requiredDomainCapabilities": ["domain.steel-cord-shape"],
+  "components": [],
+  "inputContractDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+  "outputContractDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+  "legacySource": null
+}

@@ -1,0 +1,87 @@
+{
+  "apiVersion": "forgeops.ai/fds/v1alpha1",
+  "kind": "DOMAIN",
+  "packageId": "org.forgeops.domain.reference-a",
+  "packageVersion": "0.1.0",
+  "publisher": "FIRST_PARTY_LOCAL",
+  "namespaceOwner": "org.forgeops",
+  "license": {
+    "licenseId": "LOCAL-SYNTHETIC-ONLY",
+    "licenseRef": "local://licenses/synthetic-contract",
+    "redistributionAllowed": false,
+    "derivativeWorkAllowed": false,
+    "verified": false
+  },
+  "provenance": {
+    "sourceRef": "local://fds-fixtures/reference-domain-a",
+    "provenanceDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+    "synthetic": true
+  },
+  "visibility": "PUBLIC",
+  "trustTier": "FIRST_PARTY_LOCAL",
+  "contentClassification": "SYNTHETIC",
+  "publicReleaseApproved": false,
+  "contentDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "artifact": {
+    "artifactRef": "local://fds-fixtures/reference-domain-a/artifact",
+    "contentDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "signature": "local-sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "sbomRef": "local://fds-fixtures/no-executable-dependencies",
+    "executable": false,
+    "workerBoundary": null
+  },
+  "compatibility": {
+    "platform": ">=0.1.0,<0.2.0",
+    "fds": ">=0.1.0,<0.2.0",
+    "scenarioSdk": ">=0.1.0,<0.2.0"
+  },
+  "applicability": ["CONTRACT_ONLY", "SECOND_DOMAIN_SHAPE"],
+  "prohibitedUses": ["CROSS_INDUSTRY_E2E_CLAIM", "REAL_DATA"],
+  "supportStatus": "EXPERIMENTAL",
+  "permissions": [],
+  "resourceBudget": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "acceptedDependencyPermissions": [],
+  "dependencyResourceBudgetAllowance": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "lifecycle": {
+    "disablePolicy": "PRESERVE_HISTORY",
+    "uninstallPolicy": "PRESERVE_HISTORY",
+    "retainManifest": true,
+    "retainAudit": true,
+    "retainHistoricalRuns": true
+  },
+  "evaluationRefs": [],
+  "dependencies": [],
+  "conflicts": [],
+  "providedCapabilities": ["domain.reference-a"],
+  "providedNamespaces": ["org.forgeops.domain.reference-a"],
+  "domainNamespace": "org.forgeops.domain.reference-a",
+  "extends": [],
+  "imports": [],
+  "components": [
+    {
+      "package": {
+        "packageId": "org.forgeops.component.core-semantics",
+        "versionConstraint": "==0.1.0",
+        "expectedKind": "COMPONENT",
+        "expectedCapability": "semantic.core",
+        "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "componentKind": "ONTOLOGY"
+    }
+  ],
+  "competencyQuestionRefs": ["urn:forgeops:synthetic:reference-domain-a:cq-1"]
+}

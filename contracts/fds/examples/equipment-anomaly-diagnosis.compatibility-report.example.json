@@ -1,0 +1,20 @@
+{
+  "descriptorDigest": "sha256:ba6ee951884110605580a3de6223c6f83379496c47654dece3cfb16d78636a4f",
+  "historyMutated": false,
+  "issues": [],
+  "legacyScenarioSdk": ">=0.1.0,<0.2.0",
+  "limitations": [
+    "LEGACY_SOURCE_HAS_NO_DECLARED_FDS_DOMAIN_CAPABILITY",
+    "LEGACY_SOURCE_HAS_NO_VERIFIED_FDS_LICENSE",
+    "LEGACY_SOURCE_HAS_NO_FDS_DEPENDENCY_LOCK",
+    "LEGACY_SOURCE_HAS_NO_INPUT_OUTPUT_CONTENT_DIGEST",
+    "LOCAL_DIGEST_ATTESTATION_IS_NOT_ENTERPRISE_SIGNATURE_VERIFICATION"
+  ],
+  "reportDigest": "sha256:6d5e25d76f091235e347d7670e43368f3c7185d3f2303056dea38b8e2108e141",
+  "reportVersion": "forgeops.ai/fds-compatibility/v1alpha1",
+  "resolverReady": false,
+  "sourceManifestDigest": "sha256:7f198684de98048afe3c2acaf0b2256b2d6dbd05c9b30720d4e48642887e60cc",
+  "sourcePackageId": "equipment-anomaly-diagnosis",
+  "sourcePackageVersion": "0.1.0",
+  "status": "COMPATIBLE_WITH_LIMITATIONS"
+}

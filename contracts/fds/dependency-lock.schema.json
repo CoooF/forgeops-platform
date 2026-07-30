@@ -1,0 +1,303 @@
+{
+  "$defs": {
+    "ComponentKind": {
+      "enum": [
+        "ONTOLOGY",
+        "TERMINOLOGY",
+        "KNOWLEDGE",
+        "AGENT_PROFILE",
+        "SKILL",
+        "MCP_SERVER",
+        "CONNECTOR",
+        "DATA_MAPPING",
+        "POLICY",
+        "EVALUATION",
+        "UI_EXTENSION"
+      ],
+      "title": "ComponentKind",
+      "type": "string"
+    },
+    "LockedEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "fromPackageId": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+          "title": "Frompackageid",
+          "type": "string"
+        },
+        "required": {
+          "title": "Required",
+          "type": "boolean"
+        },
+        "toPackageId": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+          "title": "Topackageid",
+          "type": "string"
+        },
+        "versionConstraint": {
+          "title": "Versionconstraint",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fromPackageId",
+        "toPackageId",
+        "versionConstraint",
+        "required"
+      ],
+      "title": "LockedEdge",
+      "type": "object"
+    },
+    "LockedNode": {
+      "additionalProperties": false,
+      "properties": {
+        "componentKind": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComponentKind"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "contentDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Contentdigest",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/PackageKind"
+        },
+        "packageId": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+          "title": "Packageid",
+          "type": "string"
+        },
+        "packageVersion": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "title": "Packageversion",
+          "type": "string"
+        },
+        "publisher": {
+          "title": "Publisher",
+          "type": "string"
+        },
+        "sourceRef": {
+          "title": "Sourceref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "packageId",
+        "packageVersion",
+        "kind",
+        "sourceRef",
+        "publisher",
+        "contentDigest"
+      ],
+      "title": "LockedNode",
+      "type": "object"
+    },
+    "PackageKind": {
+      "enum": [
+        "DOMAIN",
+        "ORGANIZATION_OVERLAY",
+        "SCENARIO",
+        "COMPONENT"
+      ],
+      "title": "PackageKind",
+      "type": "string"
+    },
+    "RequestedResourceBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "cpuMillis": {
+          "default": 0,
+          "maximum": 16000,
+          "minimum": 0,
+          "title": "Cpumillis",
+          "type": "integer"
+        },
+        "maxOutputBytes": {
+          "default": 0,
+          "maximum": 100000000,
+          "minimum": 0,
+          "title": "Maxoutputbytes",
+          "type": "integer"
+        },
+        "memoryMiB": {
+          "default": 0,
+          "maximum": 65536,
+          "minimum": 0,
+          "title": "Memorymib",
+          "type": "integer"
+        },
+        "networkAccess": {
+          "default": false,
+          "title": "Networkaccess",
+          "type": "boolean"
+        },
+        "secretRefs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Secretrefs",
+          "type": "array"
+        },
+        "timeoutSeconds": {
+          "default": 0,
+          "maximum": 86400,
+          "minimum": 0,
+          "title": "Timeoutseconds",
+          "type": "integer"
+        }
+      },
+      "title": "RequestedResourceBudget",
+      "type": "object"
+    },
+    "TargetVersions": {
+      "additionalProperties": false,
+      "properties": {
+        "fds": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "title": "Fds",
+          "type": "string"
+        },
+        "platform": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "title": "Platform",
+          "type": "string"
+        },
+        "scenarioSdk": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "title": "Scenariosdk",
+          "type": "string"
+        }
+      },
+      "required": [
+        "platform",
+        "fds",
+        "scenarioSdk"
+      ],
+      "title": "TargetVersions",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "acceptedDependencyPermissions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Accepteddependencypermissions",
+      "type": "array"
+    },
+    "authorizationEffect": {
+      "const": "NONE",
+      "default": "NONE",
+      "title": "Authorizationeffect",
+      "type": "string"
+    },
+    "edges": {
+      "items": {
+        "$ref": "#/$defs/LockedEdge"
+      },
+      "title": "Edges",
+      "type": "array"
+    },
+    "lockDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Lockdigest",
+      "type": "string"
+    },
+    "lockVersion": {
+      "const": "forgeops.ai/fds-lock/v1alpha1",
+      "title": "Lockversion",
+      "type": "string"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/LockedNode"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "permissionDelta": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Permissiondelta",
+      "type": "array"
+    },
+    "requestedPermissions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Requestedpermissions",
+      "type": "array"
+    },
+    "resourceBudget": {
+      "$ref": "#/$defs/RequestedResourceBudget"
+    },
+    "resourceBudgetDelta": {
+      "$ref": "#/$defs/RequestedResourceBudget"
+    },
+    "rootPackageId": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+      "title": "Rootpackageid",
+      "type": "string"
+    },
+    "rootPackageVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+      "title": "Rootpackageversion",
+      "type": "string"
+    },
+    "runtimeStateCreated": {
+      "const": false,
+      "default": false,
+      "title": "Runtimestatecreated",
+      "type": "boolean"
+    },
+    "skippedOptionalDependencies": {
+      "items": {
+        "maxLength": 128,
+        "minLength": 3,
+        "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+        "type": "string"
+      },
+      "title": "Skippedoptionaldependencies",
+      "type": "array"
+    },
+    "targetVersions": {
+      "$ref": "#/$defs/TargetVersions"
+    }
+  },
+  "required": [
+    "lockVersion",
+    "rootPackageId",
+    "rootPackageVersion",
+    "targetVersions",
+    "nodes",
+    "edges",
+    "skippedOptionalDependencies",
+    "requestedPermissions",
+    "permissionDelta",
+    "acceptedDependencyPermissions",
+    "resourceBudget",
+    "resourceBudgetDelta",
+    "lockDigest"
+  ],
+  "title": "DependencyLock",
+  "type": "object"
+}

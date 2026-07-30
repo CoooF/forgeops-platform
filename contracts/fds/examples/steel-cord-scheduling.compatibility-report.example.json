@@ -1,0 +1,20 @@
+{
+  "descriptorDigest": "sha256:be0c61a8270bb199a61bd2f81220a723aefbd0f3f98a32d81ff5056c50e351f3",
+  "historyMutated": false,
+  "issues": [],
+  "legacyScenarioSdk": ">=0.1.0,<0.2.0",
+  "limitations": [
+    "LEGACY_SOURCE_HAS_NO_DECLARED_FDS_DOMAIN_CAPABILITY",
+    "LEGACY_SOURCE_HAS_NO_VERIFIED_FDS_LICENSE",
+    "LEGACY_SOURCE_HAS_NO_FDS_DEPENDENCY_LOCK",
+    "LEGACY_SOURCE_HAS_NO_INPUT_OUTPUT_CONTENT_DIGEST",
+    "LOCAL_DIGEST_ATTESTATION_IS_NOT_ENTERPRISE_SIGNATURE_VERIFICATION"
+  ],
+  "reportDigest": "sha256:13bc6837c0e401b616937605df7659fbfd9cb5dceb18de4dfc17b70ad2b0c433",
+  "reportVersion": "forgeops.ai/fds-compatibility/v1alpha1",
+  "resolverReady": false,
+  "sourceManifestDigest": "sha256:71e5b8f96726e63ff9ddb654b1c7d4abf16c6331c56fce3723e6535d96b355bc",
+  "sourcePackageId": "steel-cord-scheduling",
+  "sourcePackageVersion": "0.1.0",
+  "status": "COMPATIBLE_WITH_LIMITATIONS"
+}

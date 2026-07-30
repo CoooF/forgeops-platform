@@ -1,0 +1,74 @@
+{
+  "apiVersion": "forgeops.ai/fds/v1alpha1",
+  "kind": "COMPONENT",
+  "packageId": "org.forgeops.component.core-semantics",
+  "packageVersion": "0.1.0",
+  "publisher": "FIRST_PARTY_LOCAL",
+  "namespaceOwner": "org.forgeops",
+  "license": {
+    "licenseId": "LOCAL-SYNTHETIC-ONLY",
+    "licenseRef": "local://licenses/synthetic-contract",
+    "redistributionAllowed": false,
+    "derivativeWorkAllowed": false,
+    "verified": false
+  },
+  "provenance": {
+    "sourceRef": "local://fds-fixtures/core-semantics",
+    "provenanceDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "synthetic": true
+  },
+  "visibility": "PUBLIC",
+  "trustTier": "FIRST_PARTY_LOCAL",
+  "contentClassification": "SYNTHETIC",
+  "publicReleaseApproved": false,
+  "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "artifact": {
+    "artifactRef": "local://fds-fixtures/core-semantics/artifact",
+    "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "signature": "local-sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "sbomRef": "local://fds-fixtures/no-executable-dependencies",
+    "executable": false,
+    "workerBoundary": null
+  },
+  "compatibility": {
+    "platform": ">=0.1.0,<0.2.0",
+    "fds": ">=0.1.0,<0.2.0",
+    "scenarioSdk": ">=0.1.0,<0.2.0"
+  },
+  "applicability": ["CONTRACT_ONLY", "DOMAIN_NEUTRAL"],
+  "prohibitedUses": ["BUSINESS_DECISION", "REAL_DATA"],
+  "supportStatus": "EXPERIMENTAL",
+  "permissions": [],
+  "resourceBudget": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "acceptedDependencyPermissions": [],
+  "dependencyResourceBudgetAllowance": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "lifecycle": {
+    "disablePolicy": "PRESERVE_HISTORY",
+    "uninstallPolicy": "PRESERVE_HISTORY",
+    "retainManifest": true,
+    "retainAudit": true,
+    "retainHistoricalRuns": true
+  },
+  "evaluationRefs": [],
+  "dependencies": [],
+  "conflicts": [],
+  "providedCapabilities": ["semantic.core"],
+  "providedNamespaces": ["org.forgeops.semantic.core"],
+  "componentKind": "ONTOLOGY",
+  "runtimeForm": "METADATA_ONLY",
+  "applicableDomainCapabilities": []
+}

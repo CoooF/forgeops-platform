@@ -1,0 +1,86 @@
+{
+  "apiVersion": "forgeops.ai/fds/v1alpha1",
+  "kind": "ORGANIZATION_OVERLAY",
+  "packageId": "org.forgeops.overlay.synthetic-shape",
+  "packageVersion": "0.1.0",
+  "publisher": "FIRST_PARTY_LOCAL",
+  "namespaceOwner": "org.forgeops",
+  "license": {
+    "licenseId": "LOCAL-SYNTHETIC-ONLY",
+    "licenseRef": "local://licenses/synthetic-contract",
+    "redistributionAllowed": false,
+    "derivativeWorkAllowed": false,
+    "verified": false
+  },
+  "provenance": {
+    "sourceRef": "local://fds-fixtures/synthetic-overlay",
+    "provenanceDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "synthetic": true
+  },
+  "visibility": "ORGANIZATION_PRIVATE",
+  "trustTier": "FIRST_PARTY_LOCAL",
+  "contentClassification": "SYNTHETIC",
+  "publicReleaseApproved": false,
+  "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "artifact": {
+    "artifactRef": "local://fds-fixtures/synthetic-overlay/artifact",
+    "contentDigest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "signature": "local-sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "sbomRef": "local://fds-fixtures/no-executable-dependencies",
+    "executable": false,
+    "workerBoundary": null
+  },
+  "compatibility": {
+    "platform": ">=0.1.0,<0.2.0",
+    "fds": ">=0.1.0,<0.2.0",
+    "scenarioSdk": ">=0.1.0,<0.2.0"
+  },
+  "applicability": ["CONTRACT_ONLY", "SYNTHETIC_ORGANIZATION"],
+  "prohibitedUses": ["PUBLIC_DISTRIBUTION", "REAL_DATA"],
+  "supportStatus": "EXPERIMENTAL",
+  "permissions": [],
+  "resourceBudget": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "acceptedDependencyPermissions": [],
+  "dependencyResourceBudgetAllowance": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "lifecycle": {
+    "disablePolicy": "PRESERVE_HISTORY",
+    "uninstallPolicy": "PRESERVE_HISTORY",
+    "retainManifest": true,
+    "retainAudit": true,
+    "retainHistoricalRuns": true
+  },
+  "evaluationRefs": [],
+  "dependencies": [
+    {
+      "package": {
+        "packageId": "org.forgeops.domain.steel-cord-shape",
+        "versionConstraint": "==0.1.0",
+        "expectedKind": "DOMAIN",
+        "expectedCapability": "domain.steel-cord-shape",
+        "contentDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      },
+      "required": true,
+      "expectedComponentKind": null
+    }
+  ],
+  "conflicts": [],
+  "providedCapabilities": ["overlay.synthetic-shape"],
+  "providedNamespaces": ["org.forgeops.overlay.synthetic-shape"],
+  "overridesDomainCapabilities": ["domain.steel-cord-shape"],
+  "allowedOverrideKinds": ["TERMINOLOGY", "DATA_MAPPING", "POLICY"],
+  "components": []
+}

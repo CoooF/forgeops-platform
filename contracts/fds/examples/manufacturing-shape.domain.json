@@ -1,0 +1,87 @@
+{
+  "apiVersion": "forgeops.ai/fds/v1alpha1",
+  "kind": "DOMAIN",
+  "packageId": "org.forgeops.domain.manufacturing-shape",
+  "packageVersion": "0.1.0",
+  "publisher": "FIRST_PARTY_LOCAL",
+  "namespaceOwner": "org.forgeops",
+  "license": {
+    "licenseId": "LOCAL-SYNTHETIC-ONLY",
+    "licenseRef": "local://licenses/synthetic-contract",
+    "redistributionAllowed": false,
+    "derivativeWorkAllowed": false,
+    "verified": false
+  },
+  "provenance": {
+    "sourceRef": "local://fds-fixtures/manufacturing-shape",
+    "provenanceDigest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "synthetic": true
+  },
+  "visibility": "PUBLIC",
+  "trustTier": "FIRST_PARTY_LOCAL",
+  "contentClassification": "SYNTHETIC",
+  "publicReleaseApproved": false,
+  "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "artifact": {
+    "artifactRef": "local://fds-fixtures/manufacturing-shape/artifact",
+    "contentDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "signature": "local-sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "sbomRef": "local://fds-fixtures/no-executable-dependencies",
+    "executable": false,
+    "workerBoundary": null
+  },
+  "compatibility": {
+    "platform": ">=0.1.0,<0.2.0",
+    "fds": ">=0.1.0,<0.2.0",
+    "scenarioSdk": ">=0.1.0,<0.2.0"
+  },
+  "applicability": ["CONTRACT_ONLY", "SYNTHETIC_SHAPE"],
+  "prohibitedUses": ["BUSINESS_DECISION", "REAL_DATA"],
+  "supportStatus": "EXPERIMENTAL",
+  "permissions": [],
+  "resourceBudget": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "acceptedDependencyPermissions": [],
+  "dependencyResourceBudgetAllowance": {
+    "cpuMillis": 0,
+    "memoryMiB": 0,
+    "timeoutSeconds": 0,
+    "maxOutputBytes": 0,
+    "networkAccess": false,
+    "secretRefs": []
+  },
+  "lifecycle": {
+    "disablePolicy": "PRESERVE_HISTORY",
+    "uninstallPolicy": "PRESERVE_HISTORY",
+    "retainManifest": true,
+    "retainAudit": true,
+    "retainHistoricalRuns": true
+  },
+  "evaluationRefs": [],
+  "dependencies": [],
+  "conflicts": [],
+  "providedCapabilities": ["domain.manufacturing-shape"],
+  "providedNamespaces": ["org.forgeops.domain.manufacturing-shape"],
+  "domainNamespace": "org.forgeops.domain.manufacturing-shape",
+  "extends": [],
+  "imports": [],
+  "components": [
+    {
+      "package": {
+        "packageId": "org.forgeops.component.core-semantics",
+        "versionConstraint": "==0.1.0",
+        "expectedKind": "COMPONENT",
+        "expectedCapability": "semantic.core",
+        "contentDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "componentKind": "ONTOLOGY"
+    }
+  ],
+  "competencyQuestionRefs": ["urn:forgeops:synthetic:manufacturing-shape:cq-1"]
+}

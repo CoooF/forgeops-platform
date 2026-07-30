@@ -1,6 +1,6 @@
 # ForgeOps Platform
 
-Independent EPIC-01/02 plus EPIC-02.5 engineering baseline for the ForgeOps Platform Core, Scenario SDK and generic project boundary. It is runnable with local synthetic fixtures and is not approved for enterprise, preproduction, production, real-data, business-UAT, scheduling, or anomaly-diagnosis use.
+Independent EPIC-01/02, EPIC-02.5, and EPIC-02.6A engineering baseline for the ForgeOps Platform Core, Scenario SDK, generic project boundary, and FDS v0.1 contract kernel. It is runnable with local synthetic fixtures and is not approved for enterprise, preproduction, production, real-data, business-UAT, scheduling, anomaly-diagnosis, FDS Registry, Project DomainLock, or semantic-runtime use.
 
 ## What is implemented
 
@@ -15,6 +15,11 @@ Independent EPIC-01/02 plus EPIC-02.5 engineering baseline for the ForgeOps Plat
 - a real-API React Project Center for hierarchy switching, project lifecycle, members, packages and scoped audit, with Playwright isolation/restart coverage;
 - locked Python/TypeScript workspaces, migrations, CI, SBOM/security/architecture checks;
 - two reference-package contract fixtures only—no scenario business logic.
+- strict domain-neutral FDS Domain/Organization Overlay/Scenario/Component contracts,
+  deterministic offline dependency locks, permission/budget deltas, and an explicit
+  non-mutating Scenario SDK 0.x compatibility adapter;
+- synthetic multi-layer and second-domain contract shapes only—no FDS Registry,
+  installation, Project DomainLock, semantic execution, knowledge indexing, or E2E claim.
 
 ## Explicit non-scope
 
@@ -61,8 +66,9 @@ make smoke
 make web-smoke
 make e2e
 make epic-02-5
+make epic-02-6a
 make sbom
 make evidence
 ```
 
-See `docs/acceptance/EPIC-02.5-evidence.md` and `docs/requirements/EPIC-02.5-identity-project-scope.md` for exact evidence, permission and status rules. `docs/runbooks/local-development.md` contains operating steps.
+See `docs/acceptance/EPIC-02.6A-evidence.md` and `docs/requirements/EPIC-02.6A-fds-contract-kernel.md` for the FDS contract-only boundary. `docs/runbooks/local-development.md` contains operating steps.

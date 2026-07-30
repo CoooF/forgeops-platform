@@ -1,4 +1,4 @@
-.PHONY: bootstrap format lint type test contract security architecture build artifact-architecture sbom migration-proof smoke web-smoke e2e epic-02-5 verify evidence
+.PHONY: bootstrap format lint type test contract security architecture build artifact-architecture sbom migration-proof smoke web-smoke e2e epic-02-5 epic-02-6a fds-contract verify evidence epic-02-6a-evidence
 
 bootstrap:
 	uv sync --frozen --all-groups
@@ -64,7 +64,18 @@ e2e:
 epic-02-5: migration-proof smoke web-smoke e2e
 	uv run pytest -q tests/unit/test_identity_policy.py tests/integration/test_identity_access_api.py
 
+fds-contract:
+	uv run python scripts/export_contracts.py
+	uv run python scripts/check_fds_determinism.py
+
+epic-02-6a: fds-contract
+	uv run pytest -q tests/contract/test_fds_contracts.py tests/contract/test_fds_legacy_adapter.py tests/unit/test_fds_resolver.py tests/architecture/test_fds_dependency_direction.py
+	uv run python scripts/check_architecture.py
+
 verify: format lint type test contract security architecture artifact-architecture
 
 evidence:
 	uv run python scripts/collect_evidence.py
+
+epic-02-6a-evidence:
+	uv run python scripts/collect_epic_02_6a_evidence.py

@@ -1,0 +1,202 @@
+{
+  "$defs": {
+    "CompatibilityStatus": {
+      "enum": [
+        "COMPATIBLE_WITH_LIMITATIONS",
+        "INCOMPATIBLE"
+      ],
+      "title": "CompatibilityStatus",
+      "type": "string"
+    },
+    "ErrorCode": {
+      "enum": [
+        "MANIFEST_INVALID",
+        "MANIFEST_MISSING_FIELD",
+        "UNKNOWN_PERMISSION",
+        "SDK_INCOMPATIBLE",
+        "SCHEMA_BREAKING_CHANGE",
+        "ARTIFACT_DIGEST_MISMATCH",
+        "ARTIFACT_SIGNATURE_INVALID",
+        "PACKAGE_VERSION_DIGEST_CONFLICT",
+        "ILLEGAL_STATE_TRANSITION",
+        "PERMISSION_GRANT_REQUIRED",
+        "BINDING_REQUIRED",
+        "PACKAGE_NOT_ENABLED",
+        "PACKAGE_DISABLED",
+        "PACKAGE_REVOKED",
+        "PACKAGE_UNINSTALLED",
+        "ENVIRONMENT_POLICY_VIOLATION",
+        "ADAPTER_UNAVAILABLE",
+        "INPUT_INVALID",
+        "DATA_INSUFFICIENT",
+        "UNAUTHORIZED",
+        "FORBIDDEN",
+        "RESOURCE_NOT_FOUND",
+        "CONCURRENCY_CONFLICT",
+        "IDEMPOTENCY_CONFLICT",
+        "SLUG_CONFLICT",
+        "LAST_OWNER_REQUIRED",
+        "PRINCIPAL_DISABLED",
+        "TIMEOUT",
+        "CANCELLED",
+        "RESOURCE_LIMIT_EXCEEDED",
+        "INTERNAL_FAILURE",
+        "ACTION_EXECUTION_DENIED",
+        "UNKNOWN_PACKAGE_KIND",
+        "UNKNOWN_COMPONENT_KIND",
+        "DEPENDENCY_MISSING",
+        "DEPENDENCY_VERSION_UNSATISFIED",
+        "DEPENDENCY_AMBIGUOUS",
+        "DEPENDENCY_CYCLE",
+        "DEPENDENCY_CONFLICT",
+        "DEPENDENCY_KIND_MISMATCH",
+        "DEPENDENCY_CAPABILITY_MISSING",
+        "DEPENDENCY_LAYER_VIOLATION",
+        "VISIBILITY_VIOLATION",
+        "PRIVATE_CONTENT_PUBLICATION_DENIED",
+        "NAMESPACE_CONFLICT",
+        "CAPABILITY_CONFLICT",
+        "SCENARIO_DOMAIN_CAPABILITY_MISSING",
+        "OVERLAY_TARGET_MISSING",
+        "PERMISSION_EXPANSION",
+        "RESOURCE_BUDGET_EXPANSION",
+        "PLATFORM_INCOMPATIBLE",
+        "FDS_INCOMPATIBLE",
+        "EXECUTABLE_BOUNDARY_REQUIRED",
+        "LOCK_DIGEST_MISMATCH",
+        "LOCK_CONTENT_MISMATCH"
+      ],
+      "title": "ErrorCode",
+      "type": "string"
+    },
+    "FdsValidationIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/ErrorCode"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "path": {
+          "default": "$",
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "FdsValidationIssue",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "descriptorDigest": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Descriptordigest"
+    },
+    "historyMutated": {
+      "const": false,
+      "default": false,
+      "title": "Historymutated",
+      "type": "boolean"
+    },
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/FdsValidationIssue"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "legacyScenarioSdk": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Legacyscenariosdk"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "reportDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Reportdigest",
+      "type": "string"
+    },
+    "reportVersion": {
+      "const": "forgeops.ai/fds-compatibility/v1alpha1",
+      "title": "Reportversion",
+      "type": "string"
+    },
+    "resolverReady": {
+      "const": false,
+      "default": false,
+      "title": "Resolverready",
+      "type": "boolean"
+    },
+    "sourceManifestDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Sourcemanifestdigest",
+      "type": "string"
+    },
+    "sourcePackageId": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Sourcepackageid"
+    },
+    "sourcePackageVersion": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Sourcepackageversion"
+    },
+    "status": {
+      "$ref": "#/$defs/CompatibilityStatus"
+    }
+  },
+  "required": [
+    "reportVersion",
+    "status",
+    "sourcePackageId",
+    "sourcePackageVersion",
+    "sourceManifestDigest",
+    "descriptorDigest",
+    "legacyScenarioSdk",
+    "limitations",
+    "issues",
+    "reportDigest"
+  ],
+  "title": "CompatibilityReport",
+  "type": "object"
+}

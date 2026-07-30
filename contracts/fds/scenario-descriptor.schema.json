@@ -1,0 +1,768 @@
+{
+  "$defs": {
+    "ArtifactAttestation": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactRef": {
+          "minLength": 1,
+          "title": "Artifactref",
+          "type": "string"
+        },
+        "contentDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Contentdigest",
+          "type": "string"
+        },
+        "executable": {
+          "default": false,
+          "title": "Executable",
+          "type": "boolean"
+        },
+        "sbomRef": {
+          "minLength": 1,
+          "title": "Sbomref",
+          "type": "string"
+        },
+        "signature": {
+          "pattern": "^local-sha256:[0-9a-f]{64}$",
+          "title": "Signature",
+          "type": "string"
+        },
+        "workerBoundary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workerboundary"
+        }
+      },
+      "required": [
+        "artifactRef",
+        "contentDigest",
+        "signature",
+        "sbomRef"
+      ],
+      "title": "ArtifactAttestation",
+      "type": "object"
+    },
+    "Compatibility": {
+      "additionalProperties": false,
+      "properties": {
+        "fds": {
+          "minLength": 1,
+          "title": "Fds",
+          "type": "string"
+        },
+        "platform": {
+          "minLength": 1,
+          "title": "Platform",
+          "type": "string"
+        },
+        "scenarioSdk": {
+          "minLength": 1,
+          "title": "Scenariosdk",
+          "type": "string"
+        }
+      },
+      "required": [
+        "platform",
+        "fds",
+        "scenarioSdk"
+      ],
+      "title": "Compatibility",
+      "type": "object"
+    },
+    "ComponentKind": {
+      "enum": [
+        "ONTOLOGY",
+        "TERMINOLOGY",
+        "KNOWLEDGE",
+        "AGENT_PROFILE",
+        "SKILL",
+        "MCP_SERVER",
+        "CONNECTOR",
+        "DATA_MAPPING",
+        "POLICY",
+        "EVALUATION",
+        "UI_EXTENSION"
+      ],
+      "title": "ComponentKind",
+      "type": "string"
+    },
+    "ComponentRef": {
+      "additionalProperties": false,
+      "properties": {
+        "componentKind": {
+          "$ref": "#/$defs/ComponentKind"
+        },
+        "package": {
+          "$ref": "#/$defs/PackageRef"
+        }
+      },
+      "required": [
+        "package",
+        "componentKind"
+      ],
+      "title": "ComponentRef",
+      "type": "object"
+    },
+    "ConflictDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Capability"
+        },
+        "packageId": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 3,
+              "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Packageid"
+        },
+        "versionConstraint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Versionconstraint"
+        }
+      },
+      "title": "ConflictDeclaration",
+      "type": "object"
+    },
+    "ContentClassification": {
+      "enum": [
+        "SYNTHETIC",
+        "PUBLIC",
+        "ORGANIZATION_PRIVATE"
+      ],
+      "title": "ContentClassification",
+      "type": "string"
+    },
+    "DependencyRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "expectedComponentKind": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ComponentKind"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "package": {
+          "$ref": "#/$defs/PackageRef"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "package"
+      ],
+      "title": "DependencyRequirement",
+      "type": "object"
+    },
+    "LegacyManifestReference": {
+      "additionalProperties": false,
+      "properties": {
+        "artifactDigest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifactdigest"
+        },
+        "category": {
+          "title": "Category",
+          "type": "string"
+        },
+        "contractId": {
+          "title": "Contractid",
+          "type": "string"
+        },
+        "schemaRef": {
+          "title": "Schemaref",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "category",
+        "contractId",
+        "version",
+        "schemaRef"
+      ],
+      "title": "LegacyManifestReference",
+      "type": "object"
+    },
+    "LegacyScenarioSource": {
+      "additionalProperties": false,
+      "properties": {
+        "compatibilityLimitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Compatibilitylimitations",
+          "type": "array"
+        },
+        "manifestDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Manifestdigest",
+          "type": "string"
+        },
+        "manifestVersion": {
+          "title": "Manifestversion",
+          "type": "string"
+        },
+        "references": {
+          "items": {
+            "$ref": "#/$defs/LegacyManifestReference"
+          },
+          "title": "References",
+          "type": "array"
+        },
+        "scenarioSdk": {
+          "title": "Scenariosdk",
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifestVersion",
+        "scenarioSdk",
+        "manifestDigest",
+        "references",
+        "compatibilityLimitations"
+      ],
+      "title": "LegacyScenarioSource",
+      "type": "object"
+    },
+    "LicenseMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "derivativeWorkAllowed": {
+          "default": false,
+          "title": "Derivativeworkallowed",
+          "type": "boolean"
+        },
+        "licenseId": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Licenseid",
+          "type": "string"
+        },
+        "licenseRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Licenseref"
+        },
+        "redistributionAllowed": {
+          "default": false,
+          "title": "Redistributionallowed",
+          "type": "boolean"
+        },
+        "verified": {
+          "default": false,
+          "title": "Verified",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "licenseId"
+      ],
+      "title": "LicenseMetadata",
+      "type": "object"
+    },
+    "LifecyclePolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "disablePolicy": {
+          "const": "PRESERVE_HISTORY",
+          "default": "PRESERVE_HISTORY",
+          "title": "Disablepolicy",
+          "type": "string"
+        },
+        "retainAudit": {
+          "const": true,
+          "default": true,
+          "title": "Retainaudit",
+          "type": "boolean"
+        },
+        "retainHistoricalRuns": {
+          "const": true,
+          "default": true,
+          "title": "Retainhistoricalruns",
+          "type": "boolean"
+        },
+        "retainManifest": {
+          "const": true,
+          "default": true,
+          "title": "Retainmanifest",
+          "type": "boolean"
+        },
+        "uninstallPolicy": {
+          "const": "PRESERVE_HISTORY",
+          "default": "PRESERVE_HISTORY",
+          "title": "Uninstallpolicy",
+          "type": "string"
+        }
+      },
+      "title": "LifecyclePolicy",
+      "type": "object"
+    },
+    "PackageKind": {
+      "enum": [
+        "DOMAIN",
+        "ORGANIZATION_OVERLAY",
+        "SCENARIO",
+        "COMPONENT"
+      ],
+      "title": "PackageKind",
+      "type": "string"
+    },
+    "PackageRef": {
+      "additionalProperties": false,
+      "properties": {
+        "contentDigest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Contentdigest"
+        },
+        "expectedCapability": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expectedcapability"
+        },
+        "expectedKind": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PackageKind"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "packageId": {
+          "maxLength": 128,
+          "minLength": 3,
+          "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+          "title": "Packageid",
+          "type": "string"
+        },
+        "versionConstraint": {
+          "minLength": 1,
+          "title": "Versionconstraint",
+          "type": "string"
+        }
+      },
+      "required": [
+        "packageId",
+        "versionConstraint"
+      ],
+      "title": "PackageRef",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "provenanceDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Provenancedigest",
+          "type": "string"
+        },
+        "sourceRef": {
+          "minLength": 1,
+          "title": "Sourceref",
+          "type": "string"
+        },
+        "synthetic": {
+          "const": true,
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "sourceRef",
+        "provenanceDigest",
+        "synthetic"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "RequestedResourceBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "cpuMillis": {
+          "default": 0,
+          "maximum": 16000,
+          "minimum": 0,
+          "title": "Cpumillis",
+          "type": "integer"
+        },
+        "maxOutputBytes": {
+          "default": 0,
+          "maximum": 100000000,
+          "minimum": 0,
+          "title": "Maxoutputbytes",
+          "type": "integer"
+        },
+        "memoryMiB": {
+          "default": 0,
+          "maximum": 65536,
+          "minimum": 0,
+          "title": "Memorymib",
+          "type": "integer"
+        },
+        "networkAccess": {
+          "default": false,
+          "title": "Networkaccess",
+          "type": "boolean"
+        },
+        "secretRefs": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Secretrefs",
+          "type": "array"
+        },
+        "timeoutSeconds": {
+          "default": 0,
+          "maximum": 86400,
+          "minimum": 0,
+          "title": "Timeoutseconds",
+          "type": "integer"
+        }
+      },
+      "title": "RequestedResourceBudget",
+      "type": "object"
+    },
+    "SupportStatus": {
+      "enum": [
+        "EXPERIMENTAL",
+        "SUPPORTED",
+        "DEPRECATED",
+        "WITHDRAWN"
+      ],
+      "title": "SupportStatus",
+      "type": "string"
+    },
+    "TrustTier": {
+      "enum": [
+        "FIRST_PARTY_LOCAL",
+        "ENTERPRISE_APPROVED",
+        "THIRD_PARTY_SIGNED"
+      ],
+      "title": "TrustTier",
+      "type": "string"
+    },
+    "Visibility": {
+      "enum": [
+        "PUBLIC",
+        "PARTNER",
+        "ORGANIZATION_PRIVATE",
+        "PRIVATE"
+      ],
+      "title": "Visibility",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "acceptedDependencyPermissions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Accepteddependencypermissions",
+      "type": "array"
+    },
+    "apiVersion": {
+      "const": "forgeops.ai/fds/v1alpha1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "applicability": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Applicability",
+      "type": "array"
+    },
+    "artifact": {
+      "$ref": "#/$defs/ArtifactAttestation"
+    },
+    "compatibility": {
+      "$ref": "#/$defs/Compatibility"
+    },
+    "components": {
+      "items": {
+        "$ref": "#/$defs/ComponentRef"
+      },
+      "title": "Components",
+      "type": "array"
+    },
+    "conflicts": {
+      "items": {
+        "$ref": "#/$defs/ConflictDeclaration"
+      },
+      "title": "Conflicts",
+      "type": "array"
+    },
+    "contentClassification": {
+      "$ref": "#/$defs/ContentClassification"
+    },
+    "contentDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Contentdigest",
+      "type": "string"
+    },
+    "dependencies": {
+      "items": {
+        "$ref": "#/$defs/DependencyRequirement"
+      },
+      "title": "Dependencies",
+      "type": "array"
+    },
+    "dependencyResourceBudgetAllowance": {
+      "$ref": "#/$defs/RequestedResourceBudget"
+    },
+    "evaluationRefs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evaluationrefs",
+      "type": "array"
+    },
+    "inputContractDigest": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Inputcontractdigest"
+    },
+    "kind": {
+      "const": "SCENARIO",
+      "title": "Kind",
+      "type": "string"
+    },
+    "legacySource": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LegacyScenarioSource"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "license": {
+      "$ref": "#/$defs/LicenseMetadata"
+    },
+    "lifecycle": {
+      "$ref": "#/$defs/LifecyclePolicy"
+    },
+    "namespaceOwner": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Namespaceowner",
+      "type": "string"
+    },
+    "outputContractDigest": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Outputcontractdigest"
+    },
+    "packageId": {
+      "maxLength": 128,
+      "minLength": 3,
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+      "title": "Packageid",
+      "type": "string"
+    },
+    "packageVersion": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+      "title": "Packageversion",
+      "type": "string"
+    },
+    "permissions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Permissions",
+      "type": "array"
+    },
+    "prohibitedUses": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Prohibiteduses",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "providedCapabilities": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+        "type": "string"
+      },
+      "title": "Providedcapabilities",
+      "type": "array"
+    },
+    "providedNamespaces": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+        "type": "string"
+      },
+      "title": "Providednamespaces",
+      "type": "array"
+    },
+    "publicReleaseApproved": {
+      "default": false,
+      "title": "Publicreleaseapproved",
+      "type": "boolean"
+    },
+    "publisher": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Publisher",
+      "type": "string"
+    },
+    "requiredDomainCapabilities": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$",
+        "type": "string"
+      },
+      "title": "Requireddomaincapabilities",
+      "type": "array"
+    },
+    "resourceBudget": {
+      "$ref": "#/$defs/RequestedResourceBudget"
+    },
+    "supportStatus": {
+      "$ref": "#/$defs/SupportStatus"
+    },
+    "trustTier": {
+      "$ref": "#/$defs/TrustTier"
+    },
+    "visibility": {
+      "$ref": "#/$defs/Visibility"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "packageId",
+    "packageVersion",
+    "publisher",
+    "namespaceOwner",
+    "license",
+    "provenance",
+    "visibility",
+    "trustTier",
+    "contentClassification",
+    "contentDigest",
+    "artifact",
+    "compatibility",
+    "applicability",
+    "prohibitedUses",
+    "supportStatus",
+    "permissions",
+    "resourceBudget",
+    "acceptedDependencyPermissions",
+    "dependencyResourceBudgetAllowance",
+    "lifecycle",
+    "evaluationRefs",
+    "dependencies",
+    "conflicts",
+    "providedCapabilities",
+    "providedNamespaces",
+    "requiredDomainCapabilities",
+    "components",
+    "inputContractDigest",
+    "outputContractDigest"
+  ],
+  "title": "ScenarioDescriptor",
+  "type": "object"
+}
