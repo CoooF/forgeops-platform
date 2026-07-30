@@ -72,3 +72,5 @@ make evidence
 ```
 
 See `docs/acceptance/EPIC-02.6A-evidence.md` and `docs/requirements/EPIC-02.6A-fds-contract-kernel.md` for the FDS contract-only boundary. `docs/runbooks/local-development.md` contains operating steps.
+The non-code owner walkthrough is in `docs/acceptance/EPIC-02.6A-owner-summary.md` and runs
+with `make fds-owner-demo`.

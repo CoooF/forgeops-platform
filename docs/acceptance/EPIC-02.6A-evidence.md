@@ -28,6 +28,7 @@ E2E evidence.
 | Baseline | `git status --short --branch`; `git log --oneline --decorate -5`; `make verify` | HEAD `806978e`, clean tree; 214 Python/17 contract/4 Web tests and all prior gates passed before changes |
 | FDS focused gate | `make epic-02-6a` plus final focused rerun | 40 FDS contract, dependency, layer, permission, lock, legacy, security, XDOM-contract and architecture cases passed |
 | TEST-FDS-CONTRACT-001 / LOCK-001 | `scripts/check_fds_determinism.py` | 17 FDS Schema/example/report/lock JSON files had identical SHA-256 across two consecutive exports |
+| Owner walkthrough | `make fds-owner-demo` | one legal graph emitted the fixed lock digest and one graph with a missing required package emitted stable `DEPENDENCY_MISSING` with no partial lock |
 | Full regression | `make verify` | 254 Python tests passed with 89.78% combined line/branch coverage; 41 explicit contract tests and 4 Vitest cases passed; format/lint/type/security/build gates passed |
 | TEST-ARCH-003 | source and wheel architecture gates in `make verify` | 32 Platform/SDK Python and 6 Web source files scanned; FDS/reference-domain/framework violations = 0; wheel violations = 0 |
 | TEST-OPS-API-SMOKE-001 | `make smoke` | independent API double-start preserved the existing Scenario installation and Project |
