@@ -74,8 +74,10 @@ OIDC/SCIM、审计原子性、许可/分类/来源的人员审批、恶意文件
 
 最终门禁通过 410 个 Python 测试（其中 41 个显式 contract）、6 个 Vitest、3 个真实
 Playwright E2E；组合行/分支覆盖率 87.18%。02.6C 专项 290、02.6A 回归 40、02.6B 回归 64
-均通过。源码提交、机器证据提交与 SHA-256 见 [EPIC-02.6C Evidence](EPIC-02.6C-evidence.md)
-的 Evidence binding；这些数字不包含企业、真实数据或业务验收。
+均通过。验证源码提交为 `50853d34f245ee3152c111121c765dd6ac8459d4`，初始机器证据提交为
+`5591dc59fd159df0a4f8e47214f0ff3d0dc504a5`，最终机器证据 SHA-256 为
+`68711aaf5f9602aacf4083da9e7571a2e1c9520c075941c1e4408eed3f0429e6`。详情见
+[EPIC-02.6C Evidence](EPIC-02.6C-evidence.md)；这些数字不包含企业、真实数据或业务验收。
 
 ## 11. 是否具备进入 EPIC-02.7 产品设计基线的条件
 

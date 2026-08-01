@@ -37,9 +37,10 @@ real browser state and architecture bans. Final counts and hashes are recorded o
 
 ## Evidence binding
 
-- Verified source commit: `RECORDED_AFTER_FINAL_GATES`.
-- Initial machine-evidence artifact commit: `RECORDED_AFTER_INITIAL_EVIDENCE_COMMIT`.
-- Machine evidence SHA-256: `RECORDED_AFTER_EVIDENCE_BINDING`.
+- Verified source commit: `50853d34f245ee3152c111121c765dd6ac8459d4`.
+- Initial machine-evidence artifact commit: `5591dc59fd159df0a4f8e47214f0ff3d0dc504a5`.
+- Machine evidence SHA-256:
+  `68711aaf5f9602aacf4083da9e7571a2e1c9520c075941c1e4408eed3f0429e6`.
 
 The collector requires a clean committed source tree and binds dependency locks, OpenAPI and
 semantic/FDS contracts, neutral fixtures, migration, requirement/ADR, owner demo/test/browser
