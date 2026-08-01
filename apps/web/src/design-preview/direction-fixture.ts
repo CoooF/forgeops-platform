@@ -23,20 +23,20 @@ export const directions: Array<{
   {
     id: "precision",
     code: "A",
-    name: "精密工业工作台",
-    thesis: "工程图式秩序 · 高密度长时操作",
+    name: "静默控制台",
+    thesis: "暖白工程工具 · 克制、清晰、适合长时工作",
   },
   {
     id: "semantic",
     code: "B",
-    name: "领域建模台",
-    thesis: "语义层级可见 · 关系与端口优先",
+    name: "Agent 协同中枢",
+    thesis: "深色智能空间 · 任务、对话与证据成为中心",
   },
   {
     id: "investigation",
     code: "C",
-    name: "运行推演台",
-    thesis: "实际路径突出 · 风险与证据优先",
+    name: "领域蓝图",
+    thesis: "瑞士式系统地图 · 高对比、模块化、关系优先",
   },
 ];
 

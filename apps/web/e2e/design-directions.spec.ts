@@ -4,9 +4,9 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 
 const directions = [
-  { id: "precision", code: "A", name: "精密工业工作台" },
-  { id: "semantic", code: "B", name: "领域建模台" },
-  { id: "investigation", code: "C", name: "运行推演台" },
+  { id: "precision", code: "A", name: "静默控制台" },
+  { id: "semantic", code: "B", name: "Agent 协同中枢" },
+  { id: "investigation", code: "C", name: "领域蓝图" },
 ] as const;
 
 test("EPIC-02.7 directions are comparable, bounded, and fit 1440x900", async ({
@@ -45,10 +45,10 @@ test("EPIC-02.7 directions are comparable, bounded, and fit 1440x900", async ({
     await expect(
       page.getByText("主 Agent 中心", { exact: true }),
     ).toBeVisible();
-    await page
+    const dataModuleTrigger = page
       .locator(".global-product-nav")
-      .getByRole("button", { name: /数据与数据库/ })
-      .click();
+      .getByRole("button", { name: /数据与数据库/ });
+    await dataModuleTrigger.click();
     await expect(
       page.getByRole("dialog", { name: "数据与数据库模块预览" }),
     ).toContainText("数据源与数据库实例");
@@ -64,7 +64,14 @@ test("EPIC-02.7 directions are comparable, bounded, and fit 1440x900", async ({
         fullPage: false,
       });
     }
-    await page.getByRole("button", { name: "关闭模块预览" }).click();
+    await expect(
+      page.getByRole("button", { name: "关闭模块预览" }),
+    ).toBeFocused();
+    await page.keyboard.press("Escape");
+    await expect(
+      page.getByRole("dialog", { name: "数据与数据库模块预览" }),
+    ).toHaveCount(0);
+    await expect(dataModuleTrigger).toBeFocused();
     await page
       .locator(".global-product-nav")
       .getByRole("button", { name: /主 Agent 中心/ })
@@ -87,6 +94,10 @@ test("EPIC-02.7 directions are comparable, bounded, and fit 1440x900", async ({
       .getByRole("button", { name: /工作流/ })
       .click();
     await expect(page.locator(".studio-node")).toHaveCount(8);
+    await expect(page.locator(".node-ports")).toHaveCount(8);
+    await expect(page.getByLabel("节点与能力库")).toBeVisible();
+    await expect(page.getByLabel("节点检查器")).toBeVisible();
+    await expect(page.getByLabel("运行与调试控制台")).toBeVisible();
     await expect(page.getByText("主 Agent", { exact: true })).toBeVisible();
     await expect(page.getByText("失败出口尚未连接")).toBeVisible();
     await page.locator(".main-agent-entry").click();
@@ -122,4 +133,25 @@ test("EPIC-02.7 directions are comparable, bounded, and fit 1440x900", async ({
   }
   expect(pageErrors).toEqual([]);
   expect(apiRequests).toEqual([]);
+});
+
+test("EPIC-02.7 directions reflow without horizontal scroll and respect reduced motion", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.setViewportSize({ width: 375, height: 812 });
+
+  for (const direction of directions) {
+    await page.goto(`/design-preview/directions?direction=${direction.id}`);
+    await expect(page.getByTestId(`direction-${direction.id}`)).toBeVisible();
+    const viewportState = await page.evaluate(() => ({
+      overflow:
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
+      reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)")
+        .matches,
+    }));
+    expect(viewportState.overflow).toBe(0);
+    expect(viewportState.reducedMotion).toBe(true);
+  }
 });

@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
-  capabilityGroups,
   directions,
   nodes,
   productModules,
@@ -17,6 +16,27 @@ const directionIds = new Set<DirectionId>([
   "investigation",
 ]);
 
+const fallbackNode: StudioNode = {
+  id: "agent",
+  kind: "执行 Agent",
+  title: "协调建议 Agent",
+  subtitle: "模型 / 工具 / 预算待配置",
+  x: 0,
+  y: 0,
+  inputs: ["受控上下文"],
+  outputs: ["结构化建议"],
+  control: ["成功", "待人工", "失败"],
+  status: "draft",
+  layer: "reason",
+};
+
+const fallbackDirection = {
+  id: "precision" as const,
+  code: "A",
+  name: "静默控制台",
+  thesis: "暖白工程工具 · 克制、清晰、适合长时工作",
+};
+
 function initialDirection(): DirectionId {
   const value = new URLSearchParams(window.location.search).get("direction");
   return directionIds.has(value as DirectionId)
@@ -26,63 +46,85 @@ function initialDirection(): DirectionId {
 
 export function DesignDirections() {
   const [direction, setDirection] = useState<DirectionId>(initialDirection);
-  const [selectedNodeId, setSelectedNodeId] = useState("agent");
-  const [consoleTab, setConsoleTab] = useState("端口发射");
-  const [agentOpen, setAgentOpen] = useState(false);
   const [productModuleId, setProductModuleId] =
     useState<ProductModuleId>("workflows");
+  const [selectedNodeId, setSelectedNodeId] = useState("agent");
   const [modulePreviewOpen, setModulePreviewOpen] = useState(false);
-  const selectedNode = useMemo(
-    () => nodes.find((node) => node.id === selectedNodeId) ?? nodes[0],
-    [selectedNodeId],
-  );
-  const current = directions.find((item) => item.id === direction) ?? {
-    id: "precision" as const,
-    code: "A",
-    name: "精密工业工作台",
-    thesis: "工程图式秩序 · 高密度长时操作",
-  };
-  const libraryCopy = {
-    precision: ["节点与能力", "当前 DomainLock 可见", "搜索节点、端口或能力"],
-    semantic: ["领域结构树", "按语义层级与依赖组织", "搜索概念、关系或能力"],
-    investigation: [
-      "路径与调查工具",
-      "按风险、证据和出口筛选",
-      "搜索路径、证据或节点",
-    ],
-  }[direction];
-  const inspectorTitle = {
-    precision: "节点检查器",
-    semantic: "语义属性册",
-    investigation: "节点调查卷宗",
-  }[direction];
-  const selectedProductModule =
+  const [agentOpen, setAgentOpen] = useState(false);
+  const moduleCloseRef = useRef<HTMLButtonElement>(null);
+  const moduleTriggerRef = useRef<HTMLButtonElement | null>(null);
+
+  const selectedModule =
     productModules.find((item) => item.id === productModuleId) ??
     productModules[1];
+  const selectedNode =
+    nodes.find((item) => item.id === selectedNodeId) ?? fallbackNode;
+  const currentDirection =
+    directions.find((item) => item.id === direction) ?? fallbackDirection;
+
+  useEffect(() => {
+    if (!modulePreviewOpen) return;
+    moduleCloseRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setModulePreviewOpen(false);
+        moduleTriggerRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [modulePreviewOpen]);
 
   function chooseDirection(next: DirectionId) {
     setDirection(next);
+    setModulePreviewOpen(false);
+    setAgentOpen(false);
     const url = new URL(window.location.href);
     url.searchParams.set("direction", next);
     window.history.replaceState({}, "", url);
   }
 
+  function chooseModule(id: ProductModuleId, trigger: HTMLButtonElement) {
+    setProductModuleId(id);
+    moduleTriggerRef.current = trigger;
+    setModulePreviewOpen(id !== "workflows");
+  }
+
+  function closeModulePreview() {
+    setModulePreviewOpen(false);
+    moduleTriggerRef.current?.focus();
+  }
+
+  const workspaceProps: WorkspaceProps = {
+    selectedNode,
+    selectedNodeId,
+    onSelectNode: setSelectedNodeId,
+    productModuleId,
+    onChooseModule: chooseModule,
+    onToggleAgent: () => {
+      setAgentOpen((open) => !open);
+    },
+  };
+
   return (
-    <main className={`direction-preview direction-${direction}`}>
+    <main className={`preview-root direction-${direction}`}>
+      <a className="skip-link" href="#design-main">
+        跳到方向主体
+      </a>
       <header className="preview-gate" data-testid="prototype-boundary">
-        <div>
-          <strong>视觉方向预览</strong>
-          <span>EPIC-02.7 · 等待产品负责人选择</span>
+        <div className="gate-title">
+          <strong>EPIC—02.7</strong>
+          <span>第三轮视觉方向 · 等待产品负责人选择</span>
         </div>
         <div className="gate-boundaries">
           <span>本地合成</span>
           <span>交互原型</span>
           <span>未接 Workflow / Run / Agent 后端</span>
-          <span>未运行 · 建议未执行</span>
+          <b>未运行 · 建议未执行</b>
         </div>
-        <a href="/" title="返回现有真实 API 页面">
-          真实治理页面 ↗
-        </a>
+        <a href="/">返回真实 API 页面</a>
       </header>
 
       <nav className="direction-switcher" aria-label="视觉方向">
@@ -95,512 +137,654 @@ export function DesignDirections() {
               chooseDirection(item.id);
             }}
           >
-            <b>{item.code}</b>
-            <span>{item.name}</span>
-            <small>{item.thesis}</small>
+            <span>{item.code}</span>
+            <div>
+              <strong>{item.name}</strong>
+              <small>{item.thesis}</small>
+            </div>
           </button>
         ))}
       </nav>
 
-      <section className="studio-shell" data-testid={`direction-${direction}`}>
-        <header className="studio-context">
-          <div className="studio-brand">
-            <span className="forge-mark">F</span>
-            <b>ForgeOps</b>
-            <small>工作流工作室</small>
-          </div>
-          <nav className="context-crumb" aria-label="项目上下文">
-            <span>合成协同实验室</span>
-            <i>/</i>
-            <strong>订单与资源协调</strong>
-            <i>/</i>
-            <span>协调建议流程</span>
-          </nav>
-          <div className="lock-context">
-            <span>领域锁</span>
-            <strong>协调基础域 @ 0.2</strong>
-            <em>状态正常</em>
-          </div>
-          <div className="draft-state">
-            <span>草稿 07</span>
-            <small>仅浏览器内存</small>
-          </div>
-          <div className="studio-actions">
-            <button className="text-action">原型校验</button>
-            <button className="run-action" disabled title="未接 Run 后端">
-              运行（未接后端）
-            </button>
-          </div>
-        </header>
+      <section
+        className="direction-stage"
+        data-testid={`direction-${direction}`}
+        aria-label={`${currentDirection.name}视觉方向`}
+      >
+        {direction === "precision" && <QuietControl {...workspaceProps} />}
+        {direction === "semantic" && <AgenticOrbit {...workspaceProps} />}
+        {direction === "investigation" && (
+          <LivingBlueprint {...workspaceProps} />
+        )}
+      </section>
 
-        <nav className="global-product-nav" aria-label="ForgeOps 产品模块">
-          <div className="product-nav-head">
-            <span>产品</span>
-            <small>LOCAL</small>
-          </div>
-          {productModules.map((item) => (
-            <button
-              key={item.id}
-              className={productModuleId === item.id ? "active" : ""}
-              aria-pressed={productModuleId === item.id}
-              onClick={() => {
-                setProductModuleId(item.id);
-                setModulePreviewOpen(item.id !== "workflows");
-              }}
-            >
-              <i>{item.icon}</i>
-              <span>{item.name}</span>
-              <small>{item.short}</small>
-              <em
-                className={
-                  item.source === "真实 API"
-                    ? "source-real"
-                    : item.source === "混合边界"
-                      ? "source-mixed"
-                      : "source-prototype"
-                }
-              >
-                {item.source}
-              </em>
-            </button>
-          ))}
-        </nav>
-
-        <aside className="activity-rail" aria-label="工作室工具">
-          {["库", "纲", "史", "版", "搜"].map((item, index) => (
-            <button
-              key={item}
-              className={index === 0 ? "active" : ""}
-              title={item}
-            >
-              {item}
-            </button>
-          ))}
-          <span />
-          <button title="设置">设</button>
-        </aside>
-
-        <aside className="capability-library">
-          <div className="panel-title">
-            <div>
-              <strong>{libraryCopy[0]}</strong>
-              <small>{libraryCopy[1]}</small>
-            </div>
-            <button aria-label="关闭节点库">‹</button>
-          </div>
-          <label className="capability-search">
-            <span>⌕</span>
-            <input aria-label="搜索节点" placeholder={libraryCopy[2]} />
-            <kbd>⌘ K</kbd>
-          </label>
-          <div className="capability-groups">
-            {capabilityGroups.map((group) => (
-              <section key={group.name}>
-                <h3>{group.name}</h3>
-                {group.items.map((item, index) => (
-                  <button key={item}>
-                    <i className={`capability-icon icon-${String(index)}`} />
-                    <span>{item}</span>
-                    <small>{index % 2 === 0 ? "已安装" : "可用"}</small>
-                    <b>＋</b>
-                  </button>
-                ))}
-              </section>
-            ))}
-          </div>
-        </aside>
-
-        <section className="canvas-area" aria-label={`${current.name}画布`}>
-          <div className="canvas-meta">
-            <div>
-              <b>{current.code}</b>
-              <span>{current.name}</span>
-              <small>{current.thesis}</small>
-            </div>
-            <div className="canvas-tools">
-              <button title="撤销">↶</button>
-              <button title="重做">↷</button>
-              <i />
-              <button title="缩小">−</button>
-              <span>82%</span>
-              <button title="放大">＋</button>
-              <button title="适应视图">适应</button>
-            </div>
-          </div>
-          {direction === "semantic" && (
-            <div className="semantic-lanes" aria-hidden="true">
-              <span>01 · 事件与数据</span>
-              <span>02 · 语义与上下文</span>
-              <span>03 · 推演与决策</span>
-              <span>04 · 评审与结果</span>
-            </div>
-          )}
-          {direction === "investigation" && (
-            <div className="trace-ruler" aria-label="合成运行轨迹预览">
-              <span>路径预览</span>
-              <b>未运行</b>
-              <i />
-              <small>这里仅演示未来 Evidence / Trace 层级</small>
-            </div>
-          )}
-          <EdgeLayer direction={direction} />
-          <div className="nodes-layer">
-            {nodes.map((node) => (
-              <NodeCard
-                key={node.id}
-                node={node}
-                direction={direction}
-                selected={node.id === selectedNodeId}
-                onSelect={setSelectedNodeId}
-              />
-            ))}
-          </div>
-          <div className="canvas-legend">
-            <span>
-              <i className="data-port" />
-              DATA 数据端口
-            </span>
-            <span>
-              <i className="control-port" />
-              CONTROL 控制端口
-            </span>
-            <span>
-              <i className="edge-sample" />
-              仅展示预期连线 · 未执行
-            </span>
-          </div>
-        </section>
-
-        <aside className="inspector-panel">
-          <div className="panel-title inspector-title">
-            <div>
-              <small>{inspectorTitle}</small>
-              <strong>{selectedNode?.title}</strong>
-            </div>
-            <button aria-label="关闭检查器">×</button>
-          </div>
-          <nav className="inspector-tabs">
-            <button className="active">配置</button>
-            <button>端口</button>
-            <button>权限</button>
-            <button>测试</button>
-          </nav>
-          <div className="inspector-body">
-            <div className="source-callout">
-              <span>原型配置</span>
-              <strong>未写入 Workflow 后端</strong>
-            </div>
-            <label>
-              节点名称
-              <input value={selectedNode?.title ?? ""} readOnly />
-            </label>
-            <label>
-              能力版本
-              <select value="locked" disabled>
-                <option value="locked">当前领域锁固定版本</option>
-              </select>
-            </label>
-            <section className="port-inspection">
-              <h3>类型化端口</h3>
-              <div>
-                <i className="data-port" />
-                <span>结构化建议</span>
-                <code>DATA · OUTPUT</code>
-              </div>
-              <div>
-                <i className="data-port" />
-                <span>依据引用</span>
-                <code>DATA · OUTPUT</code>
-              </div>
-              <div>
-                <i className="control-port" />
-                <span>待人工</span>
-                <code>CONTROL</code>
-              </div>
-              <div className="port-warning">
-                <i>!</i>
-                <span>失败出口尚未连接</span>
-                <b>阻断发布</b>
-              </div>
-            </section>
-            <section className="inspector-facts">
-              <div>
-                <span>数据分类</span>
-                <strong>合成内部数据</strong>
-              </div>
-              <div>
-                <span>模型调用</span>
-                <strong>未配置 / 未调用</strong>
-              </div>
-              <div>
-                <span>工具权限</span>
-                <strong>无外部写权限</strong>
-              </div>
-              <div>
-                <span>预算</span>
-                <strong>等待定义</strong>
-              </div>
-            </section>
-          </div>
-        </aside>
-
-        <section className="debug-console">
-          <header>
-            <div className="debug-tabs">
-              {[
-                "运行",
-                "端口发射",
-                "实际分支",
-                "Evidence",
-                "Trace",
-                "错误",
-                "结果",
-              ].map((tab) => (
-                <button
-                  key={tab}
-                  className={consoleTab === tab ? "active" : ""}
-                  onClick={() => {
-                    setConsoleTab(tab);
-                  }}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-            <div className="debug-state">
-              <i />
-              未运行 <span>本地合成原型</span>
-            </div>
-          </header>
-          <div className="console-content">
-            <div className="console-empty">
-              <b>{consoleTab}</b>
-              <span>尚无真实运行数据</span>
-              <small>
-                连接 EPIC-03 Run / PortEmission 后端后，此处才显示事实。
-              </small>
-            </div>
-            <div className="console-ledger">
-              <span>WorkflowVersion</span>
-              <code>未生成</code>
-              <span>Run</span>
-              <code>未创建</code>
-              <span>Evidence</span>
-              <code>未产生</code>
-              <span>执行边界</span>
-              <code>ADVISORY_NOT_EXECUTED</code>
-            </div>
-          </div>
-        </section>
-
-        {modulePreviewOpen && selectedProductModule && (
+      {modulePreviewOpen && selectedModule && (
+        <div className="module-scrim" onMouseDown={closeModulePreview}>
           <aside
             className="module-preview-drawer"
             role="dialog"
-            aria-label={`${selectedProductModule.name}模块预览`}
+            aria-modal="true"
+            aria-label={`${selectedModule.name}模块预览`}
+            onMouseDown={(event) => {
+              event.stopPropagation();
+            }}
           >
             <header>
-              <div>
-                <span>{selectedProductModule.source}</span>
-                <h2>{selectedProductModule.name}</h2>
-                <p>{selectedProductModule.description}</p>
-              </div>
+              <SourceBadge source={selectedModule.source} />
               <button
+                ref={moduleCloseRef}
                 aria-label="关闭模块预览"
-                onClick={() => {
-                  setModulePreviewOpen(false);
-                }}
+                onClick={closeModulePreview}
               >
-                ×
+                <CloseIcon />
               </button>
             </header>
+            <div className="module-intro">
+              <span>产品模块 / {selectedModule.icon}</span>
+              <h2>{selectedModule.name}</h2>
+              <p>{selectedModule.description}</p>
+            </div>
             <div className="module-preview-items">
-              {selectedProductModule.items.map((item) => (
-                <button key={item.name} disabled>
-                  <span>{item.name}</span>
+              {selectedModule.items.map((item, index) => (
+                <div key={item.name}>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  <strong>{item.name}</strong>
                   <em className={`item-${item.state.replaceAll(" ", "-")}`}>
                     {item.state}
                   </em>
-                </button>
+                </div>
               ))}
             </div>
             <footer>
-              <strong>产品框架预览</strong>
-              <span>未接对应后端 · 不产生数据库、Agent 或运行状态</span>
+              <BoundaryIcon />
+              <p>
+                <strong>产品框架预览</strong>
+                未接对应后端，不产生数据库、Agent 或运行状态。
+              </p>
             </footer>
           </aside>
-        )}
+        </div>
+      )}
 
+      <button
+        className="main-agent-entry"
+        aria-expanded={agentOpen}
+        onClick={() => {
+          setAgentOpen((open) => !open);
+        }}
+      >
+        <AgentSparkIcon />
+        <span>主 Agent</span>
+        <small>协作入口</small>
+      </button>
+      {agentOpen && (
+        <aside
+          className="agent-dialog"
+          role="dialog"
+          aria-label="主 Agent 协作预览"
+        >
+          <header>
+            <AgentSparkIcon />
+            <div>
+              <strong>主 Agent</strong>
+              <span>项目级协作，不是执行节点</span>
+            </div>
+            <button
+              aria-label="关闭主 Agent 预览"
+              onClick={() => {
+                setAgentOpen(false);
+              }}
+            >
+              <CloseIcon />
+            </button>
+          </header>
+          <div>
+            <span>LOCAL PROTOTYPE</span>
+            <h2>从目标开始，而不是从空白画布开始。</h2>
+            <p>
+              可以讨论范围、生成 Builder
+              草稿和解释证据边界；当前未调用模型，也不会运行工作流。
+            </p>
+          </div>
+          <footer>未调用模型 · 无上下文发送 · 无后端状态</footer>
+        </aside>
+      )}
+    </main>
+  );
+}
+
+interface WorkspaceProps {
+  selectedNode: StudioNode;
+  selectedNodeId: string;
+  onSelectNode: (id: string) => void;
+  productModuleId: ProductModuleId;
+  onChooseModule: (id: ProductModuleId, trigger: HTMLButtonElement) => void;
+  onToggleAgent: () => void;
+}
+
+function QuietControl(props: WorkspaceProps) {
+  return (
+    <div className="quiet-shell">
+      <header className="quiet-topbar">
+        <BrandMark variant="quiet" />
+        <div className="quiet-context">
+          <span>合成协同实验室</span>
+          <strong>订单与资源协调</strong>
+          <small>协调基础域 @ 0.2</small>
+        </div>
+        <div className="quiet-actions">
+          <button>原型校验</button>
+          <button disabled>运行工作流</button>
+        </div>
+      </header>
+      <ProductNavigation variant="quiet" {...props} />
+      <main className="quiet-workspace" id="design-main">
+        <header className="workspace-heading">
+          <div>
+            <span>WORKFLOW / DRAFT 07</span>
+            <h1>订单协调工作流</h1>
+            <p>用受控上下文生成可评审建议，不直接操作工业系统。</p>
+          </div>
+          <div className="workspace-state">
+            <span>草稿</span>
+            <strong>8 个节点</strong>
+          </div>
+        </header>
+        <div className="workspace-tabs" role="tablist" aria-label="工作室视图">
+          <button role="tab" aria-selected="true">
+            结构
+          </button>
+          <button role="tab" aria-selected="false">
+            输入与变量
+          </button>
+          <button role="tab" aria-selected="false">
+            Evidence
+          </button>
+        </div>
+        <div className="quiet-studio-body">
+          <CapabilityShelf variant="quiet" />
+          <section className="canvas-area quiet-canvas" aria-label="工作流画布">
+            <div className="quiet-flowline" aria-hidden="true" />
+            {nodes.map((node, index) => (
+              <NodeCard
+                key={node.id}
+                node={node}
+                index={index}
+                selected={props.selectedNodeId === node.id}
+                onSelect={props.onSelectNode}
+              />
+            ))}
+            <CanvasBoundary />
+          </section>
+        </div>
+        <DebugConsole variant="quiet" selectedNode={props.selectedNode} />
+      </main>
+      <aside className="quiet-inspector" aria-label="节点检查器">
+        <header>
+          <span>节点详情</span>
+          <b>···</b>
+        </header>
+        <div className="inspector-node-type">
+          <NodeGlyph kind={props.selectedNode.kind} />
+          <div>
+            <span>{props.selectedNode.kind}</span>
+            <h2>{props.selectedNode.title}</h2>
+          </div>
+        </div>
+        <dl>
+          <div>
+            <dt>输入</dt>
+            <dd>{props.selectedNode.inputs.length || "无"}</dd>
+          </div>
+          <div>
+            <dt>数据输出</dt>
+            <dd>{props.selectedNode.outputs.length}</dd>
+          </div>
+          <div>
+            <dt>控制出口</dt>
+            <dd>{props.selectedNode.control.length}</dd>
+          </div>
+          <div>
+            <dt>模型</dt>
+            <dd>未配置</dd>
+          </div>
+        </dl>
+        <div className="inspector-warning">
+          <BoundaryIcon />
+          <span>失败出口尚未连接</span>
+        </div>
+        <button className="inspector-agent-link" onClick={props.onToggleAgent}>
+          交给主 Agent 解释
+          <ArrowIcon />
+        </button>
+      </aside>
+    </div>
+  );
+}
+
+function AgenticOrbit(props: WorkspaceProps) {
+  return (
+    <div className="orbit-shell">
+      <header className="orbit-topbar">
+        <BrandMark variant="orbit" />
+        <ProductNavigation variant="orbit" {...props} />
+        <div className="orbit-status">
+          <i />
+          LOCAL / SAFE
+        </div>
+      </header>
+      <aside className="orbit-mission">
+        <span className="eyebrow">CURRENT MISSION</span>
+        <h1>让订单变化成为一条可解释的建议。</h1>
+        <p>主 Agent 正在浏览本地原型结构；没有模型调用，也没有运行实例。</p>
+        <div className="mission-facts">
+          <div>
+            <span>领域锁</span>
+            <strong>0.2</strong>
+          </div>
+          <div>
+            <span>能力</span>
+            <strong>08</strong>
+          </div>
+          <div>
+            <span>风险</span>
+            <strong>01</strong>
+          </div>
+        </div>
+        <CapabilityShelf variant="orbit" />
+        <button onClick={props.onToggleAgent}>
+          <AgentSparkIcon /> 与主 Agent 讨论目标
+        </button>
+      </aside>
+      <main className="orbit-workspace" id="design-main">
+        <div className="orbit-heading">
+          <div>
+            <span>ORCHESTRATION MAP</span>
+            <strong>协调建议流程 / 草稿 07</strong>
+          </div>
+          <button disabled>RUN DISCONNECTED</button>
+        </div>
+        <section className="canvas-area orbit-map" aria-label="Agent 协同轨道">
+          <svg viewBox="0 0 800 520" aria-hidden="true">
+            <ellipse cx="400" cy="260" rx="290" ry="168" />
+            <ellipse cx="400" cy="260" rx="190" ry="112" />
+            <path d="M132 160 C235 58 574 50 670 168" />
+            <path d="M134 358 C280 472 552 468 674 352" />
+          </svg>
+          <div className="orbit-core">
+            <AgentSparkIcon />
+            <span>协调建议</span>
+            <strong>等待配置</strong>
+          </div>
+          {nodes.map((node, index) => (
+            <NodeCard
+              key={node.id}
+              node={node}
+              index={index}
+              selected={props.selectedNodeId === node.id}
+              onSelect={props.onSelectNode}
+            />
+          ))}
+          <CanvasBoundary />
+        </section>
+        <DebugConsole variant="orbit" selectedNode={props.selectedNode} />
+      </main>
+      <aside className="orbit-evidence" aria-label="节点检查器">
+        <header>
+          <span>节点检查器 / EVIDENCE</span>
+          <b>0 / 4</b>
+        </header>
+        <h2>{props.selectedNode.title}</h2>
+        <p>{props.selectedNode.subtitle}</p>
+        <ol>
+          <li>
+            <i />
+            输入来源 <strong>本地 fixture</strong>
+          </li>
+          <li>
+            <i />
+            DomainLock <strong>可见</strong>
+          </li>
+          <li>
+            <i />
+            模型调用 <strong>未发生</strong>
+          </li>
+          <li className="warning">
+            <i />
+            失败出口 <strong>未连接</strong>
+          </li>
+        </ol>
+        <div className="orbit-notice">失败出口尚未连接</div>
+      </aside>
+    </div>
+  );
+}
+
+function LivingBlueprint(props: WorkspaceProps) {
+  return (
+    <div className="blueprint-shell">
+      <header className="blueprint-head">
+        <BrandMark variant="blueprint" />
+        <div>
+          <span>PRODUCT SYSTEM / 02.7</span>
+          <strong>协调基础域</strong>
+        </div>
+        <p>
+          本地合成产品地图
+          <br />
+          不代表运行能力
+        </p>
+      </header>
+      <ProductNavigation variant="blueprint" {...props} />
+      <main className="blueprint-main" id="design-main">
+        <header className="blueprint-title">
+          <span>WORKFLOW BLUEPRINT · 07</span>
+          <h1>系统关系图</h1>
+          <p>
+            领域、数据、Agent 与人工决策在同一张受控蓝图中，但执行仍然不存在。
+          </p>
+          <CapabilityShelf variant="blueprint" />
+        </header>
+        <section className="canvas-area blueprint-flow" aria-label="领域蓝图">
+          <div className="blueprint-columns" aria-hidden="true">
+            <span>01 / INPUT</span>
+            <span>02 / CONTEXT</span>
+            <span>03 / REASON</span>
+            <span>04 / REVIEW</span>
+          </div>
+          {nodes.map((node, index) => (
+            <NodeCard
+              key={node.id}
+              node={node}
+              index={index}
+              selected={props.selectedNodeId === node.id}
+              onSelect={props.onSelectNode}
+            />
+          ))}
+          <CanvasBoundary />
+        </section>
+        <aside className="blueprint-inspector" aria-label="节点检查器">
+          <span>NODE INSPECTOR / 01</span>
+          <div>
+            <NodeGlyph kind={props.selectedNode.kind} />
+            <h2>{props.selectedNode.title}</h2>
+            <p>{props.selectedNode.subtitle}</p>
+          </div>
+          <dl>
+            <div>
+              <dt>DATA 输入</dt>
+              <dd>{props.selectedNode.inputs.length}</dd>
+            </div>
+            <div>
+              <dt>DATA 输出</dt>
+              <dd>{props.selectedNode.outputs.length}</dd>
+            </div>
+            <div>
+              <dt>CONTROL</dt>
+              <dd>{props.selectedNode.control.length}</dd>
+            </div>
+            <div>
+              <dt>执行状态</dt>
+              <dd>未运行</dd>
+            </div>
+          </dl>
+        </aside>
+        <footer className="blueprint-footer" aria-label="运行与调试控制台">
+          <div>
+            <span>调试台 / SELECTED</span>
+            <strong>{props.selectedNode.title}</strong>
+          </div>
+          <div>
+            <span>端口发射 / CONTROL</span>
+            <strong>{props.selectedNode.control.join(" / ")}</strong>
+          </div>
+          <div className="blueprint-warning">
+            <BoundaryIcon />
+            失败出口尚未连接
+          </div>
+        </footer>
+      </main>
+    </div>
+  );
+}
+
+function ProductNavigation({
+  variant,
+  productModuleId,
+  onChooseModule,
+}: WorkspaceProps & { variant: "quiet" | "orbit" | "blueprint" }) {
+  return (
+    <nav
+      className={`global-product-nav nav-${variant}`}
+      aria-label="ForgeOps 产品模块"
+    >
+      {variant !== "orbit" && (
+        <header>
+          <span>{variant === "quiet" ? "产品空间" : "SYSTEM MAP"}</span>
+          <small>8 MODULES</small>
+        </header>
+      )}
+      {productModules.map((item, index) => (
         <button
-          className="main-agent-entry"
-          aria-expanded={agentOpen}
-          onClick={() => {
-            setAgentOpen((value) => !value);
+          key={item.id}
+          className={productModuleId === item.id ? "active" : ""}
+          aria-pressed={productModuleId === item.id}
+          aria-label={`${item.name}，${item.source}`}
+          onClick={(event) => {
+            onChooseModule(item.id, event.currentTarget);
           }}
         >
-          <span>主 Agent</span>
-          <strong>{agentOpen ? "收起协作预览" : "协助拆解目标"}</strong>
-          <small>未调用模型</small>
+          <ModuleGlyph index={index} />
+          <span>{item.name}</span>
+          {variant !== "orbit" && <small>{item.short}</small>}
+          <em>{item.source === "产品原型" ? "原型" : item.source}</em>
         </button>
-        {agentOpen && (
-          <aside
-            className="agent-popover"
-            role="dialog"
-            aria-label="主 Agent 协作预览"
-          >
-            <header>
-              <span>主 Agent / Builder</span>
-              <b>协作层 · 非执行节点</b>
-            </header>
-            <p>我理解的目标：在订单变化后形成可追溯、需人工确认的协调建议。</p>
-            <ol>
-              <li>歧义术语“可用资源”仍需负责人澄清</li>
-              <li>执行 Agent 的失败出口尚未连接</li>
-              <li>建议先补 Evidence 最低要求，再做原型校验</li>
-            </ol>
-            <div>
-              <span>未调用模型</span>
-              <span>未修改草稿</span>
-              <span>未运行</span>
-            </div>
-          </aside>
-        )}
-      </section>
-    </main>
+      ))}
+    </nav>
+  );
+}
+
+const capabilityItems = [
+  "事件触发器",
+  "数据产品",
+  "知识检索",
+  "术语解析",
+  "数据转换",
+  "执行 Agent",
+  "Skill / MCP",
+  "算法 / 仿真",
+];
+
+function CapabilityShelf({
+  variant,
+}: {
+  variant: "quiet" | "orbit" | "blueprint";
+}) {
+  return (
+    <aside
+      className={`capability-shelf shelf-${variant}`}
+      aria-label="节点与能力库"
+    >
+      <header>
+        <span>节点与能力</span>
+        <small>8 AVAILABLE</small>
+      </header>
+      <div>
+        {capabilityItems.map((item, index) => (
+          <button key={item} title={`${item}，仅用于视觉预览`}>
+            <ModuleGlyph index={index} />
+            <span>{item}</span>
+            <b>＋</b>
+          </button>
+        ))}
+      </div>
+    </aside>
+  );
+}
+
+function DebugConsole({
+  variant,
+  selectedNode,
+}: {
+  variant: "quiet" | "orbit";
+  selectedNode: StudioNode;
+}) {
+  return (
+    <section
+      className={`debug-console console-${variant}`}
+      aria-label="运行与调试控制台"
+    >
+      <div>
+        <span>调试台</span>
+        <strong>端口发射</strong>
+        <span>Evidence</span>
+        <span>Trace</span>
+      </div>
+      <p>
+        <b>{selectedNode.title}</b> 尚无真实运行数据
+      </p>
+      <dl>
+        <div>
+          <dt>DATA</dt>
+          <dd>0 emissions</dd>
+        </div>
+        <div>
+          <dt>CONTROL</dt>
+          <dd>NOT EXECUTED</dd>
+        </div>
+      </dl>
+    </section>
   );
 }
 
 function NodeCard({
   node,
-  direction,
+  index,
   selected,
   onSelect,
 }: {
   node: StudioNode;
-  direction: DirectionId;
+  index: number;
   selected: boolean;
   onSelect: (id: string) => void;
 }) {
   return (
     <button
-      className={`studio-node node-${node.kind.replaceAll(" ", "-")} status-${node.status} ${selected ? "selected" : ""}`}
-      style={nodePosition(node, direction)}
+      className={`studio-node node-${String(index)} ${selected ? "selected" : ""}`}
+      aria-pressed={selected}
       onClick={() => {
         onSelect(node.id);
       }}
-      aria-label={`选择节点：${node.title}`}
     >
-      <span className="node-type">
-        <i />
+      <span className="node-kicker">
+        <NodeGlyph kind={node.kind} />
         {node.kind}
-        <em>
-          {node.status === "ready"
-            ? "已配置"
-            : node.status === "warning"
-              ? "需澄清"
-              : "草稿"}
-        </em>
       </span>
       <strong>{node.title}</strong>
       <small>{node.subtitle}</small>
-      <div className="node-ports">
-        <span>
-          {node.inputs.slice(0, 1).map((port) => (
-            <i key={port} className="input-port" title={port} />
-          ))}
-        </span>
-        <span>
-          {node.outputs.slice(0, 2).map((port) => (
-            <i key={port} className="output-port" title={port} />
-          ))}
-        </span>
-      </div>
-      <div className="node-control">
-        <span>{node.control.slice(0, 2).join(" · ")}</span>
-        <i title="控制端口" />
-      </div>
+      <span className="node-status">
+        {node.status === "ready"
+          ? "已配置"
+          : node.status === "warning"
+            ? "需澄清"
+            : "草稿"}
+      </span>
+      <span className="node-ports" aria-label="DATA 与 CONTROL typed ports">
+        <i className="data-port" />
+        <b>DATA</b>
+        <i className="control-port" />
+        <b>CONTROL</b>
+      </span>
     </button>
   );
 }
 
-function nodePosition(node: StudioNode, direction: DirectionId) {
-  const semanticPositions: Record<string, [number, number]> = {
-    trigger: [32, 105],
-    quality: [32, 285],
-    semantic: [240, 105],
-    knowledge: [240, 285],
-    agent: [448, 105],
-    decision: [448, 285],
-    human: [640, 105],
-    collector: [640, 285],
-  };
-  const investigationPositions: Record<string, [number, number]> = {
-    trigger: [30, 120],
-    quality: [190, 120],
-    semantic: [190, 295],
-    knowledge: [350, 295],
-    agent: [350, 120],
-    decision: [510, 120],
-    human: [650, 120],
-    collector: [650, 295],
-  };
-  const selected =
-    direction === "semantic"
-      ? semanticPositions[node.id]
-      : direction === "investigation"
-        ? investigationPositions[node.id]
-        : undefined;
-  return { left: selected?.[0] ?? node.x, top: selected?.[1] ?? node.y };
+function CanvasBoundary() {
+  return (
+    <div className="canvas-boundary">
+      <BoundaryIcon />
+      <span>结构预览</span>
+      <strong>NOT EXECUTED</strong>
+    </div>
+  );
 }
 
-function EdgeLayer({ direction }: { direction: DirectionId }) {
-  if (direction === "semantic") {
-    return (
-      <svg
-        className="edge-layer semantic-edges"
-        viewBox="0 0 900 500"
-        aria-hidden="true"
-      >
-        <path d="M109 233 V285" />
-        <path d="M186 339 H214 V169 H240" />
-        <path d="M317 233 V285" />
-        <path d="M394 349 H422 V169 H448" />
-        <path d="M525 233 V285" />
-        <path d="M602 169 H640" />
-        <path d="M602 349 H620 V169 H640" />
-        <path className="control-edge" d="M717 233 V285" />
-      </svg>
-    );
-  }
-  if (direction === "investigation") {
-    return (
-      <svg
-        className="edge-layer investigation-edges"
-        viewBox="0 0 900 500"
-        aria-hidden="true"
-      >
-        <path className="actual-path" d="M158 164 H190" />
-        <path className="actual-path" d="M318 164 H350" />
-        <path className="actual-path" d="M478 164 H510" />
-        <path className="actual-path" d="M638 164 H650" />
-        <path d="M254 208 V295" />
-        <path d="M318 339 H350" />
-        <path d="M414 295 V208" />
-        <path d="M574 208 V339 H650" />
-        <path className="control-edge" d="M714 208 V295" />
-      </svg>
-    );
-  }
+function SourceBadge({ source }: { source: string }) {
+  return <span className="source-badge">{source}</span>;
+}
+
+function BrandMark({ variant }: { variant: string }) {
   return (
-    <svg className="edge-layer" viewBox="0 0 900 480" aria-hidden="true">
-      <path d="M176 154 C190 154 194 130 208 130" />
-      <path d="M350 130 C368 130 370 130 390 130" />
-      <path d="M350 174 C374 174 365 304 390 304" />
-      <path d="M532 130 C555 130 540 214 566 214" />
-      <path d="M532 304 C555 304 545 232 566 232" />
-      <path d="M708 214 C716 214 674 130 682 130" />
-      <path d="M708 232 C716 232 674 334 682 334" />
-      <path className="control-edge" d="M824 180 C842 220 840 288 824 318" />
+    <div className={`brand-mark brand-${variant}`}>
+      <svg viewBox="0 0 40 40" aria-hidden="true">
+        <path d="M6 6h28v28H6zM13 13h14M13 20h9M13 27h14" />
+      </svg>
+      <div>
+        <strong>ForgeOps</strong>
+        <span>INDUSTRIAL INTELLIGENCE</span>
+      </div>
+    </div>
+  );
+}
+
+function ModuleGlyph({ index }: { index: number }) {
+  const paths = [
+    "M4 7h16v13H4zM8 7V4h8v3",
+    "M5 6h5v5H5zM14 13h5v5h-5zM10 8h4v1M16 9v4",
+    "M4 18V6m0 12h16M7 14l4-4 3 2 5-6",
+    "M5 5h14v5H5zM5 14h14v5H5zM8 8h.01M8 17h.01",
+    "M12 3l2.2 4.6L19 10l-4.8 2.4L12 17l-2.2-4.6L5 10l4.8-2.4z",
+    "M4 8h16M4 16h16M8 4v16M16 4v16",
+    "M12 4l8 5-8 5-8-5zM4 14l8 5 8-5",
+    "M12 3l8 4v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7z",
+  ];
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d={paths[index] ?? paths[0]} />
+    </svg>
+  );
+}
+
+function NodeGlyph({ kind }: { kind: string }) {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      {kind.includes("Agent") || kind === "人工" ? (
+        <path d="M8 2l1.7 3.3L13 7l-3.3 1.7L8 12l-1.7-3.3L3 7l3.3-1.7z" />
+      ) : (
+        <path d="M3 3h10v10H3zM6 6h4v4H6z" />
+      )}
+    </svg>
+  );
+}
+
+function AgentSparkIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2l2.2 7.8L22 12l-7.8 2.2L12 22l-2.2-7.8L2 12l7.8-2.2z" />
+    </svg>
+  );
+}
+
+function BoundaryIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 3l9 16H3zM12 9v5m0 3v.1" />
+    </svg>
+  );
+}
+
+function ArrowIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12h14m-5-5 5 5-5 5" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" />
     </svg>
   );
 }
