@@ -1,5 +1,7 @@
 # ForgeOps Platform
 
+> **项目已封存：** 2026-08-02 由产品负责人暂停，状态为 `PAUSED_ARCHIVED_BY_PRODUCT_OWNER`。归档标签为 `forgeops-archive-2026-08-02-epic-02.7-partial`；EPIC-02.7 仍是 `READY_FOR_PRODUCT_OWNER_REVIEW`，未最终验收，EPIC-03 未开始。恢复前先阅读 [项目封存记录](docs/archive/PROJECT-ARCHIVE-2026-08-02.md)。
+
 Independent EPIC-01/02, EPIC-02.5, and EPIC-02.6A/B/C engineering baseline for the ForgeOps Platform Core, Scenario SDK, generic project boundary, FDS v0.1, Registry/Project DomainLock, and a domain-neutral semantic/knowledge thin slice. It runs only with local synthetic fixtures and is not approved for enterprise, preproduction, production, real data, business UAT, reference business, Agent/LLM/RAG, or Workflow use.
 
 ## 产品负责人进度与五分钟验证

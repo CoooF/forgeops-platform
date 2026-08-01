@@ -1,5 +1,7 @@
 # ForgeOps 产品负责人进度总览
 
+> 全项目状态：`PAUSED_ARCHIVED_BY_PRODUCT_OWNER`（2026-08-02）。封存标签：`forgeops-archive-2026-08-02-epic-02.7-partial`。各 Epic 的工程证据状态保留不变，但停止继续开发；EPIC-02.7 未最终验收，EPIC-03 未开始。详见[项目封存记录](../archive/PROJECT-ARCHIVE-2026-08-02.md)。
+
 当前进度：EPIC-01、EPIC-02、EPIC-02.5 已完成本地合成工程验证；EPIC-02.6A 已达到
 `VERIFIED_FOR_LOCAL_SYNTHETIC_CONTRACT_ENGINEERING`，EPIC-02.6B 已达到
 `VERIFIED_FOR_LOCAL_SYNTHETIC_REGISTRY_ENGINEERING`；EPIC-02.6C 已达到
