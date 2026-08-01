@@ -1,6 +1,6 @@
 # EPIC-02.7 当前 UI 与前端现状审计
 
-状态：`IN_PROGRESS / WAITING_FOR_DIRECTION_SELECTION`  
+状态：`PHASE_A_COMPLETE / DIRECTION_A_SELECTED`
 审计基线：`7a8e28d`；开始时工作树 clean  
 边界：只审计与新增隔离方向预览，不重写或降级真实 API 页面。
 
@@ -104,4 +104,3 @@
 ## 9. 基线验证
 
 开始阶段 A 前已通过：`make verify`（410 Python、41 contract、6 Vitest、87.18%）、`make epic-02-6c`（290）、`make epic-02-6c-owner-demo` 与 `make e2e`（3 个真实浏览器路径）。
-

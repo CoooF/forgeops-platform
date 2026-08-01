@@ -1,6 +1,6 @@
 # EPIC-02.7 第三轮视觉方向候选与选择门
 
-状态：`WAITING_FOR_DIRECTION_SELECTION`  
+状态：`DIRECTION_A_SELECTED / PHASE_A_ARCHIVE`
 预览入口：`/design-preview/directions`  
 共同边界：视觉方向预览、交互原型、本地合成、未接 Workflow/Run/Agent 后端、未运行、建议未执行。
 

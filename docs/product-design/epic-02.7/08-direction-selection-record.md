@@ -1,6 +1,6 @@
 # EPIC-02.7 视觉方向选择记录
 
-当前状态：`DIRECTION_SELECTED / PHASE_B_IN_PROGRESS`
+当前状态：`DIRECTION_SELECTED / READY_FOR_PRODUCT_OWNER_REVIEW`
 
 | 项目 | 当前记录 |
 | --- | --- |

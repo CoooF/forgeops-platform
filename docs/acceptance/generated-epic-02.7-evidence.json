@@ -1,0 +1,56 @@
+{
+  "epic": "EPIC-02.7",
+  "generatedAt": "2026-08-01T15:52:13Z",
+  "status": "READY_FOR_PRODUCT_OWNER_REVIEW",
+  "accepted": false,
+  "selectedDirection": {
+    "id": "A",
+    "name": "静默控制台",
+    "confirmedAt": "2026-08-01T23:52:13+08:00"
+  },
+  "architectureDecision": {
+    "mainAgent": "project coordination only; no DATA/CONTROL ports; no child-node Skill/MCP inheritance",
+    "executionAgents": "per-node model, Skill, MCP, Scope, budget and failure exits"
+  },
+  "sourceCommit": "91431fadce28e18bfbd4941403c936e64593d332",
+  "tests": {
+    "python": 410,
+    "contract": 41,
+    "vitest": 6,
+    "playwright": 8,
+    "focusedPrototypePlaywright": 3,
+    "epic026cRegression": 290,
+    "coveragePercent": 87.18
+  },
+  "screenshots": [
+    {
+      "path": "docs/product-design/epic-02.7/screenshots/prototype-a-studio-1440x900.png",
+      "sha256": "ac79c3636f45e6f4b061978cc31880acf3c5c89a0a1c19a59e35b03866af9241"
+    },
+    {
+      "path": "docs/product-design/epic-02.7/screenshots/prototype-a-studio-1280x800.png",
+      "sha256": "9e9c95840731b15ea7802eb4a0dad109884487f925c910e3a0d7061548341fae"
+    },
+    {
+      "path": "docs/product-design/epic-02.7/screenshots/prototype-a-studio-476x770.png",
+      "sha256": "051fbc6b0042340346e06f45f58158e2ecfde1c9a3b07888d9771ff7330b081c"
+    },
+    {
+      "path": "docs/product-design/epic-02.7/screenshots/prototype-a-run-1440x900.png",
+      "sha256": "9aac674a0b6e43417cfcf8be75975d7add8588529305917adfc738509d40c9d3"
+    },
+    {
+      "path": "docs/product-design/epic-02.7/screenshots/prototype-a-agents-1440x900.png",
+      "sha256": "ce1a7374f7e51d6bd4001807caa7e6d56af5aaa34198073f4e8cc91fcda967dc"
+    }
+  ],
+  "boundaries": {
+    "prototypeOnly": true,
+    "callsWorkflowRunAgentBackend": false,
+    "writesDatabase": false,
+    "executesIndustrialAction": false,
+    "epic03Started": false
+  },
+  "pendingHumanGate": "explicit final product-owner acceptance"
+}
+

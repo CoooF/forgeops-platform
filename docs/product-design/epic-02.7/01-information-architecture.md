@@ -1,6 +1,6 @@
 # EPIC-02.7 产品信息架构候选
 
-状态：`PHASE_A / WAITING_FOR_DIRECTION_SELECTION`  
+状态：`PHASE_B_COMPLETE / READY_FOR_PRODUCT_OWNER_REVIEW`
 用途：定义视觉方向共用的完整产品壳层，不表示对应后端已实现。
 
 ## 1. 一级产品框架
