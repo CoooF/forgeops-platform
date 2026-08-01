@@ -37,6 +37,21 @@ EPIC-02.6A 只回答“这组 Manifest 能否合法、确定地组合”，还�
   `authorizationEffect=NONE`、`semanticRuntimeReady=false`、
   `runtimeBindingCreated=false`，不会把“选择了版本”说成“已经运行”。
 
+### 2026-08-01 产品可读性修订
+
+- Web Shell 已完成中文产品化改版：项目中心、领域资产、身份/Scope、项目详情、领域锁、权限、
+  审计、空状态和错误状态均以中文业务语义为主，必要的 FDS 标识、版本和摘要继续保留；
+- 首页采用生产运营台信息层级，明确展示“组织与项目 → 领域资产 → 语义与知识 → 工作流与智能体”
+  的真实建设状态，不把 02.6C/EPIC-03 的未实现能力伪装成可用功能；
+- 窄屏与 1440px 桌面布局已通过真实浏览器检查，无页面级横向溢出；
+- 本地演示数据库已通过真实 API 建立合成组织、工作空间、项目、FDS Component/Domain、
+  Organization Installation 和 Project DomainLock，便于产品负责人直接观察非空页面；
+- Alembic `0007` 修复了早期本地 `fds_idempotency_records` 列名漂移，既有 0006 数据库可无损升级，
+  新数据库保持 0006 规范 Schema；未改写 02.6B 已绑定的历史机器证据。
+
+修订后重新通过 `make verify`（342 Python、41 contract、6 Web，覆盖率 88.34%）和 2 个真实
+Playwright E2E；历史 Evidence 中的 341 Python 数量仍表示其绑定源码提交当时的结果。
+
 真实页面启动和操作见 [本地运行手册](../runbooks/local-development.md)。
 
 ## 不可见地基

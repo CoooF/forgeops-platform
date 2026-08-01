@@ -14,9 +14,10 @@ def test_epic_02_6b_migration_round_trip(tmp_path: Path, monkeypatch: pytest.Mon
     configuration = Config("alembic.ini")
     command.upgrade(configuration, "head")
     engine = create_engine(database_url)
-    assert engine.connect().execute(
-        text("SELECT version_num FROM alembic_version")
-    ).scalar_one() == ("0006")
+    with engine.connect() as connection:
+        assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
+            "0007"
+        )
     expected = {
         "fds_package_versions",
         "fds_installations",
@@ -30,7 +31,29 @@ def test_epic_02_6b_migration_round_trip(tmp_path: Path, monkeypatch: pytest.Mon
     assert expected.isdisjoint(inspect(engine).get_table_names())
     command.upgrade(configuration, "head")
     assert expected.issubset(inspect(engine).get_table_names())
-    assert engine.connect().execute(
-        text("SELECT version_num FROM alembic_version")
-    ).scalar_one() == ("0006")
+    with engine.connect() as connection:
+        assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
+            "0007"
+        )
+    engine.dispose()
+
+
+def test_epic_02_6b_repairs_legacy_idempotency_column(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    database_url = f"sqlite+pysqlite:///{tmp_path / 'legacy-fds.db'}"
+    monkeypatch.setenv("FORGEOPS_DATABASE_URL", database_url)
+    configuration = Config("alembic.ini")
+    command.upgrade(configuration, "0006")
+    engine = create_engine(database_url)
+    with engine.begin() as connection:
+        connection.execute(
+            text("ALTER TABLE fds_idempotency_records RENAME COLUMN action_key TO operation")
+        )
+
+    command.upgrade(configuration, "head")
+
+    columns = {column["name"] for column in inspect(engine).get_columns("fds_idempotency_records")}
+    assert "action_key" in columns
+    assert "operation" not in columns
     engine.dispose()

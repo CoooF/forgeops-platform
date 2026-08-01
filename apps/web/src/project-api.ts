@@ -1,11 +1,11 @@
 import { assertPlatformStatus, type PlatformStatus } from "./status";
 
 export const LOCAL_ACTORS = [
-  { value: "local-owner", label: "Local Owner" },
-  { value: "local-editor", label: "Local Editor" },
-  { value: "local-viewer", label: "Local Viewer" },
-  { value: "local-outsider", label: "Local Outsider" },
-  { value: "local-disabled", label: "Disabled Principal" },
+  { value: "local-owner", label: "平台负责人" },
+  { value: "local-editor", label: "项目编辑者" },
+  { value: "local-viewer", label: "只读查看者" },
+  { value: "local-outsider", label: "组织外用户" },
+  { value: "local-disabled", label: "已停用用户" },
 ] as const;
 
 export interface Page<T> {
@@ -625,12 +625,11 @@ export const api = {
 
 export function describeApiError(error: unknown): string {
   if (error instanceof ApiError) {
-    if (error.status === 404)
-      return "This resource is unavailable or outside your scope.";
+    if (error.status === 404) return "资源不存在，或当前身份没有查看权限。";
     if (error.status === 409)
-      return `Conflict: ${error.code}. Refresh before retrying.`;
-    if (error.status === 401) return `Authentication refused: ${error.code}.`;
+      return `数据状态冲突（${error.code}），请刷新后重试。`;
+    if (error.status === 401) return `身份校验未通过（${error.code}）。`;
     return `${error.code}: ${error.message}`;
   }
-  return error instanceof Error ? error.message : "Unknown API error";
+  return error instanceof Error ? error.message : "未知接口错误";
 }

@@ -38,7 +38,7 @@ export function DomainRegistry({
   const [state, setState] = useState("");
   const [visibility, setVisibility] = useState("");
   const [manifestJson, setManifestJson] = useState("");
-  const [reason, setReason] = useState("Synthetic governance review");
+  const [reason, setReason] = useState("本地合成环境治理核验");
   const [preview, setPreview] = useState<DomainInstallation | null>(null);
   const [impact, setImpact] = useState<PackageImpact | null>(null);
   const [loadError, setLoadError] = useState("");
@@ -109,7 +109,7 @@ export function DomainRegistry({
     try {
       parsed = JSON.parse(manifestJson);
     } catch {
-      setLoadError("Manifest input must be valid JSON.");
+      setLoadError("Manifest 必须是有效的 JSON。 ");
       return;
     }
     if (
@@ -117,7 +117,7 @@ export function DomainRegistry({
       parsed === null ||
       Array.isArray(parsed)
     ) {
-      setLoadError("Manifest input must be a JSON object.");
+      setLoadError("Manifest 顶层必须是 JSON 对象。 ");
       return;
     }
     const manifest = parsed as Record<string, unknown>;
@@ -129,23 +129,26 @@ export function DomainRegistry({
       await api.registerFdsPackageVersion(actor, manifest, owner);
       setManifestJson("");
       await reload();
-    }, "FDS package version registered from the strict server validator.");
+    }, "FDS 能力包版本已通过后端严格校验并完成登记。 ");
   }
 
   async function transitionPackage(transition: "quarantine" | "withdraw") {
     if (!selectedPackage) return;
-    await run(async () => {
-      await api.transitionFdsPackageVersion(
-        actor,
-        selectedPackage,
-        transition,
-        reason,
-      );
-      await reload();
-      setImpact(
-        await api.fdsPackageImpacts(actor, selectedPackage.packageVersionId),
-      );
-    }, `Registry governance state changed to ${transition.toUpperCase()}.`);
+    await run(
+      async () => {
+        await api.transitionFdsPackageVersion(
+          actor,
+          selectedPackage,
+          transition,
+          reason,
+        );
+        await reload();
+        setImpact(
+          await api.fdsPackageImpacts(actor, selectedPackage.packageVersionId),
+        );
+      },
+      `注册中心治理状态已更新：${transition === "withdraw" ? "撤回" : "隔离"}。`,
+    );
   }
 
   async function previewInstallation() {
@@ -175,39 +178,41 @@ export function DomainRegistry({
       );
       setSelectedInstallationId(created.installationId);
       await reload();
-    }, "Installation persisted as INSTALLED_DISABLED; no runtime was enabled.");
+    }, "领域组合已安装为“未启用”状态，不会创建运行能力。 ");
   }
 
   async function transitionInstallation(
     transition: "disable" | "revoke" | "logical-uninstall",
   ) {
     if (!selectedInstallation) return;
-    await run(async () => {
-      await api.transitionDomainInstallation(
-        actor,
-        selectedInstallation,
-        transition,
-        reason,
-      );
-      await reload();
-    }, `Installation governance transition ${transition} persisted.`);
+    await run(
+      async () => {
+        await api.transitionDomainInstallation(
+          actor,
+          selectedInstallation,
+          transition,
+          reason,
+        );
+        await reload();
+      },
+      `安装记录治理状态已更新：${installationTransitionLabel(transition)}。`,
+    );
   }
 
   return (
     <main className="workspace registry-workspace">
       <div className="workspace-heading registry-heading">
         <div>
-          <p className="section-label">FDS / LOCAL SYNTHETIC REGISTRY</p>
-          <h1>Domain Registry</h1>
+          <p className="section-label">FDS / 本地合成资产</p>
+          <h1>领域资产注册中心</h1>
           <p>
-            Immutable package facts, organization installations, and withdrawal
-            impact from the real API and database.
+            管理领域包的固定版本、组织安装、项目引用与撤回影响，全部状态来自真实接口和数据库。
           </p>
         </div>
-        <div className="truth-stack" aria-label="FDS truth boundary">
-          <strong>LOCAL_SYNTHETIC</strong>
-          <span>NOT_ENTERPRISE_VERIFIED</span>
-          <span>Runtime capability not enabled</span>
+        <div className="truth-stack" aria-label="FDS 可信边界">
+          <strong>本地合成数据</strong>
+          <span>尚未完成企业验证</span>
+          <span>不会自动启用运行能力</span>
         </div>
       </div>
 
@@ -231,42 +236,44 @@ export function DomainRegistry({
         <div className="registry-column">
           <div className="section-heading">
             <div>
-              <h2>Visible package versions</h2>
-              <p>Visibility and governance are evaluated on every request.</p>
+              <h2>可见能力包版本</h2>
+              <p>每次请求都会重新校验可见范围和治理状态。</p>
             </div>
             <button className="quiet-button" onClick={() => void reload()}>
-              Refresh
+              刷新
             </button>
           </div>
           <div className="registry-filters">
-            <Filter label="Kind" value={kind} setValue={setKind}>
-              <option value="">All kinds</option>
-              <option>DOMAIN</option>
-              <option>ORGANIZATION_OVERLAY</option>
-              <option>SCENARIO</option>
-              <option>COMPONENT</option>
+            <Filter label="类型" value={kind} setValue={setKind}>
+              <option value="">全部类型</option>
+              <option value="DOMAIN">领域包</option>
+              <option value="ORGANIZATION_OVERLAY">组织扩展包</option>
+              <option value="SCENARIO">场景包</option>
+              <option value="COMPONENT">能力组件</option>
             </Filter>
-            <Filter label="State" value={state} setValue={setState}>
-              <option value="">All states</option>
-              <option>REGISTERED_VALIDATED</option>
-              <option>QUARANTINED</option>
-              <option>WITHDRAWN</option>
+            <Filter label="状态" value={state} setValue={setState}>
+              <option value="">全部状态</option>
+              <option value="REGISTERED_VALIDATED">已登记校验</option>
+              <option value="QUARANTINED">已隔离</option>
+              <option value="WITHDRAWN">已撤回</option>
             </Filter>
             <Filter
-              label="Visibility"
+              label="可见范围"
               value={visibility}
               setValue={setVisibility}
             >
-              <option value="">All visibility</option>
-              <option>PUBLIC</option>
-              <option>PARTNER</option>
-              <option>ORGANIZATION_PRIVATE</option>
-              <option>PRIVATE</option>
+              <option value="">全部范围</option>
+              <option value="PUBLIC">公开</option>
+              <option value="PARTNER">合作伙伴</option>
+              <option value="ORGANIZATION_PRIVATE">组织私有</option>
+              <option value="PRIVATE">私有</option>
             </Filter>
           </div>
-          <div className="registry-list" aria-label="FDS package versions">
+          <div className="registry-list" aria-label="FDS 能力包版本">
             {packages.length === 0 ? (
-              <div className="empty-state">No package version is visible.</div>
+              <div className="empty-state">
+                当前范围还没有可见的能力包版本。
+              </div>
             ) : (
               packages.map((item) => (
                 <button
@@ -285,7 +292,7 @@ export function DomainRegistry({
                     <strong>{item.immutableFacts.packageId}</strong>
                     <small>
                       {item.immutableFacts.packageVersion} ·{" "}
-                      {item.immutableFacts.kind}
+                      {kindLabel(item.immutableFacts.kind)}
                     </small>
                   </span>
                   <StateBadge state={item.governance.state} />
@@ -300,7 +307,7 @@ export function DomainRegistry({
             <>
               <div className="section-heading">
                 <div>
-                  <p className="section-label">IMMUTABLE FACTS</p>
+                  <p className="section-label">不可变版本事实</p>
                   <h2>{selectedPackage.immutableFacts.packageId}</h2>
                   <p>{selectedPackage.packageVersionId}</p>
                 </div>
@@ -308,44 +315,48 @@ export function DomainRegistry({
               </div>
               <dl className="facts-grid compact-facts">
                 <Fact
-                  label="Version"
+                  label="版本"
                   value={selectedPackage.immutableFacts.packageVersion}
                 />
                 <Fact
-                  label="Visibility"
-                  value={selectedPackage.immutableFacts.visibility}
+                  label="可见范围"
+                  value={visibilityLabel(
+                    selectedPackage.immutableFacts.visibility,
+                  )}
                 />
                 <Fact
-                  label="Trust tier"
-                  value={selectedPackage.immutableFacts.trustTier}
+                  label="可信级别"
+                  value={trustLabel(selectedPackage.immutableFacts.trustTier)}
                 />
                 <Fact
-                  label="Classification"
-                  value={selectedPackage.immutableFacts.contentClassification}
+                  label="内容分类"
+                  value={classificationLabel(
+                    selectedPackage.immutableFacts.contentClassification,
+                  )}
                 />
                 <Fact
-                  label="Publisher"
+                  label="发布方"
                   value={selectedPackage.immutableFacts.publisher}
                 />
                 <Fact
-                  label="License"
-                  value={`${selectedPackage.immutableFacts.licenseId} · verified=${String(
-                    selectedPackage.immutableFacts.licenseVerified,
-                  )}`}
+                  label="许可证"
+                  value={`${selectedPackage.immutableFacts.licenseId} · ${
+                    selectedPackage.immutableFacts.licenseVerified
+                      ? "已核验"
+                      : "未核验"
+                  }`}
                 />
               </dl>
               <Digest
-                label="Manifest digest"
+                label="Manifest 摘要"
                 value={selectedPackage.immutableFacts.manifestDigest}
               />
               <Digest
-                label="Content digest"
+                label="内容摘要"
                 value={selectedPackage.immutableFacts.contentDigest}
               />
               <details>
-                <summary>
-                  Manifest, dependencies, permissions, and budget
-                </summary>
+                <summary>查看 Manifest、依赖、权限与预算原始数据</summary>
                 <pre className="json-viewer">
                   {JSON.stringify(
                     selectedPackage.immutableFacts.manifest,
@@ -368,7 +379,7 @@ export function DomainRegistry({
                       })
                   }
                 >
-                  View impact
+                  查看引用影响
                 </button>
                 {(canRegisterPublic || canManageOrganization) &&
                   selectedPackage.governance.state !== "WITHDRAWN" && (
@@ -379,7 +390,7 @@ export function DomainRegistry({
                           disabled={pending}
                           onClick={() => void transitionPackage("quarantine")}
                         >
-                          Quarantine
+                          隔离版本
                         </button>
                       )}
                       <button
@@ -387,26 +398,23 @@ export function DomainRegistry({
                         disabled={pending}
                         onClick={() => void transitionPackage("withdraw")}
                       >
-                        Withdraw
+                        撤回版本
                       </button>
                     </>
                   )}
               </div>
               {impact && (
                 <div className="impact-panel" data-testid="package-impact">
-                  <strong>Reference impact</strong>
-                  <span>{impact.installations.length} installations</span>
-                  <span>{impact.projectDomainLocks.length} project locks</span>
-                  <small>
-                    Historical records remain immutable; no automatic switch
-                    occurred.
-                  </small>
+                  <strong>引用影响</strong>
+                  <span>{impact.installations.length} 个组织安装</span>
+                  <span>{impact.projectDomainLocks.length} 个项目领域锁</span>
+                  <small>历史记录保持不可变，系统不会自动切换项目版本。</small>
                 </div>
               )}
             </>
           ) : (
             <div className="empty-state">
-              Select a package version for immutable facts.
+              选择左侧能力包版本后，可查看不可变事实与引用影响。
             </div>
           )}
         </div>
@@ -416,17 +424,16 @@ export function DomainRegistry({
         <section className="registry-operation">
           <div className="section-heading">
             <div>
-              <h2>Register synthetic JSON</h2>
+              <h2>登记本地合成 Manifest</h2>
               <p>
-                The browser submits JSON to the strict API; it does not become a
-                Registry record until the transaction commits.
+                JSON 会提交给后端严格校验，只有事务成功后才会成为正式注册记录。
               </p>
             </div>
           </div>
           <textarea
             aria-label="FDS manifest JSON"
             className="manifest-input"
-            placeholder="Paste a synthetic FDS manifest JSON object"
+            placeholder="粘贴本地合成 FDS Manifest JSON"
             value={manifestJson}
             onChange={(event) => {
               setManifestJson(event.target.value);
@@ -437,38 +444,35 @@ export function DomainRegistry({
               disabled={pending || manifestJson.trim().length === 0}
               onClick={() => void registerManifest()}
             >
-              Validate and register
+              校验并登记
             </button>
           </div>
         </section>
       )}
 
-      <section
-        className="registry-operation"
-        aria-label="Organization installations"
-      >
+      <section className="registry-operation" aria-label="组织领域安装">
         <div className="section-heading">
           <div>
-            <h2>Organization installation</h2>
+            <h2>组织领域安装</h2>
             <p>
-              Dependency resolution uses only visible, available Registry
-              versions and persists a fixed DependencyLock.
+              依赖解析只使用当前组织可见且有效的版本，并持久化固定
+              DependencyLock。
             </p>
           </div>
         </div>
         {canManageOrganization ? (
           <div className="installation-controls">
             <label>
-              DOMAIN or ORGANIZATION_OVERLAY root
+              选择领域包或组织扩展包
               <select
-                aria-label="Installation root"
+                aria-label="领域安装根包"
                 value={rootPackageVersionId}
                 onChange={(event) => {
                   setRootPackageVersionId(event.target.value);
                   setPreview(null);
                 }}
               >
-                <option value="">Select an available root</option>
+                <option value="">选择可安装版本</option>
                 {installableRoots.map((item) => (
                   <option
                     key={item.packageVersionId}
@@ -484,22 +488,20 @@ export function DomainRegistry({
               disabled={!rootPackageVersionId || pending}
               onClick={() => void previewInstallation()}
             >
-              Preview lock
+              预览依赖锁
             </button>
             <button
               disabled={!preview || pending}
               onClick={() => void createInstallation()}
             >
-              Install disabled
+              安装为未启用
             </button>
           </div>
         ) : (
-          <p className="read-only-note">
-            Organization installation is read-only for this actor.
-          </p>
+          <p className="read-only-note">当前身份只能查看组织安装记录。</p>
         )}
         {preview && (
-          <LockSummary title="Uncommitted preview" installation={preview} />
+          <LockSummary title="未提交的依赖预览" installation={preview} />
         )}
         <div className="installation-browser">
           <div className="registry-list">
@@ -526,7 +528,7 @@ export function DomainRegistry({
           {selectedInstallation && (
             <div>
               <LockSummary
-                title="Persisted installation lock"
+                title="已持久化的安装依赖锁"
                 installation={selectedInstallation}
               />
               {canManageOrganization && (
@@ -537,7 +539,7 @@ export function DomainRegistry({
                       disabled={pending}
                       onClick={() => void transitionInstallation("disable")}
                     >
-                      Disable
+                      停用
                     </button>
                   )}
                   {!["REVOKED", "LOGICALLY_UNINSTALLED"].includes(
@@ -547,7 +549,7 @@ export function DomainRegistry({
                       disabled={pending}
                       onClick={() => void transitionInstallation("revoke")}
                     >
-                      Revoke
+                      撤销
                     </button>
                   )}
                   {["DISABLED", "REVOKED"].includes(
@@ -560,7 +562,7 @@ export function DomainRegistry({
                         void transitionInstallation("logical-uninstall")
                       }
                     >
-                      Logical uninstall
+                      逻辑卸载
                     </button>
                   )}
                 </div>
@@ -571,7 +573,7 @@ export function DomainRegistry({
       </section>
 
       <label className="governance-reason">
-        Governance reason
+        治理操作原因
         <input
           value={reason}
           onChange={(event) => {
@@ -628,7 +630,11 @@ function Digest({ label, value }: { label: string; value: string }) {
 }
 
 function StateBadge({ state }: { state: string }) {
-  return <span className={`state-badge ${state.toLowerCase()}`}>{state}</span>;
+  return (
+    <span className={`state-badge ${state.toLowerCase()}`}>
+      {stateLabel(state)}
+    </span>
+  );
 }
 
 function LockSummary({
@@ -645,7 +651,7 @@ function LockSummary({
         <StateBadge state={installation.derivedHealth.health} />
       </div>
       <Digest
-        label="Lock digest"
+        label="依赖锁摘要"
         value={installation.immutableFacts.lockDigest}
       />
       <div className="lock-nodes">
@@ -655,11 +661,77 @@ function LockSummary({
           </span>
         ))}
       </div>
-      <small>
-        authorizationEffect=NONE · runtimeStateCreated=false ·
-        semanticRuntimeReady=false
-      </small>
+      <small>不产生授权 · 未创建运行状态 · 语义运行时尚未启用</small>
     </div>
+  );
+}
+
+function kindLabel(kind: string): string {
+  return (
+    {
+      DOMAIN: "领域包",
+      ORGANIZATION_OVERLAY: "组织扩展包",
+      SCENARIO: "场景包",
+      COMPONENT: "能力组件",
+    }[kind] ?? kind
+  );
+}
+
+function visibilityLabel(visibility: string): string {
+  return (
+    {
+      PUBLIC: "公开",
+      PARTNER: "合作伙伴可见",
+      ORGANIZATION_PRIVATE: "组织私有",
+      PRIVATE: "私有",
+    }[visibility] ?? visibility
+  );
+}
+
+function trustLabel(trust: string): string {
+  return (
+    {
+      FIRST_PARTY_LOCAL: "本地第一方",
+      THIRD_PARTY_UNVERIFIED: "第三方未核验",
+    }[trust] ?? trust
+  );
+}
+
+function classificationLabel(classification: string): string {
+  return (
+    {
+      PUBLIC: "公开内容",
+      INTERNAL: "内部内容",
+      CONFIDENTIAL: "机密内容",
+      RESTRICTED: "受限内容",
+    }[classification] ?? classification
+  );
+}
+
+function installationTransitionLabel(transition: string): string {
+  return (
+    {
+      disable: "停用",
+      revoke: "撤销",
+      "logical-uninstall": "逻辑卸载",
+    }[transition] ?? transition
+  );
+}
+
+function stateLabel(state: string): string {
+  return (
+    {
+      REGISTERED_VALIDATED: "已登记校验",
+      QUARANTINED: "已隔离",
+      WITHDRAWN: "已撤回",
+      INSTALLED_DISABLED: "已安装未启用",
+      DISABLED: "已停用",
+      REVOKED: "已撤销",
+      LOGICALLY_UNINSTALLED: "已逻辑卸载",
+      HEALTHY_FOR_SELECTION: "状态正常",
+      AT_RISK: "存在风险",
+      BLOCKED_FOR_NEW_USE: "禁止新使用",
+    }[state] ?? state
   );
 }
 

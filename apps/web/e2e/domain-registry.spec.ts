@@ -40,9 +40,9 @@ async function registerThroughUi(
   manifest: Record<string, unknown>,
 ) {
   await page.getByLabel("FDS manifest JSON").fill(JSON.stringify(manifest));
-  await page.getByRole("button", { name: "Validate and register" }).click();
+  await page.getByRole("button", { name: "校验并登记" }).click();
   await expect(
-    page.getByText("registered from the strict server validator", {
+    page.getByText("已通过后端严格校验并完成登记", {
       exact: false,
     }),
   ).toBeVisible();
@@ -96,61 +96,61 @@ test("Owner governs real FDS locks; Viewer is read-only; withdrawal blocks new u
 
   await page.goto("/");
   await page
-    .getByLabel("Organization")
+    .getByLabel("组织", { exact: true })
     .selectOption(organization.organizationId);
-  await page.getByLabel("Workspace").selectOption(workspace.workspaceId);
-  await page.getByRole("button", { name: "Domain Registry" }).click();
+  await page
+    .getByLabel("工作空间", { exact: true })
+    .selectOption(workspace.workspaceId);
+  await page.getByRole("button", { name: "领域资产" }).click();
   await expect(
-    page.getByRole("heading", { name: "Domain Registry" }),
+    page.getByRole("heading", { name: "领域资产注册中心" }),
   ).toBeVisible();
-  await expect(page.getByText("NOT_ENTERPRISE_VERIFIED")).toBeVisible();
+  await expect(page.getByText("尚未完成企业验证")).toBeVisible();
 
   await registerThroughUi(page, loadExample("core-semantics.component.json"));
   await registerThroughUi(page, loadExample("reference-domain-a.domain.json"));
   await registerThroughUi(page, domainVersionTwo());
 
   await page
-    .getByLabel("Installation root")
+    .getByLabel("领域安装根包")
     .selectOption({ label: "org.forgeops.domain.reference-a@0.1.0" });
-  await page.getByRole("button", { name: "Preview lock" }).click();
-  await expect(page.getByText("Uncommitted preview")).toBeVisible();
+  await page.getByRole("button", { name: "预览依赖锁" }).click();
+  await expect(page.getByText("未提交的依赖预览")).toBeVisible();
   await expect(
-    page.getByText("runtimeStateCreated=false", { exact: false }).first(),
+    page.getByText("未创建运行状态", { exact: false }).first(),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Install disabled" }).click();
+  await page.getByRole("button", { name: "安装为未启用" }).click();
   await expect(
-    page.getByText("persisted as INSTALLED_DISABLED", { exact: false }),
+    page.getByText("已安装为“未启用”状态", { exact: false }),
   ).toBeVisible();
 
   await page
-    .getByLabel("Installation root")
+    .getByLabel("领域安装根包")
     .selectOption({ label: "org.forgeops.domain.reference-a@0.2.0" });
-  await page.getByRole("button", { name: "Preview lock" }).click();
-  await page.getByRole("button", { name: "Install disabled" }).click();
+  await page.getByRole("button", { name: "预览依赖锁" }).click();
+  await page.getByRole("button", { name: "安装为未启用" }).click();
 
   await page.reload();
   await page
-    .getByLabel("Organization")
+    .getByLabel("组织", { exact: true })
     .selectOption(organization.organizationId);
-  await page.getByLabel("Workspace").selectOption(workspace.workspaceId);
-  await page.getByRole("button", { name: "domain-lock", exact: true }).click();
   await page
-    .getByLabel("Project DomainLock installation")
-    .selectOption({ index: 1 });
-  await page.getByRole("button", { name: "Create current lock" }).click();
+    .getByLabel("工作空间", { exact: true })
+    .selectOption(workspace.workspaceId);
+  await page.getByRole("button", { name: "领域锁", exact: true }).click();
+  await page.getByLabel("项目领域锁安装版本").selectOption({ index: 1 });
+  await page.getByRole("button", { name: "创建当前领域锁" }).click();
   await expect(page.getByTestId("current-domain-lock")).toContainText(
     "org.forgeops.domain.reference-a",
   );
 
-  await page
-    .getByLabel("Project DomainLock installation")
-    .selectOption({ index: 2 });
-  await expect(page.getByTestId("domain-lock-diff")).toContainText("1 changed");
-  await page.getByRole("button", { name: "Confirm lock switch" }).click();
+  await page.getByLabel("项目领域锁安装版本").selectOption({ index: 2 });
+  await expect(page.getByTestId("domain-lock-diff")).toContainText("变更 1");
+  await page.getByRole("button", { name: "确认切换版本" }).click();
   await expect(page.getByTestId("current-domain-lock")).toContainText("0.2.0");
   await expect(page.locator(".lock-history-row")).toHaveCount(2);
   await expect(page.locator(".lock-history-row").last()).toContainText(
-    "SUPERSEDED",
+    "历史版本",
   );
 
   const membership = await page.request.post(
@@ -166,44 +166,42 @@ test("Owner governs real FDS locks; Viewer is read-only; withdrawal blocks new u
     },
   );
   expect(membership.status()).toBe(201);
-  await page.getByLabel("Synthetic principal").selectOption("local-viewer");
-  await page.getByRole("button", { name: "domain-lock", exact: true }).click();
+  await page.getByLabel("演示角色").selectOption("local-viewer");
+  await page.getByRole("button", { name: "领域锁", exact: true }).click();
   await expect(page.getByTestId("current-domain-lock")).toBeVisible();
-  await expect(page.getByLabel("Project DomainLock installation")).toHaveCount(
-    0,
-  );
+  await expect(page.getByLabel("项目领域锁安装版本")).toHaveCount(0);
   await expect(
-    page.getByText("Read-only DomainLock summary", { exact: false }),
+    page.getByText("只能查看领域锁摘要", { exact: false }),
   ).toBeVisible();
 
-  await page.getByLabel("Synthetic principal").selectOption("local-owner");
-  await page.getByRole("button", { name: "Domain Registry" }).click();
+  await page.getByLabel("演示角色").selectOption("local-owner");
+  await page.getByRole("button", { name: "领域资产" }).click();
   await page
     .getByRole("button", {
       name: /org\.forgeops\.component\.core-semantics/,
     })
     .click();
-  await page.getByRole("button", { name: "Withdraw" }).click();
+  await page.getByRole("button", { name: "撤回版本" }).click();
   await expect(page.getByTestId("package-impact")).toContainText(
-    "2 installations",
+    "2 个组织安装",
   );
   await expect(page.getByTestId("package-impact")).toContainText(
-    "2 project locks",
+    "2 个项目领域锁",
   );
 
   await page.reload();
   await page
-    .getByLabel("Organization")
+    .getByLabel("组织", { exact: true })
     .selectOption(organization.organizationId);
-  await page.getByLabel("Workspace").selectOption(workspace.workspaceId);
-  await page.getByRole("button", { name: "domain-lock", exact: true }).click();
-  await expect(page.getByTestId("current-domain-lock")).toContainText(
-    "AT_RISK",
-  );
   await page
-    .getByLabel("Project DomainLock installation")
-    .selectOption({ index: 2 });
-  await page.getByRole("button", { name: "Confirm lock switch" }).click();
+    .getByLabel("工作空间", { exact: true })
+    .selectOption(workspace.workspaceId);
+  await page.getByRole("button", { name: "领域锁", exact: true }).click();
+  await expect(page.getByTestId("current-domain-lock")).toContainText(
+    "存在风险",
+  );
+  await page.getByLabel("项目领域锁安装版本").selectOption({ index: 2 });
+  await page.getByRole("button", { name: "确认切换版本" }).click();
   await expect(
     page.getByText("WITHDRAWN_OR_QUARANTINED_DEPENDENCY", { exact: false }),
   ).toBeVisible();

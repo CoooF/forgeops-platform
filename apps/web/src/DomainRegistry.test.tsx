@@ -22,10 +22,10 @@ describe("FDS Registry governance surfaces", () => {
       />,
     );
 
-    expect(markup).toContain("Domain Registry");
-    expect(markup).toContain("No package version is visible");
-    expect(markup).toContain("NOT_ENTERPRISE_VERIFIED");
-    expect(markup).toContain("Runtime capability not enabled");
+    expect(markup).toContain("领域资产注册中心");
+    expect(markup).toContain("还没有可见的能力包版本");
+    expect(markup).toContain("尚未完成企业验证");
+    expect(markup).toContain("不会自动启用运行能力");
   });
 
   it("renders a Viewer-safe current lock and immutable history without controls", () => {
@@ -45,10 +45,10 @@ describe("FDS Registry governance surfaces", () => {
     );
 
     expect(markup).toContain("org.forgeops.domain.synthetic@0.1.0");
-    expect(markup).toContain("authorizationEffect=NONE");
-    expect(markup).toContain("runtimeBindingCreated=false");
-    expect(markup).toContain("Read-only DomainLock summary");
-    expect(markup).not.toContain("Confirm lock switch");
+    expect(markup).toContain("不产生授权");
+    expect(markup).toContain("未创建运行绑定");
+    expect(markup).toContain("只能查看领域锁摘要");
+    expect(markup).not.toContain("确认切换版本");
   });
 });
 
