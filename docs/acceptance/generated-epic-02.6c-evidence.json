@@ -31,7 +31,7 @@
     "contracts/semantic/semantic-payload.schema.json": "sha256:fd087582ccc73accfd0aa2ae5b4eb2401b14c38d29ac27361a091b79256d9aa3",
     "contracts/semantic/semantic-query-result.schema.json": "sha256:64d8c037d1df12c2de9c1e2ecbfb1c51c99190836f34f56c7c160e8780936b2a"
   },
-  "createdAt": "2026-08-01T13:12:57.110336+00:00",
+  "createdAt": "2026-08-01T13:14:27.143286+00:00",
   "enterpriseApproval": "NOT_GRANTED",
   "epicStatus": {
     "EPIC-02.6": "CLARIFYING_PARTIAL",
@@ -42,7 +42,7 @@
     "EPIC-03": "NOT_STARTED"
   },
   "evidenceArtifactCommit": "5591dc59fd159df0a4f8e47214f0ff3d0dc504a5",
-  "evidenceId": "EPIC-02.6C-20260801T131257Z",
+  "evidenceId": "EPIC-02.6C-20260801T131427Z",
   "fixturesAndExecutableEvidence": {
     "apps/web/e2e/semantic-knowledge.spec.ts": "sha256:2303a425341cb164efbe279a7c6b69490bc621fd2590f36a4f7f8988a60b1e48",
     "apps/web/src/ProjectContext.tsx": "sha256:f4de1f79c0c8143d3b3d54d1de21cd63f41a0dc226cae2b28fc27b1115cfa956",
@@ -145,5 +145,5 @@
     "TEST-WEB-SEM-001",
     "TEST-ARCH-005"
   ],
-  "verifiedSourceCommit": "5591dc59fd159df0a4f8e47214f0ff3d0dc504a5"
+  "verifiedSourceCommit": "50853d34f245ee3152c111121c765dd6ac8459d4"
 }
