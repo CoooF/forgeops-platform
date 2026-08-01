@@ -17,6 +17,39 @@ uv run uvicorn forgeops.api:create_app --factory --host 127.0.0.1 --port 8000
 
 Use `X-ForgeOps-Actor: local-owner` on all non-health requests. A missing header must return `UNAUTHORIZED`.
 
+## EPIC-02.6B Registry governance walkthrough
+
+Start the API as above, then start the Web shell in a second terminal:
+
+```bash
+pnpm --filter @forgeops/web run dev
+```
+
+Open the printed local Web URL. The top-level **Domain Registry** surface uses the real
+`/v1/fds/package-versions` and Organization Installation APIs. Select an active Project and
+open **DomainLock** to create or switch the Project's current immutable lock and inspect
+SUPERSEDED history. The page deliberately labels the state as `LOCAL_SYNTHETIC`,
+`NOT_ENTERPRISE_VERIFIED`, `authorizationEffect=NONE`, `semanticRuntimeReady=false`, and
+`runtimeBindingCreated=false`.
+
+For a stable five-minute API/database walkthrough that creates an isolated SQLite database,
+runs a successful version switch, proves Viewer/Outsider boundaries, withdraws a transitive
+dependency, verifies impact, and restarts the application, run:
+
+```bash
+make epic-02-6b-owner-demo
+```
+
+For the real browser/API path, run:
+
+```bash
+make e2e
+```
+
+The browser test starts a real local API and Web server. It does not use browser-local arrays
+as Registry state and does not contact an external Registry, model, artifact service, or
+control system.
+
 ## Verification and evidence
 
 ```bash
@@ -26,9 +59,16 @@ make smoke
 make web-smoke
 make sbom
 make evidence
+make epic-02-6b
+make epic-02-6b-owner-demo
+make epic-02-6b-evidence
 ```
 
 `make evidence` requires an existing Git commit and the SBOM outputs from the immediately preceding verified run; it binds their digests to that commit.
+
+`make epic-02-6b-evidence` likewise requires a clean, committed, already verified source tree.
+It records local test/gate results and digests; it does not rerun enterprise or production
+checks and cannot grant enterprise approval.
 
 Run `uv run alembic downgrade base && uv run alembic upgrade head` only against a disposable local database. Do not use migration downgrade against any shared or enterprise environment.
 

@@ -10,3 +10,4 @@ These decisions are `ACCEPTED_FOR_LOCAL_SYNTHETIC_ENGINEERING` only. They are no
 | 0004 | PostgreSQL target with file-backed direct-run fallback |
 | 0005 | Local identity, scoped authorization and non-destructive project boundary |
 | 0006 | FDS v0.1 contract kernel, deterministic lock, and non-mutating legacy adapter |
+| 0007 | FDS Registry, Organization installation, immutable Project DomainLock, and withdrawal impact |

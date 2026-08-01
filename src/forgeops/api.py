@@ -17,9 +17,13 @@ from sqlalchemy import Engine, text
 from sqlalchemy.exc import SQLAlchemyError
 
 from forgeops.config import ActionAdapterKind, Settings
+from forgeops.domain_registry_api import register_domain_registry_routes
 from forgeops.identity_api import register_identity_routes
 from forgeops.observability import configure_observability
 from forgeops.platform_adapters.postgres.database import create_engine_and_session
+from forgeops.platform_adapters.postgres.domain_registry_repository import (
+    SqlDomainRegistryRepository,
+)
 from forgeops.platform_adapters.postgres.identity_repository import SqlIdentityRepository
 from forgeops.platform_adapters.postgres.repositories import (
     SqlAuditRepository,
@@ -27,6 +31,7 @@ from forgeops.platform_adapters.postgres.repositories import (
 )
 from forgeops.platform_contracts.domain import Environment
 from forgeops.platform_contracts.errors import ErrorCode, ForgeOpsError
+from forgeops.platform_core.domain_registry.service import DomainRegistryService
 from forgeops.platform_core.identity_access.auth import auth_adapter_for_environment
 from forgeops.platform_core.identity_access.policy import Permission
 from forgeops.platform_core.identity_access.service import ActorContext, IdentityAccessService
@@ -105,6 +110,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         resolved.environment,
         lambda action, result: AUTHORIZATION_DECISIONS.labels(action, result).inc(),
     )
+    domain_repository = SqlDomainRegistryRepository(session_factory)
+    domain_registry = DomainRegistryService(domain_repository, identity_repository, audit)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -121,8 +128,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="ForgeOps Platform API",
-        version="0.2.5",
-        description="Local synthetic EPIC-01/02.5 baseline; advisory-only",
+        version="0.2.6b",
+        description="Local synthetic EPIC-01/02.6B Registry engineering; advisory-only",
         lifespan=lifespan,
     )
     app.state.settings = resolved
@@ -131,7 +138,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.audit = audit
     app.state.packages = packages
     app.state.identity = identity
+    app.state.domain_registry = domain_registry
     register_identity_routes(app, identity)
+    register_domain_registry_routes(app, domain_registry)
 
     @app.exception_handler(ForgeOpsError)
     async def forgeops_error_handler(_: Request, exc: ForgeOpsError) -> JSONResponse:
@@ -195,6 +204,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "identityMode": "LOCAL_SYNTHETIC",
             "enterpriseIdentityConnected": False,
             "projectScopeEnabled": True,
+            "fdsRegistryEnabled": True,
+            "organizationDomainInstallationEnabled": True,
+            "projectDomainLockEnabled": True,
+            "semanticRuntimeEnabled": False,
+            "workflowRuntimeEnabled": False,
         }
 
     @app.post("/v1/scenario-packages:validate", tags=["scenario-packages"])

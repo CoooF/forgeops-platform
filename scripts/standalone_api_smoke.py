@@ -127,6 +127,55 @@ def main() -> None:
             idempotency_key="standalone-smoke-project",
         )
         project_id = project["projectId"]
+        if project["state"] == "DRAFT":
+            project = request_json(
+                f"/v1/projects/{project_id}:activate",
+                method="POST",
+                body={"expectedVersion": project["version"]},
+            )
+        fds_component = request_json(
+            "/v1/fds/package-versions",
+            method="POST",
+            body={
+                "manifest": json.loads(
+                    (ROOT / "contracts/fds/examples/core-semantics.component.json").read_text()
+                )
+            },
+            idempotency_key="standalone-smoke-fds-component",
+        )
+        fds_domain = request_json(
+            "/v1/fds/package-versions",
+            method="POST",
+            body={
+                "manifest": json.loads(
+                    (ROOT / "contracts/fds/examples/reference-domain-a.domain.json").read_text()
+                )
+            },
+            idempotency_key="standalone-smoke-fds-domain",
+        )
+        domain_installation = request_json(
+            f"/v1/organizations/{organization['organizationId']}/domain-installations",
+            method="POST",
+            body={
+                "rootPackageVersionId": fds_domain["packageVersionId"],
+                "targetVersions": {
+                    "platform": "0.1.0",
+                    "fds": "0.1.0",
+                    "scenarioSdk": "0.1.0",
+                },
+                "includeOptional": False,
+            },
+            idempotency_key="standalone-smoke-domain-installation",
+        )
+        domain_lock = request_json(
+            f"/v1/projects/{project_id}/domain-locks",
+            method="POST",
+            body={
+                "installationId": domain_installation["installationId"],
+                "purpose": "SYNTHETIC restart smoke",
+            },
+            idempotency_key="standalone-smoke-domain-lock",
+        )
     finally:
         stop_server(first)
 
@@ -140,6 +189,12 @@ def main() -> None:
         project_persisted = persisted_project["projectId"] == project_id
         if not project_persisted:
             raise RuntimeError("project state was not persisted across API restart")
+        persisted_domain_lock = request_json(f"/v1/projects/{project_id}/domain-locks/current")
+        domain_lock_persisted = (
+            persisted_domain_lock["projectDomainLockId"] == domain_lock["projectDomainLockId"]
+        )
+        if not domain_lock_persisted:
+            raise RuntimeError("Project DomainLock was not persisted across API restart")
     finally:
         stop_server(second)
 
@@ -152,6 +207,9 @@ def main() -> None:
         "projectId": project_id,
         "persistedAcrossRestart": persisted,
         "projectPersistedAcrossRestart": project_persisted,
+        "fdsPackageVersionId": fds_component["packageVersionId"],
+        "domainInstallationId": domain_installation["installationId"],
+        "projectDomainLockPersistedAcrossRestart": domain_lock_persisted,
         "identityMode": status["identityMode"],
         "database": str(DATABASE_PATH.relative_to(ROOT)),
         "passed": True,

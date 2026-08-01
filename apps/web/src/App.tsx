@@ -13,17 +13,22 @@ import {
   LOCAL_ACTORS,
   type AuditEvent,
   type BindableInstallation,
+  type DomainInstallation,
   type Me,
   type Membership,
   type Organization,
   type Project,
   type ProjectBinding,
+  type ProjectDomainLock,
   type Workspace,
 } from "./project-api";
+import { DomainRegistry } from "./DomainRegistry";
+import { ProjectDomainLockPanel } from "./ProjectDomainLock";
 import type { PlatformStatus } from "./status";
 import "./styles.css";
 
-type Tab = "overview" | "members" | "packages" | "audit";
+type Tab = "overview" | "members" | "packages" | "domain-lock" | "audit";
+type Surface = "projects" | "registry";
 type LoadState = "loading" | "ready" | "error";
 
 interface ProjectContext {
@@ -31,6 +36,8 @@ interface ProjectContext {
   members: Membership[];
   bindings: ProjectBinding[];
   bindable: BindableInstallation[];
+  domainInstallations: DomainInstallation[];
+  domainLocks: ProjectDomainLock[];
   audit: AuditEvent[];
 }
 
@@ -39,6 +46,8 @@ const EMPTY_CONTEXT: ProjectContext = {
   members: [],
   bindings: [],
   bindable: [],
+  domainInstallations: [],
+  domainLocks: [],
   audit: [],
 };
 
@@ -56,6 +65,7 @@ export function App() {
   const [projectContext, setProjectContext] =
     useState<ProjectContext>(EMPTY_CONTEXT);
   const [tab, setTab] = useState<Tab>("overview");
+  const [surface, setSurface] = useState<Surface>("projects");
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [notice, setNotice] = useState("");
@@ -111,14 +121,32 @@ export function App() {
         selectedActor,
         selectedProjectId,
       );
-      const [members, bindings] = await Promise.all([
+      const [members, bindings, domainLocks] = await Promise.all([
         api.projectMembers(selectedActor, selectedProjectId),
         api.projectBindings(selectedActor, selectedProjectId),
+        permissions.permissions.includes("fds.domain-lock.history.view")
+          ? api.projectDomainLocks(selectedActor, selectedProjectId)
+          : permissions.permissions.includes("fds.domain-lock.view")
+            ? api
+                .currentProjectDomainLock(selectedActor, selectedProjectId)
+                .then((item) => ({
+                  items: item ? [item] : [],
+                  total: item ? 1 : 0,
+                  limit: 1,
+                  offset: 0,
+                }))
+            : Promise.resolve({ items: [], total: 0, limit: 100, offset: 0 }),
       ]);
       let bindable: BindableInstallation[] = [];
+      let domainInstallations: DomainInstallation[] = [];
       if (permissions.permissions.includes("package.bind")) {
         bindable = (
           await api.bindableInstallations(selectedActor, selectedProjectId)
+        ).items;
+      }
+      if (permissions.permissions.includes("fds.domain-lock.manage")) {
+        domainInstallations = (
+          await api.projectDomainInstallations(selectedActor, selectedProjectId)
         ).items;
       }
       setProjectContext({
@@ -126,6 +154,8 @@ export function App() {
         members: members.items,
         bindings: bindings.items,
         bindable,
+        domainInstallations,
+        domainLocks: domainLocks.items,
         audit: [],
       });
     },
@@ -169,7 +199,7 @@ export function App() {
   );
 
   const reloadSession = useCallback(
-    async (selectedActor: string) => {
+    async (selectedActor: string, preferredOrganizationId?: string) => {
       setLoadState("loading");
       setError("");
       setNotice("");
@@ -178,7 +208,12 @@ export function App() {
         setStatus(session.status);
         setMe(session.me);
         setOrganizations(session.organizations);
-        const nextOrganization = session.organizations[0]?.organizationId ?? "";
+        const nextOrganization =
+          session.organizations.find(
+            (item) => item.organizationId === preferredOrganizationId,
+          )?.organizationId ??
+          session.organizations[0]?.organizationId ??
+          "";
         setOrganizationId(nextOrganization);
         await loadWorkspaces(selectedActor, nextOrganization);
         setLoadState("ready");
@@ -287,9 +322,33 @@ export function App() {
           <span>F/O</span>
           <div>
             <strong>ForgeOps</strong>
-            <small>Project Center</small>
+            <small>
+              {surface === "projects" ? "Project Center" : "Domain Registry"}
+            </small>
           </div>
         </div>
+        <nav
+          className="surface-switcher"
+          aria-label="ForgeOps management areas"
+        >
+          <button
+            aria-label="Project Center"
+            className={surface === "projects" ? "active" : ""}
+            onClick={() => {
+              setSurface("projects");
+            }}
+          >
+            Projects
+          </button>
+          <button
+            className={surface === "registry" ? "active" : ""}
+            onClick={() => {
+              setSurface("registry");
+            }}
+          >
+            Domain Registry
+          </button>
+        </nav>
         <div className="boundary-strip" aria-label="platform safety boundary">
           <Boundary label="Mode" value="Advisory only" />
           <Boundary label="Data" value={status.dataMode} />
@@ -369,132 +428,158 @@ export function App() {
         </div>
       </aside>
 
-      <main className="workspace">
-        <div className="workspace-heading">
-          <div>
-            <p className="section-label">
-              {organization?.slug ?? "NO ORGANIZATION"}
-            </p>
-            <h1>{workspace?.name ?? "Create a governed project scope"}</h1>
-            <p>
-              Projects isolate memberships, package bindings, lifecycle state,
-              and audit evidence.
-            </p>
-          </div>
-          <div className="scope-actions">
-            {organizations.length === 0 && hasPlatformOwner(me) && (
-              <CreateOrganization
-                actor={actor}
-                run={run}
-                reload={() => reloadSession(actor)}
-              />
-            )}
-            {organization?.state === "ACTIVE" &&
-              hasOrganizationAdmin(me, organizationId) && (
-                <CreateWorkspace
+      {surface === "registry" ? (
+        <DomainRegistry
+          actor={actor}
+          organizationId={organizationId}
+          canRegisterPublic={hasPublicRegistryManager(me)}
+          canManageOrganization={
+            organization?.state === "ACTIVE" &&
+            hasOrganizationAdmin(me, organizationId)
+          }
+          pending={pending}
+          run={run}
+          notice={notice}
+          error={error}
+        />
+      ) : (
+        <main className="workspace">
+          <div className="workspace-heading">
+            <div>
+              <p className="section-label">
+                {organization?.slug ?? "NO ORGANIZATION"}
+              </p>
+              <h1>{workspace?.name ?? "Create a governed project scope"}</h1>
+              <p>
+                Projects isolate memberships, package bindings, lifecycle state,
+                and audit evidence.
+              </p>
+            </div>
+            <div className="scope-actions">
+              {hasPlatformOwner(me) && (
+                <CreateOrganization
                   actor={actor}
-                  organizationId={organizationId}
                   run={run}
-                  reload={() => loadWorkspaces(actor, organizationId)}
+                  reload={(createdOrganizationId) =>
+                    reloadSession(actor, createdOrganizationId)
+                  }
                 />
               )}
-            {workspace?.state === "ACTIVE" &&
-              hasProjectCreator(me, organizationId, workspaceId) && (
-                <CreateProject
-                  actor={actor}
-                  workspaceId={workspaceId}
-                  run={run}
-                  reload={() => loadProjects(actor, workspaceId)}
+              {organization?.state === "ACTIVE" &&
+                hasOrganizationAdmin(me, organizationId) && (
+                  <CreateWorkspace
+                    actor={actor}
+                    organizationId={organizationId}
+                    run={run}
+                    reload={() => loadWorkspaces(actor, organizationId)}
+                  />
+                )}
+              {workspace?.state === "ACTIVE" &&
+                hasProjectCreator(me, organizationId, workspaceId) && (
+                  <CreateProject
+                    actor={actor}
+                    workspaceId={workspaceId}
+                    run={run}
+                    reload={() => loadProjects(actor, workspaceId)}
+                  />
+                )}
+            </div>
+          </div>
+
+          {(notice || error) && (
+            <div
+              className={
+                error ? "message error-message" : "message success-message"
+              }
+              role="status"
+            >
+              {error || notice}
+            </div>
+          )}
+
+          <section className="project-layout">
+            <div className="project-index">
+              <div className="index-tools">
+                <input
+                  aria-label="Search projects"
+                  placeholder="Search projects"
+                  value={search}
+                  onChange={(event) => {
+                    setSearch(event.target.value);
+                  }}
                 />
-              )}
-          </div>
-        </div>
-
-        {(notice || error) && (
-          <div
-            className={
-              error ? "message error-message" : "message success-message"
-            }
-            role="status"
-          >
-            {error || notice}
-          </div>
-        )}
-
-        <section className="project-layout">
-          <div className="project-index">
-            <div className="index-tools">
-              <input
-                aria-label="Search projects"
-                placeholder="Search projects"
-                value={search}
-                onChange={(event) => {
-                  setSearch(event.target.value);
-                }}
-              />
-              <select
-                aria-label="Filter project status"
-                value={statusFilter}
-                onChange={(event) => {
-                  setStatusFilter(event.target.value);
-                }}
-              >
-                <option value="ALL">All states</option>
-                <option value="DRAFT">Draft</option>
-                <option value="ACTIVE">Active</option>
-                <option value="ARCHIVED">Archived</option>
-              </select>
+                <select
+                  aria-label="Filter project status"
+                  value={statusFilter}
+                  onChange={(event) => {
+                    setStatusFilter(event.target.value);
+                  }}
+                >
+                  <option value="ALL">All states</option>
+                  <option value="DRAFT">Draft</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="ARCHIVED">Archived</option>
+                </select>
+              </div>
+              <div className="project-count">
+                <span>Visible projects</span>
+                <strong>
+                  {visibleProjects.length.toString().padStart(2, "0")}
+                </strong>
+              </div>
+              <nav aria-label="Projects">
+                {visibleProjects.length === 0 ? (
+                  <EmptyState text="No projects match this scope and filter." />
+                ) : (
+                  visibleProjects.map((item) => (
+                    <button
+                      className={
+                        item.projectId === projectId
+                          ? "project-row selected"
+                          : "project-row"
+                      }
+                      key={item.projectId}
+                      onClick={() => void selectProject(item.projectId)}
+                    >
+                      <span
+                        className={`state-dot ${item.state.toLowerCase()}`}
+                      />
+                      <span>
+                        <strong>{item.name}</strong>
+                        <small>{item.slug}</small>
+                      </span>
+                      <code>{item.state}</code>
+                    </button>
+                  ))
+                )}
+              </nav>
             </div>
-            <div className="project-count">
-              <span>Visible projects</span>
-              <strong>
-                {visibleProjects.length.toString().padStart(2, "0")}
-              </strong>
-            </div>
-            <nav aria-label="Projects">
-              {visibleProjects.length === 0 ? (
-                <EmptyState text="No projects match this scope and filter." />
+
+            <div className="project-detail">
+              {!project ? (
+                <EmptyState text="Select or create a project to inspect its governed state." />
               ) : (
-                visibleProjects.map((item) => (
-                  <button
-                    className={
-                      item.projectId === projectId
-                        ? "project-row selected"
-                        : "project-row"
-                    }
-                    key={item.projectId}
-                    onClick={() => void selectProject(item.projectId)}
-                  >
-                    <span className={`state-dot ${item.state.toLowerCase()}`} />
-                    <span>
-                      <strong>{item.name}</strong>
-                      <small>{item.slug}</small>
-                    </span>
-                    <code>{item.state}</code>
-                  </button>
-                ))
-              )}
-            </nav>
-          </div>
-
-          <div className="project-detail">
-            {!project ? (
-              <EmptyState text="Select or create a project to inspect its governed state." />
-            ) : (
-              <>
-                <div className="detail-heading">
-                  <div>
-                    <div className="title-line">
-                      <h2>{project.name}</h2>
-                      <StateBadge state={project.state} />
+                <>
+                  <div className="detail-heading">
+                    <div>
+                      <div className="title-line">
+                        <h2>{project.name}</h2>
+                        <StateBadge state={project.state} />
+                      </div>
+                      <code>{project.projectId}</code>
                     </div>
-                    <code>{project.projectId}</code>
+                    <span className="version-chip">v{project.version}</span>
                   </div>
-                  <span className="version-chip">v{project.version}</span>
-                </div>
-                <nav className="tabs" aria-label="Project detail views">
-                  {(["overview", "members", "packages", "audit"] as const).map(
-                    (item) => (
+                  <nav className="tabs" aria-label="Project detail views">
+                    {(
+                      [
+                        "overview",
+                        "members",
+                        "packages",
+                        "domain-lock",
+                        "audit",
+                      ] as const
+                    ).map((item) => (
                       <button
                         key={item}
                         className={tab === item ? "active" : ""}
@@ -502,59 +587,81 @@ export function App() {
                       >
                         {item}
                       </button>
-                    ),
-                  )}
-                </nav>
+                    ))}
+                  </nav>
 
-                {tab === "overview" && (
-                  <Overview
-                    project={project}
-                    can={can}
-                    actor={actor}
-                    pending={pending}
-                    run={run}
-                    reload={refreshCurrentProject}
-                  />
-                )}
-                {tab === "members" && (
-                  <Members
-                    members={projectContext.members}
-                    canManage={
-                      can("membership.manage") && project.state !== "ARCHIVED"
-                    }
-                    actor={actor}
-                    organizationId={organizationId}
-                    projectId={project.projectId}
-                    pending={pending}
-                    run={run}
-                    reload={() => loadProjectContext(actor, project.projectId)}
-                  />
-                )}
-                {tab === "packages" && (
-                  <Packages
-                    bindings={projectContext.bindings}
-                    bindable={projectContext.bindable}
-                    canBind={
-                      can("package.bind") && project.state !== "ARCHIVED"
-                    }
-                    actor={actor}
-                    projectId={project.projectId}
-                    pending={pending}
-                    run={run}
-                    reload={() => loadProjectContext(actor, project.projectId)}
-                  />
-                )}
-                {tab === "audit" && (
-                  <Audit
-                    events={projectContext.audit}
-                    allowed={can("audit.read")}
-                  />
-                )}
-              </>
-            )}
-          </div>
-        </section>
-      </main>
+                  {tab === "overview" && (
+                    <Overview
+                      project={project}
+                      can={can}
+                      actor={actor}
+                      pending={pending}
+                      run={run}
+                      reload={refreshCurrentProject}
+                    />
+                  )}
+                  {tab === "members" && (
+                    <Members
+                      members={projectContext.members}
+                      canManage={
+                        can("membership.manage") && project.state !== "ARCHIVED"
+                      }
+                      actor={actor}
+                      organizationId={organizationId}
+                      projectId={project.projectId}
+                      pending={pending}
+                      run={run}
+                      reload={() =>
+                        loadProjectContext(actor, project.projectId)
+                      }
+                    />
+                  )}
+                  {tab === "packages" && (
+                    <Packages
+                      bindings={projectContext.bindings}
+                      bindable={projectContext.bindable}
+                      canBind={
+                        can("package.bind") && project.state !== "ARCHIVED"
+                      }
+                      actor={actor}
+                      projectId={project.projectId}
+                      pending={pending}
+                      run={run}
+                      reload={() =>
+                        loadProjectContext(actor, project.projectId)
+                      }
+                    />
+                  )}
+                  {tab === "domain-lock" && (
+                    <ProjectDomainLockPanel
+                      actor={actor}
+                      projectId={project.projectId}
+                      projectActive={project.state === "ACTIVE"}
+                      locks={projectContext.domainLocks}
+                      installations={projectContext.domainInstallations}
+                      canManage={
+                        can("fds.domain-lock.manage") &&
+                        project.state !== "ARCHIVED"
+                      }
+                      pending={pending}
+                      run={run}
+                      reload={() =>
+                        loadProjectContext(actor, project.projectId)
+                      }
+                    />
+                  )}
+                  {tab === "audit" && (
+                    <Audit
+                      events={projectContext.audit}
+                      allowed={can("audit.read")}
+                    />
+                  )}
+                </>
+              )}
+            </div>
+          </section>
+        </main>
+      )}
     </div>
   );
 }
@@ -901,7 +1008,7 @@ function CreateOrganization({
 }: {
   actor: string;
   run: (operation: () => Promise<void>, success: string) => Promise<void>;
-  reload: () => Promise<void>;
+  reload: (organizationId: string) => Promise<void>;
 }) {
   return (
     <CompactForm
@@ -909,11 +1016,11 @@ function CreateOrganization({
       fields={["name", "slug"]}
       submit={async (values) => {
         await run(async () => {
-          await api.createOrganization(actor, {
+          const created = await api.createOrganization(actor, {
             name: values.name ?? "",
             slug: values.slug ?? "",
           });
-          await reload();
+          await reload(created.organizationId);
         }, "Organization created with an explicit Owner membership.");
       }}
     />
@@ -1210,6 +1317,15 @@ function hasPlatformOwner(me: Me): boolean {
       membership.state === "ACTIVE" &&
       membership.scopeType === "PLATFORM" &&
       membership.role === "ORG_OWNER",
+  );
+}
+
+function hasPublicRegistryManager(me: Me): boolean {
+  return me.memberships.some(
+    (membership) =>
+      membership.state === "ACTIVE" &&
+      membership.scopeType === "PLATFORM" &&
+      ["ORG_OWNER", "PACKAGE_OPERATOR"].includes(membership.role),
   );
 }
 

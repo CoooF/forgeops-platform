@@ -34,6 +34,14 @@ class Permission(StrEnum):
     PACKAGE_REGISTRY_VIEW = "package.registry.view"
     PACKAGE_REGISTRY_MANAGE = "package.registry.manage"
     AUDIT_READ = "audit.read"
+    FDS_REGISTRY_VIEW = "fds.registry.view"
+    FDS_REGISTRY_MANAGE = "fds.registry.manage"
+    FDS_INSTALLATION_VIEW = "fds.installation.view"
+    FDS_INSTALLATION_MANAGE = "fds.installation.manage"
+    FDS_DOMAIN_LOCK_VIEW = "fds.domain-lock.view"
+    FDS_DOMAIN_LOCK_HISTORY_VIEW = "fds.domain-lock.history.view"
+    FDS_DOMAIN_LOCK_MANAGE = "fds.domain-lock.manage"
+    FDS_IMPACT_VIEW = "fds.impact.view"
 
 
 ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
@@ -56,6 +64,12 @@ ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
             Permission.MEMBERSHIP_MANAGE,
             Permission.PACKAGE_BIND,
             Permission.AUDIT_READ,
+            Permission.FDS_REGISTRY_VIEW,
+            Permission.FDS_INSTALLATION_VIEW,
+            Permission.FDS_DOMAIN_LOCK_VIEW,
+            Permission.FDS_DOMAIN_LOCK_HISTORY_VIEW,
+            Permission.FDS_DOMAIN_LOCK_MANAGE,
+            Permission.FDS_IMPACT_VIEW,
         }
     ),
     Role.PROJECT_OWNER: frozenset(
@@ -67,18 +81,32 @@ ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
             Permission.MEMBERSHIP_MANAGE,
             Permission.PACKAGE_BIND,
             Permission.AUDIT_READ,
+            Permission.FDS_REGISTRY_VIEW,
+            Permission.FDS_INSTALLATION_VIEW,
+            Permission.FDS_DOMAIN_LOCK_VIEW,
+            Permission.FDS_DOMAIN_LOCK_HISTORY_VIEW,
+            Permission.FDS_DOMAIN_LOCK_MANAGE,
+            Permission.FDS_IMPACT_VIEW,
         }
     ),
     Role.PROJECT_EDITOR: frozenset(
-        {Permission.PROJECT_VIEW, Permission.PROJECT_UPDATE, Permission.PROJECT_ACTIVATE}
+        {
+            Permission.PROJECT_VIEW,
+            Permission.PROJECT_UPDATE,
+            Permission.PROJECT_ACTIVATE,
+            Permission.FDS_DOMAIN_LOCK_VIEW,
+        }
     ),
-    Role.PROJECT_VIEWER: frozenset({Permission.PROJECT_VIEW}),
+    Role.PROJECT_VIEWER: frozenset({Permission.PROJECT_VIEW, Permission.FDS_DOMAIN_LOCK_VIEW}),
     Role.PACKAGE_OPERATOR: frozenset(
         {
             Permission.PROJECT_VIEW,
             Permission.PACKAGE_BIND,
             Permission.PACKAGE_REGISTRY_VIEW,
             Permission.PACKAGE_REGISTRY_MANAGE,
+            Permission.FDS_REGISTRY_VIEW,
+            Permission.FDS_REGISTRY_MANAGE,
+            Permission.FDS_IMPACT_VIEW,
         }
     ),
     Role.AUDITOR: frozenset(
@@ -88,6 +116,11 @@ ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
             Permission.PROJECT_VIEW,
             Permission.AUDIT_READ,
             Permission.PACKAGE_REGISTRY_VIEW,
+            Permission.FDS_REGISTRY_VIEW,
+            Permission.FDS_INSTALLATION_VIEW,
+            Permission.FDS_DOMAIN_LOCK_VIEW,
+            Permission.FDS_DOMAIN_LOCK_HISTORY_VIEW,
+            Permission.FDS_IMPACT_VIEW,
         }
     ),
 }

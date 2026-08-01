@@ -11,6 +11,7 @@ from sqlalchemy import (
     Index,
     Integer,
     String,
+    Text,
     UniqueConstraint,
     text,
 )
@@ -278,5 +279,208 @@ class IdempotencyRecordRow(Base):
     operation: Mapped[str] = mapped_column("action_name", String(64))
     idempotency_key: Mapped[str] = mapped_column(String(128))
     resource_type: Mapped[str] = mapped_column(String(32))
+    resource_id: Mapped[UUID]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class FdsPackageVersionRow(Base):
+    __tablename__ = "fds_package_versions"
+    __table_args__ = (
+        UniqueConstraint("package_id", "package_version", name="uq_fds_package_version"),
+        CheckConstraint(
+            "kind IN ('DOMAIN', 'ORGANIZATION_OVERLAY', 'SCENARIO', 'COMPONENT')",
+            name="ck_fds_package_versions_kind",
+        ),
+        CheckConstraint(
+            "state IN ('REGISTERED_VALIDATED', 'QUARANTINED', 'WITHDRAWN', "
+            "'LOGICALLY_UNINSTALLED')",
+            name="ck_fds_package_versions_state",
+        ),
+        CheckConstraint(
+            "(visibility = 'ORGANIZATION_PRIVATE' AND owner_organization_id IS NOT NULL) OR "
+            "(visibility <> 'ORGANIZATION_PRIVATE' AND owner_organization_id IS NULL)",
+            name="ck_fds_package_versions_owner_scope",
+        ),
+    )
+
+    package_version_id: Mapped[UUID] = mapped_column(primary_key=True)
+    package_id: Mapped[str] = mapped_column(String(128), index=True)
+    package_version: Mapped[str] = mapped_column(String(32))
+    kind: Mapped[str] = mapped_column(String(32), index=True)
+    component_kind: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    manifest: Mapped[dict[str, object]] = mapped_column(JSON)
+    normalized_manifest: Mapped[str] = mapped_column(Text)
+    manifest_digest: Mapped[str] = mapped_column(String(80), index=True)
+    content_digest: Mapped[str] = mapped_column(String(80), index=True)
+    artifact_ref: Mapped[str] = mapped_column(String(512))
+    sbom_ref: Mapped[str] = mapped_column(String(512))
+    signature_ref: Mapped[str] = mapped_column(String(128))
+    publisher: Mapped[str] = mapped_column(String(160))
+    namespace_owner: Mapped[str] = mapped_column(String(160))
+    license_id: Mapped[str] = mapped_column(String(120))
+    license_verified: Mapped[bool] = mapped_column(default=False)
+    provenance_ref: Mapped[str] = mapped_column(String(512))
+    provenance_digest: Mapped[str] = mapped_column(String(80))
+    visibility: Mapped[str] = mapped_column(String(32), index=True)
+    content_classification: Mapped[str] = mapped_column(String(32))
+    trust_tier: Mapped[str] = mapped_column(String(32))
+    owner_organization_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("organizations.organization_id"), nullable=True, index=True
+    )
+    state: Mapped[str] = mapped_column(String(32), index=True)
+    governance_reason: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    governed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by: Mapped[str] = mapped_column(String(256))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class FdsInstallationRow(Base):
+    __tablename__ = "fds_installations"
+    __table_args__ = (
+        UniqueConstraint(
+            "organization_id",
+            "root_package_version_id",
+            "lock_digest",
+            name="uq_fds_installation_lock",
+        ),
+        CheckConstraint(
+            "state IN ('INSTALLED_DISABLED', 'DISABLED', 'REVOKED', 'LOGICALLY_UNINSTALLED')",
+            name="ck_fds_installations_state",
+        ),
+    )
+
+    installation_id: Mapped[UUID] = mapped_column(primary_key=True)
+    organization_id: Mapped[UUID] = mapped_column(
+        ForeignKey("organizations.organization_id"), index=True
+    )
+    root_package_version_id: Mapped[UUID] = mapped_column(
+        ForeignKey("fds_package_versions.package_version_id"), index=True
+    )
+    root_package_id: Mapped[str] = mapped_column(String(128))
+    root_package_version: Mapped[str] = mapped_column(String(32))
+    root_kind: Mapped[str] = mapped_column(String(32))
+    dependency_lock: Mapped[dict[str, object]] = mapped_column(JSON)
+    lock_digest: Mapped[str] = mapped_column(String(80), index=True)
+    target_versions: Mapped[dict[str, object]] = mapped_column(JSON)
+    include_optional: Mapped[bool]
+    requested_permissions: Mapped[list[str]] = mapped_column(JSON)
+    permission_delta: Mapped[list[str]] = mapped_column(JSON)
+    resource_budget: Mapped[dict[str, object]] = mapped_column(JSON)
+    resource_budget_delta: Mapped[dict[str, object]] = mapped_column(JSON)
+    state: Mapped[str] = mapped_column(String(32), index=True)
+    governance_reason: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    created_by: Mapped[str] = mapped_column(String(256))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class FdsInstallationPackageRefRow(Base):
+    __tablename__ = "fds_installation_package_refs"
+    __table_args__ = (
+        UniqueConstraint(
+            "installation_id", "package_version_id", name="uq_fds_installation_package_ref"
+        ),
+    )
+
+    ref_id: Mapped[UUID] = mapped_column(primary_key=True)
+    installation_id: Mapped[UUID] = mapped_column(
+        ForeignKey("fds_installations.installation_id"), index=True
+    )
+    package_version_id: Mapped[UUID] = mapped_column(
+        ForeignKey("fds_package_versions.package_version_id"), index=True
+    )
+    package_id: Mapped[str] = mapped_column(String(128))
+    package_version: Mapped[str] = mapped_column(String(32))
+    kind: Mapped[str] = mapped_column(String(32))
+    component_kind: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    manifest_digest: Mapped[str] = mapped_column(String(80))
+    content_digest: Mapped[str] = mapped_column(String(80))
+
+
+class ProjectDomainLockRow(Base):
+    __tablename__ = "project_domain_locks"
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('CURRENT', 'SUPERSEDED', 'REVOKED')",
+            name="ck_project_domain_locks_status",
+        ),
+        Index(
+            "uq_project_domain_locks_current",
+            "project_id",
+            unique=True,
+            sqlite_where=text("status = 'CURRENT'"),
+            postgresql_where=text("status = 'CURRENT'"),
+        ),
+    )
+
+    project_domain_lock_id: Mapped[UUID] = mapped_column(primary_key=True)
+    project_id: Mapped[UUID] = mapped_column(ForeignKey("projects.project_id"), index=True)
+    organization_id: Mapped[UUID] = mapped_column(
+        ForeignKey("organizations.organization_id"), index=True
+    )
+    installation_id: Mapped[UUID] = mapped_column(
+        ForeignKey("fds_installations.installation_id"), index=True
+    )
+    root_package_id: Mapped[str] = mapped_column(String(128))
+    root_package_version: Mapped[str] = mapped_column(String(32))
+    root_kind: Mapped[str] = mapped_column(String(32))
+    dependency_lock: Mapped[dict[str, object]] = mapped_column(JSON)
+    lock_digest: Mapped[str] = mapped_column(String(80), index=True)
+    requested_permissions: Mapped[list[str]] = mapped_column(JSON)
+    permission_delta: Mapped[list[str]] = mapped_column(JSON)
+    resource_budget: Mapped[dict[str, object]] = mapped_column(JSON)
+    resource_budget_delta: Mapped[dict[str, object]] = mapped_column(JSON)
+    purpose: Mapped[str] = mapped_column(String(500))
+    status: Mapped[str] = mapped_column(String(32), index=True)
+    previous_lock_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("project_domain_locks.project_domain_lock_id"), nullable=True
+    )
+    created_by: Mapped[str] = mapped_column(String(256))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class ProjectDomainLockPackageRefRow(Base):
+    __tablename__ = "project_domain_lock_package_refs"
+    __table_args__ = (
+        UniqueConstraint(
+            "project_domain_lock_id",
+            "package_version_id",
+            name="uq_project_domain_lock_package_ref",
+        ),
+    )
+
+    ref_id: Mapped[UUID] = mapped_column(primary_key=True)
+    project_domain_lock_id: Mapped[UUID] = mapped_column(
+        ForeignKey("project_domain_locks.project_domain_lock_id"), index=True
+    )
+    package_version_id: Mapped[UUID] = mapped_column(
+        ForeignKey("fds_package_versions.package_version_id"), index=True
+    )
+    package_id: Mapped[str] = mapped_column(String(128))
+    package_version: Mapped[str] = mapped_column(String(32))
+    kind: Mapped[str] = mapped_column(String(32))
+    component_kind: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    manifest_digest: Mapped[str] = mapped_column(String(80))
+    content_digest: Mapped[str] = mapped_column(String(80))
+
+
+class FdsIdempotencyRecordRow(Base):
+    __tablename__ = "fds_idempotency_records"
+    __table_args__ = (
+        UniqueConstraint(
+            "actor_ref", "action_key", "idempotency_key", name="uq_fds_idempotency_key"
+        ),
+    )
+
+    record_id: Mapped[UUID] = mapped_column(primary_key=True)
+    actor_ref: Mapped[str] = mapped_column(String(256))
+    action_key: Mapped[str] = mapped_column(String(80))
+    idempotency_key: Mapped[str] = mapped_column(String(128))
+    request_digest: Mapped[str] = mapped_column(String(80))
+    resource_type: Mapped[str] = mapped_column(String(40))
     resource_id: Mapped[UUID]
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

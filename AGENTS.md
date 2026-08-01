@@ -1,12 +1,19 @@
 # ForgeOps repository rules
 
-- Scope is EPIC-01/02, EPIC-02.5, and EPIC-02.6A local synthetic engineering only.
+- Scope is EPIC-01/02, EPIC-02.5, EPIC-02.6A, and EPIC-02.6B local synthetic
+  engineering only.
 - EPIC-02.5 may implement domain-neutral Principal, Organization, Workspace, Project,
   Membership/RoleAssignment, AuthorizationDecision, and ProjectPackageBinding concepts.
 - EPIC-02.6A may implement only domain-neutral FDS manifests, compatibility reports,
   deterministic dependency locks, legacy Scenario compatibility input, and synthetic
-  contract fixtures. EPIC-02.6B Registry/Project DomainLock and EPIC-02.6C semantic
-  runtime are prohibited until separately approved.
+  contract fixtures.
+- EPIC-02.6B may implement domain-neutral FDS Registry records and governance,
+  Organization-scoped disabled installations, immutable Project DomainLocks, package
+  reference impact queries, the next Alembic migration, protected APIs, minimal real
+  management pages, and local synthetic tests/evidence.
+- EPIC-02.6C semantic/knowledge runtime, EPIC-03 workflow/runtime, reference-scenario
+  business behavior, real data, external model/network calls, and external writes remain
+  prohibited until separately approved.
 - Never import a reference scenario from `src/forgeops/platform_core`, `platform_contracts`, or `scenario_sdk`.
 - Dependency direction is `scenario package -> scenario_sdk -> platform_contracts`.
 - Platform concepts must remain domain-neutral. Reference-scenario terms belong only under `scenario-packages/` and test fixtures.

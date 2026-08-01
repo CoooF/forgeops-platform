@@ -102,6 +102,173 @@ export interface AuditEvent {
   policyVersion: string;
 }
 
+export interface HealthSummary {
+  health: "HEALTHY_FOR_SELECTION" | "AT_RISK" | "BLOCKED_FOR_NEW_USE";
+  reasons: string[];
+}
+
+export interface FdsPackageVersion {
+  packageVersionId: string;
+  immutableFacts: {
+    packageVersionId: string;
+    packageId: string;
+    packageVersion: string;
+    kind: "DOMAIN" | "ORGANIZATION_OVERLAY" | "SCENARIO" | "COMPONENT";
+    componentKind: string | null;
+    manifest: Record<string, unknown>;
+    normalizedManifest: string;
+    manifestDigest: string;
+    contentDigest: string;
+    artifactRef: string;
+    sbomRef: string;
+    signatureRef: string;
+    publisher: string;
+    namespaceOwner: string;
+    licenseId: string;
+    licenseVerified: boolean;
+    provenanceRef: string;
+    provenanceDigest: string;
+    visibility: string;
+    contentClassification: string;
+    trustTier: string;
+    ownerOrganizationId: string | null;
+    createdBy: string;
+    createdAt: string;
+  };
+  governance: {
+    state: "REGISTERED_VALIDATED" | "QUARANTINED" | "WITHDRAWN";
+    reason: string | null;
+    governedAt: string | null;
+    updatedAt: string;
+    version: number;
+  };
+  trustBoundary: "NOT_ENTERPRISE_VERIFIED";
+  runtimeCapabilityEnabled: false;
+}
+
+export interface PackageVersionRef {
+  packageVersionId: string;
+  packageId: string;
+  packageVersion: string;
+  kind: string;
+  componentKind: string | null;
+  manifestDigest: string;
+  contentDigest: string;
+}
+
+export interface DependencyLock {
+  lockDigest: string;
+  rootPackageId: string;
+  rootPackageVersion: string;
+  nodes: Array<{
+    packageId: string;
+    packageVersion: string;
+    kind: string;
+    contentDigest: string;
+  }>;
+  edges: Array<{
+    fromPackageId: string;
+    toPackageId: string;
+    versionConstraint: string;
+    required: boolean;
+  }>;
+  requestedPermissions: string[];
+  permissionDelta: string[];
+  resourceBudget: Record<string, number | boolean | string[]>;
+  resourceBudgetDelta: Record<string, number | boolean | string[]>;
+}
+
+export interface DomainInstallation {
+  installationId: string;
+  immutableFacts: {
+    installationId: string;
+    organizationId: string;
+    rootPackageVersionId: string;
+    rootPackageId: string;
+    rootPackageVersion: string;
+    rootKind: "DOMAIN" | "ORGANIZATION_OVERLAY";
+    dependencyLock: DependencyLock;
+    lockDigest: string;
+    packageVersionRefs: PackageVersionRef[];
+    requestedPermissions: string[];
+    permissionDelta: string[];
+    resourceBudget: Record<string, number | boolean | string[]>;
+    resourceBudgetDelta: Record<string, number | boolean | string[]>;
+    authorizationEffect: "NONE";
+    runtimeStateCreated: false;
+    semanticRuntimeReady: false;
+    createdBy: string;
+    createdAt: string;
+  };
+  installationState: {
+    state:
+      "INSTALLED_DISABLED" | "DISABLED" | "REVOKED" | "LOGICALLY_UNINSTALLED";
+    reason: string | null;
+    updatedAt: string;
+    version: number;
+  };
+  derivedHealth: HealthSummary;
+}
+
+export interface ProjectDomainLock {
+  projectDomainLockId: string;
+  immutableFacts: {
+    projectDomainLockId: string;
+    projectId: string;
+    organizationId: string;
+    installationId: string;
+    rootPackageId: string;
+    rootPackageVersion: string;
+    rootKind: string;
+    dependencyLock: DependencyLock;
+    lockDigest: string;
+    packageVersionRefs: PackageVersionRef[];
+    requestedPermissions: string[];
+    permissionDelta: string[];
+    resourceBudget: Record<string, number | boolean | string[]>;
+    resourceBudgetDelta: Record<string, number | boolean | string[]>;
+    purpose: string;
+    previousLockId: string | null;
+    runtimeBindingCreated: false;
+    authorizationEffect: "NONE";
+    semanticRuntimeReady: false;
+    createdBy: string;
+    createdAt: string;
+  };
+  lockState: { status: "CURRENT" | "SUPERSEDED" | "REVOKED"; version: number };
+  derivedHealth: HealthSummary;
+}
+
+export interface DomainLockDiff {
+  added: Array<Record<string, string | null>>;
+  removed: Array<Record<string, string | null>>;
+  changed: Array<Record<string, string | null>>;
+  permissionsAdded: string[];
+  permissionsRemoved: string[];
+  budgetDelta: Record<string, number | boolean>;
+  visibilityTrustChanges: string[];
+  semanticDifferenceStatus: "NOT_EVALUATED";
+}
+
+export interface PackageImpact {
+  packageVersionId: string;
+  packageId: string;
+  packageVersion: string;
+  registryState: string;
+  installations: Array<{
+    installationId: string;
+    organizationId: string;
+    rootPackageId: string;
+    state: string;
+  }>;
+  projectDomainLocks: Array<{
+    projectDomainLockId: string;
+    projectId: string;
+    organizationId: string;
+    status: string;
+  }>;
+}
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
@@ -144,7 +311,7 @@ async function request<T>(
   return payload as T;
 }
 
-function idempotencyHeaders(): HeadersInit {
+function idempotencyHeaders(): Record<string, string> {
   return { "Idempotency-Key": crypto.randomUUID() };
 }
 
@@ -300,6 +467,158 @@ export const api = {
       {
         method: "POST",
         body: JSON.stringify({ expectedVersion: binding.version }),
+      },
+    ),
+  fdsPackageVersions: (
+    actor: string,
+    filters: { kind?: string; state?: string; visibility?: string } = {},
+  ) => {
+    const query = new URLSearchParams({ limit: "100" });
+    if (filters.kind) query.set("kind", filters.kind);
+    if (filters.state) query.set("state", filters.state);
+    if (filters.visibility) query.set("visibility", filters.visibility);
+    return request<Page<FdsPackageVersion>>(
+      `/v1/fds/package-versions?${query.toString()}`,
+      actor,
+    );
+  },
+  registerFdsPackageVersion: (
+    actor: string,
+    manifest: Record<string, unknown>,
+    ownerOrganizationId?: string,
+  ) =>
+    request<FdsPackageVersion>("/v1/fds/package-versions", actor, {
+      method: "POST",
+      headers: idempotencyHeaders(),
+      body: JSON.stringify({ manifest, ownerOrganizationId }),
+    }),
+  transitionFdsPackageVersion: (
+    actor: string,
+    item: FdsPackageVersion,
+    transition: "quarantine" | "withdraw",
+    reason: string,
+  ) =>
+    request<FdsPackageVersion>(
+      `/v1/fds/package-versions/${item.packageVersionId}:${transition}`,
+      actor,
+      {
+        method: "POST",
+        headers: {
+          ...idempotencyHeaders(),
+          "If-Match": String(item.governance.version),
+        },
+        body: JSON.stringify({ reason }),
+      },
+    ),
+  fdsPackageImpacts: (actor: string, packageVersionId: string) =>
+    request<PackageImpact>(
+      `/v1/fds/package-versions/${packageVersionId}/impacts`,
+      actor,
+    ),
+  domainInstallations: (actor: string, organizationId: string) =>
+    request<Page<DomainInstallation>>(
+      `/v1/organizations/${organizationId}/domain-installations?limit=100`,
+      actor,
+    ),
+  previewDomainInstallation: (
+    actor: string,
+    organizationId: string,
+    rootPackageVersionId: string,
+  ) =>
+    request<DomainInstallation>(
+      `/v1/organizations/${organizationId}/domain-installations:preview`,
+      actor,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          rootPackageVersionId,
+          targetVersions: {
+            platform: "0.1.0",
+            fds: "0.1.0",
+            scenarioSdk: "0.1.0",
+          },
+          includeOptional: false,
+        }),
+      },
+    ),
+  createDomainInstallation: (
+    actor: string,
+    organizationId: string,
+    rootPackageVersionId: string,
+  ) =>
+    request<DomainInstallation>(
+      `/v1/organizations/${organizationId}/domain-installations`,
+      actor,
+      {
+        method: "POST",
+        headers: idempotencyHeaders(),
+        body: JSON.stringify({
+          rootPackageVersionId,
+          targetVersions: {
+            platform: "0.1.0",
+            fds: "0.1.0",
+            scenarioSdk: "0.1.0",
+          },
+          includeOptional: false,
+        }),
+      },
+    ),
+  transitionDomainInstallation: (
+    actor: string,
+    installation: DomainInstallation,
+    transition: "disable" | "revoke" | "logical-uninstall",
+    reason: string,
+  ) =>
+    request<DomainInstallation>(
+      `/v1/domain-installations/${installation.installationId}:${transition}`,
+      actor,
+      {
+        method: "POST",
+        headers: {
+          ...idempotencyHeaders(),
+          "If-Match": String(installation.installationState.version),
+        },
+        body: JSON.stringify({ reason }),
+      },
+    ),
+  projectDomainInstallations: (actor: string, projectId: string) =>
+    request<Page<DomainInstallation>>(
+      `/v1/projects/${projectId}/domain-installations`,
+      actor,
+    ),
+  projectDomainLocks: (actor: string, projectId: string) =>
+    request<Page<ProjectDomainLock>>(
+      `/v1/projects/${projectId}/domain-locks?limit=100`,
+      actor,
+    ),
+  currentProjectDomainLock: (actor: string, projectId: string) =>
+    request<ProjectDomainLock | null>(
+      `/v1/projects/${projectId}/domain-locks/current`,
+      actor,
+    ),
+  compareDomainInstallations: (
+    actor: string,
+    fromInstallationId: string,
+    toInstallationId: string,
+  ) =>
+    request<DomainLockDiff>(
+      `/v1/domain-installations/${fromInstallationId}:compare`,
+      actor,
+      { method: "POST", body: JSON.stringify({ toInstallationId }) },
+    ),
+  createProjectDomainLock: (
+    actor: string,
+    projectId: string,
+    installationId: string,
+    purpose: string,
+  ) =>
+    request<ProjectDomainLock>(
+      `/v1/projects/${projectId}/domain-locks`,
+      actor,
+      {
+        method: "POST",
+        headers: idempotencyHeaders(),
+        body: JSON.stringify({ installationId, purpose }),
       },
     ),
 };

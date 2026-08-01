@@ -54,6 +54,8 @@ test("Owner creates scope and binds a package; Viewer remains read-only; archive
   await expect(
     page.getByRole("heading", { name: "Evidence Project" }),
   ).toBeVisible();
+  const organizationId = await page.getByLabel("Organization").inputValue();
+  const workspaceId = await page.getByLabel("Workspace").inputValue();
 
   const packageRoot = path.resolve(
     process.cwd(),
@@ -102,6 +104,8 @@ test("Owner creates scope and binds a package; Viewer remains read-only; archive
   ).toBe(true);
 
   await page.reload();
+  await page.getByLabel("Organization").selectOption(organizationId);
+  await page.getByLabel("Workspace").selectOption(workspaceId);
   await page.getByRole("button", { name: "packages" }).click();
   await expect(
     page.getByText("steel-cord-scheduling", { exact: true }),
@@ -123,6 +127,8 @@ test("Owner creates scope and binds a package; Viewer remains read-only; archive
   ).toBeVisible();
 
   await page.getByLabel("Synthetic principal").selectOption("local-viewer");
+  await page.getByLabel("Organization").selectOption(organizationId);
+  await page.getByLabel("Workspace").selectOption(workspaceId);
   await expect(
     page.getByRole("heading", { name: "Evidence Project" }),
   ).toBeVisible();
@@ -144,6 +150,8 @@ test("Owner creates scope and binds a package; Viewer remains read-only; archive
   ).toHaveCount(0);
 
   await page.getByLabel("Synthetic principal").selectOption("local-owner");
+  await page.getByLabel("Organization").selectOption(organizationId);
+  await page.getByLabel("Workspace").selectOption(workspaceId);
   await expect(
     page.getByRole("heading", { name: "Evidence Project" }),
   ).toBeVisible();
@@ -169,6 +177,8 @@ test("Owner creates scope and binds a package; Viewer remains read-only; archive
   expect(blockedPayload.error.code).toBe("ILLEGAL_STATE_TRANSITION");
 
   await page.reload();
+  await page.getByLabel("Organization").selectOption(organizationId);
+  await page.getByLabel("Workspace").selectOption(workspaceId);
   await expect(
     page.locator(".state-badge", { hasText: "ARCHIVED" }).first(),
   ).toBeVisible();
