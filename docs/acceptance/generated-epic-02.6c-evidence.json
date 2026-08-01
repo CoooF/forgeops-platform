@@ -1,0 +1,149 @@
+{
+  "contracts": {
+    "contracts/fds/compatibility-report.schema.json": "sha256:e706e48eda657419ab65837ce9e140f4b0b967c10ca6449ed5f429265d5b57cb",
+    "contracts/fds/component-manifest.schema.json": "sha256:898259f1ccba958464ffcb1725d2494d86d7da3962fab5e8c98dea0b55f65a87",
+    "contracts/fds/dependency-lock.schema.json": "sha256:a74109b58c6a3996f2b68f6993ef55d2d262a56f22cfe651e9a70b7480326567",
+    "contracts/fds/domain-manifest.schema.json": "sha256:96e4068d1ba6f96c33fe8ed1f443064b43eb36cbbe7777b42bd2229cc208a0db",
+    "contracts/fds/examples/contract-shape.scenario.json": "sha256:42658b6fa3b1a83d1bf38626e4ea6a0213b7f3fa38549fbc80ccd017df69c3ce",
+    "contracts/fds/examples/core-semantics.component.json": "sha256:5b06c65d8daae1f0dc8778f336bced70e5dfa7b595e5e77a34d9e9558c21d6ff",
+    "contracts/fds/examples/dependency-lock.example.json": "sha256:556bf463b714d09c107ce2514e79a1bd1c20b51f00cf879457a16eaa100658d3",
+    "contracts/fds/examples/equipment-anomaly-diagnosis.compatibility-report.example.json": "sha256:7d962e97cd422d3ae24b1a469c55084ae0c3780625b0b0517334430d4a49e851",
+    "contracts/fds/examples/manufacturing-shape.domain.json": "sha256:987b613308672e9752b142c44874bb305f11e54daf9c59307553b8ea5843fe9b",
+    "contracts/fds/examples/negative-cases.json": "sha256:552df061efa3a9b40735c5f566b11502f22c11e983e2ca6fea8aa4425555432e",
+    "contracts/fds/examples/reference-domain-a.domain.json": "sha256:49a6361bcbfed1f8c0c7843ddec05a4e3f84ed8e3514b5ed69fba68bb88c1b75",
+    "contracts/fds/examples/steel-cord-scheduling.compatibility-report.example.json": "sha256:d75a682099ec174966a3eb7102d5926f1283f25779daf70ccf4b76071e38e8e2",
+    "contracts/fds/examples/steel-cord-shape.domain.json": "sha256:87b2963785f29fab0b7824d9d33ca68025f3da74fc9e37d5ceae86b97b2ae88f",
+    "contracts/fds/examples/synthetic-organization.overlay.json": "sha256:359969b5e07b5cb33faa450a0e655a6bd2fafdbf9e4c513d55d4049da5f669db",
+    "contracts/fds/fds-manifest.schema.json": "sha256:4eeec58fe8ffb5d2ed7d35f017902f13345054ccf6a5aace09996bba18d8be4f",
+    "contracts/fds/organization-overlay-manifest.schema.json": "sha256:2d11403a847d75d6d9e5d7e24195854e9f57365edbf1f124670d28fb5c15adf1",
+    "contracts/fds/scenario-descriptor.schema.json": "sha256:3ee574c28d6a1827e5b7ea2c66e920961c22461d7ba7182d8fc4030b509ed6dd",
+    "contracts/openapi/forgeops.openapi.json": "sha256:fe2b314cec65301ffeef5c2276dea65c570c98112b739a0e64938654f6e3c61c",
+    "contracts/semantic/context-manifest.schema.json": "sha256:147d770bcd3ac562766d4ca9dc77104f72be528290499d77e5f9aa2e1bb2b43f",
+    "contracts/semantic/context-request.schema.json": "sha256:3f097e8e763737f7e3b3872d27c11f166f039bcf7a5f36a3f68b610b35a7bad3",
+    "contracts/semantic/examples/neutral-mapping-v1.json": "sha256:22bc1070c85401afb289cb6cf8cea4f7e56fa6748bba53b95454668e1721a6fd",
+    "contracts/semantic/examples/neutral-ontology-v1.json": "sha256:141a10d0ce5af35cfb34d6497995022ae49c9463db61be80b60f852f555654b0",
+    "contracts/semantic/examples/neutral-terminology-v1.json": "sha256:0fa82d72b5f59bb148c1758b056930943bbbb8142e520809dcad439ef6da4bcc",
+    "contracts/semantic/grounding-candidate.schema.json": "sha256:3f361771b743d40541c3c17d9b65d6126064287744704cd2e2bcdfe6ca663134",
+    "contracts/semantic/grounding-result.schema.json": "sha256:cd5e9adc7cabc9133efae732bd0c530f8d87a9d484b5007d5ec4a8e78210ab6b",
+    "contracts/semantic/knowledge-asset-version.schema.json": "sha256:ce21ad29462912bfcabfa6e98838238a5df075d50fc39523e55d11d0e449e88d",
+    "contracts/semantic/knowledge-asset.schema.json": "sha256:9e3f7a148c1e8f5cb48d8e680a0506f8797660182ab6db9792ab732af427796e",
+    "contracts/semantic/semantic-impact.schema.json": "sha256:a8fec031de706d8806c4a0c59ed3db54c1cb70083067eaebdb63378d95f3ff91",
+    "contracts/semantic/semantic-payload.schema.json": "sha256:fd087582ccc73accfd0aa2ae5b4eb2401b14c38d29ac27361a091b79256d9aa3",
+    "contracts/semantic/semantic-query-result.schema.json": "sha256:64d8c037d1df12c2de9c1e2ecbfb1c51c99190836f34f56c7c160e8780936b2a"
+  },
+  "createdAt": "2026-08-01T13:12:41.761543+00:00",
+  "enterpriseApproval": "NOT_GRANTED",
+  "epicStatus": {
+    "EPIC-02.6": "CLARIFYING_PARTIAL",
+    "EPIC-02.6A": "VERIFIED_FOR_LOCAL_SYNTHETIC_CONTRACT_ENGINEERING",
+    "EPIC-02.6B": "VERIFIED_FOR_LOCAL_SYNTHETIC_REGISTRY_ENGINEERING",
+    "EPIC-02.6C": "VERIFIED_FOR_LOCAL_SYNTHETIC_SEMANTIC_ENGINEERING",
+    "EPIC-02.7": "NOT_STARTED",
+    "EPIC-03": "NOT_STARTED"
+  },
+  "evidenceArtifactCommit": "RECORDED_AFTER_INITIAL_EVIDENCE_COMMIT",
+  "evidenceId": "EPIC-02.6C-20260801T131241Z",
+  "fixturesAndExecutableEvidence": {
+    "apps/web/e2e/semantic-knowledge.spec.ts": "sha256:2303a425341cb164efbe279a7c6b69490bc621fd2590f36a4f7f8988a60b1e48",
+    "apps/web/src/ProjectContext.tsx": "sha256:f4de1f79c0c8143d3b3d54d1de21cd63f41a0dc226cae2b28fc27b1115cfa956",
+    "apps/web/src/SemanticKnowledge.tsx": "sha256:30fcece04ece793989ebc7c49f8fe453e1d90b187bd241f7d272cbecc71fdfad",
+    "scripts/epic_02_6c_owner_demo.py": "sha256:147680d97fcf264583dbcb226b243b0e9877fd8771d9e08447e79c9393fc595a",
+    "tests/integration/test_semantic_knowledge_runtime_api.py": "sha256:6b66f35cbfaa8aa41ff45615f744d132240be24997b19791d68e2d21df7ee779"
+  },
+  "limitations": [
+    "REQ-FDS/SEM/KNW/GRD and EPIC-02.6 remain CLARIFYING/PARTIAL",
+    "industry ontology and mapping correctness are unverified",
+    "enterprise knowledge license, classification, provenance and hostile-file review are unverified",
+    "model grounding, model replacement, RAG quality and Agent hallucination are unverified",
+    "EPIC-02.7 and EPIC-03 Workflow Studio/Run/debugger are not started",
+    "PostgreSQL service behavior, enterprise OIDC/SCIM, PREPROD/PROD, real data and UAT are unverified",
+    "no G2, G4, G5A, G5B or production release gate is advanced"
+  ],
+  "locks": {
+    "pnpm-lock.yaml": "sha256:4da6e73e1ae02854f69add80be2765873c5dca977646d5424deca9854f5b4154",
+    "uv.lock": "sha256:b54eb9e799d9348bce8b21315ed7623e285611b30f7c6e5e1e6fe30df21176ce"
+  },
+  "migration": {
+    "migrations/versions/0008_semantic_knowledge_runtime.py": "sha256:f62ec7785da80f9be3f584db7f91cb6ce74fb3260b3c5586be5c1422349de4d7"
+  },
+  "node": "24.14.0",
+  "pnpm": "pnpm@11.1.2",
+  "python": "3.13.14",
+  "requirementStatus": {
+    "REQ-FDS-001": "CLARIFYING_PARTIAL",
+    "REQ-GRD-001": "CLARIFYING_PARTIAL_LOCAL_SLICE_VERIFIED",
+    "REQ-KNW-001": "CLARIFYING_PARTIAL_LOCAL_SLICE_VERIFIED",
+    "REQ-SEM-001": "CLARIFYING_PARTIAL_LOCAL_SLICE_VERIFIED"
+  },
+  "requirementsAndDecisions": {
+    "docs/adrs/0008-semantic-knowledge-context-grounding.md": "sha256:b5053d10ab00db6f811b3745559630624972433a8c2add74d39c7bb4e79528d4",
+    "docs/requirements/EPIC-02.6C-semantic-knowledge-runtime.md": "sha256:ede933373e366988e87e9b84206435eb408217d971bfedaba01e0a972d3a4996"
+  },
+  "results": {
+    "agentRuns": 0,
+    "architectureScannedPythonFiles": 44,
+    "architectureScannedWebFiles": 11,
+    "architectureViolations": 0,
+    "authorizationEffectsCreated": 0,
+    "contextManifestHistoryPersistedAcrossRestart": true,
+    "contractTests": {
+      "passed": 41
+    },
+    "crossOrganizationSuccessfulReads": 0,
+    "epic02_6cFocusedTests": {
+      "passed": 290
+    },
+    "externalWrites": false,
+    "knowledgeContentExecuted": false,
+    "knowledgeVersionsPersistedAcrossRestart": true,
+    "llmCalls": 0,
+    "migrationHead": "0008",
+    "migrationRoundTrip": "PASSED",
+    "nodeKnownVulnerabilities": 0,
+    "openApiAndSemanticConsecutiveExportsIdentical": true,
+    "playwrightTests": {
+      "passed": 3
+    },
+    "pytestTotal": {
+      "coverageMetric": "combined-lines-and-branches",
+      "coveragePercent": 87.18,
+      "passed": 410
+    },
+    "pythonKnownVulnerabilities": 0,
+    "ragQueries": 0,
+    "semanticPayloadsPersistedAcrossRestart": true,
+    "silentSemanticGuesses": 0,
+    "webTests": {
+      "passed": 6
+    },
+    "wheelArchitectureViolations": 0,
+    "workflowRuns": 0
+  },
+  "runtimeWheel": {
+    "dist/forgeops_platform-0.1.0-py3-none-any.whl": "sha256:50937d9d6d2111429679b32e378f998fc31d141e574b46ebc5cc73d207cf0086"
+  },
+  "sboms": {
+    "artifacts/generated/node-sbom.cdx.json": "sha256:ff9d09bc48282d9e5256ed699ed34809c8e90988d295ffc5cc3dca22c0fb77ff",
+    "artifacts/generated/python-sbom.cdx.json": "sha256:ab91433fda216f1e1860503f1866a58080e63b9602ff62541e7b6bc00537bde5"
+  },
+  "scope": "LOCAL_SYNTHETIC_SEMANTIC_ENGINEERING",
+  "uv": "0.12.0 (CI-pinned)",
+  "verified": [
+    "TEST-SEM-CONTRACT-001",
+    "TEST-SEM-REGISTRY-001",
+    "TEST-SEM-QUERY-001",
+    "TEST-SEM-MAPPING-001",
+    "TEST-SEM-AMBIGUITY-001",
+    "TEST-KNW-LIFECYCLE-001",
+    "TEST-KNW-SEC-001",
+    "TEST-CONTEXT-COMPILER-001",
+    "TEST-GROUNDING-001",
+    "TEST-SEM-IMPACT-001",
+    "TEST-SEM-AUTH-001",
+    "TEST-SEM-PERSISTENCE-001",
+    "TEST-SEM-API-001",
+    "TEST-WEB-SEM-001",
+    "TEST-ARCH-005"
+  ],
+  "verifiedSourceCommit": "50853d34f245ee3152c111121c765dd6ac8459d4"
+}
