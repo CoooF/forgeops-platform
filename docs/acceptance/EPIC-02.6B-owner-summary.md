@@ -103,9 +103,9 @@ Playwright 会从页面注册两个 Domain 版本、创建两个 Installation、
 | 决策 | [ADR-0007](../adrs/0007-fds-registry-installation-project-domain-lock.md) |
 | 关键测试 | `TEST-FDS-REGISTRY-001`、`TEST-FDS-REGISTRY-SCOPE-001`、`TEST-FDS-INSTALL-001/NEG-001`、`TEST-FDS-DOMAINLOCK-001/NEG-001`、`TEST-FDS-IMPACT-001`、`TEST-FDS-AUTH-001`、`TEST-FDS-API-001`、`TEST-FDS-PERSISTENCE-001`、`TEST-FDS-LEGACY-002`、`TEST-WEB-FDS-001`、`TEST-ARCH-004` |
 | 人读证据 | [EPIC-02.6B Evidence](EPIC-02.6B-evidence.md) |
-| 机器证据 | `generated-epic-02.6b-evidence.json`（在独立证据提交后绑定并记录摘要） |
-| 验证源码提交 | 在最终验证后记录 |
-| 证据提交 | 在机器证据生成后记录 |
+| 机器证据 | [generated-epic-02.6b-evidence.json](generated-epic-02.6b-evidence.json)，SHA-256 `3dd6be80c8827cde505916ea37aac81f71df28d22a56f849c2c56240e04ea216` |
+| 验证源码提交 | `a230cce94caada693e00d60e101c129e98a0f05a` |
+| 初始机器证据提交 | `1552a109b83c3d10ce917bbb6426bf3872d55213` |
 
 最终验证已通过 341 个 Python 测试、41 个独立契约测试、6 个 Web 测试、40 个 02.6A 聚焦
 测试、63 个 02.6B 聚焦测试和 2 个真实浏览器 E2E，综合行/分支覆盖率 88.34%；源码/证据

@@ -27,7 +27,7 @@
     "EPIC-02.6C": "NOT_STARTED",
     "EPIC-03": "NOT_STARTED"
   },
-  "evidenceArtifactCommit": "RECORDED_AFTER_INITIAL_EVIDENCE_COMMIT",
+  "evidenceArtifactCommit": "1552a109b83c3d10ce917bbb6426bf3872d55213",
   "evidenceId": "EPIC-02.6B-20260801T091704Z",
   "limitations": [
     "REQ-FDS-001 and EPIC-02.6 remain CLARIFYING/PARTIAL",

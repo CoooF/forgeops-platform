@@ -61,9 +61,10 @@ OpenAPI/FDS contracts, synthetic governance fixtures, migration, requirements/AD
 SBOMs and coverage. The generated JSON is committed separately. Exact hashes and the generated
 file SHA-256 are written back without amending prior commits.
 
-- Verified source commit: pending clean source commit after the completed verification.
-- Initial machine-evidence artifact commit: pending generation.
-- Machine evidence SHA-256: pending generation.
+- Verified source commit: `a230cce94caada693e00d60e101c129e98a0f05a`.
+- Initial machine-evidence artifact commit: `1552a109b83c3d10ce917bbb6426bf3872d55213`.
+- Machine evidence SHA-256:
+  `3dd6be80c8827cde505916ea37aac81f71df28d22a56f849c2c56240e04ea216`.
 
 ## Not verified / blocked
 
