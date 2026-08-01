@@ -12,6 +12,12 @@ export interface StudioNode {
   control: string[];
   status: "ready" | "warning" | "draft";
   layer: "source" | "context" | "reason" | "result";
+  assembly?: {
+    model: string;
+    skills: string[];
+    mcps: string[];
+    permissionScope: string;
+  };
 }
 
 export const directions: Array<{
@@ -97,7 +103,7 @@ export const nodes: StudioNode[] = [
     id: "agent",
     kind: "执行 Agent",
     title: "协调建议 Agent",
-    subtitle: "模型 / 工具 / 预算待配置",
+    subtitle: "独立装配 · 2 Skill · 1 MCP",
     x: 390,
     y: 70,
     inputs: ["合格数据", "上下文引用"],
@@ -105,19 +111,31 @@ export const nodes: StudioNode[] = [
     control: ["成功", "待人工", "失败"],
     status: "draft",
     layer: "reason",
+    assembly: {
+      model: "受控推理模型 / 待授权",
+      skills: ["需求约束解析", "候选方案生成"],
+      mcps: ["数据目录 MCP"],
+      permissionScope: "只读数据产品 · 禁止外部写入",
+    },
   },
   {
     id: "decision",
-    kind: "决策",
-    title: "风险分流",
-    subtitle: "EXCLUSIVE 控制分支",
+    kind: "执行 Agent",
+    title: "风险评估 Agent",
+    subtitle: "独立装配 · 1 Skill · 2 MCP",
     x: 566,
     y: 160,
     inputs: ["结构化建议"],
-    outputs: ["候选集合"],
-    control: ["可评审", "需重算", "无可行结果"],
+    outputs: ["候选集合", "风险清单"],
+    control: ["可评审", "需重算", "失败"],
     status: "ready",
     layer: "reason",
+    assembly: {
+      model: "规则优先模型 / v2",
+      skills: ["风险分级"],
+      mcps: ["规则目录 MCP", "证据索引 MCP"],
+      permissionScope: "规则与证据只读 · 禁止发布",
+    },
   },
   {
     id: "human",

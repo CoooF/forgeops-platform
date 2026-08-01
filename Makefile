@@ -1,4 +1,4 @@
-.PHONY: bootstrap format lint type test contract security architecture build artifact-architecture sbom migration-proof smoke web-smoke e2e epic-02-5 epic-02-6a epic-02-6b epic-02-6c fds-contract fds-owner-demo epic-02-6b-owner-demo epic-02-6c-owner-demo verify evidence epic-02-6a-evidence epic-02-6b-evidence epic-02-6c-evidence
+.PHONY: bootstrap format lint type test contract security architecture build artifact-architecture sbom migration-proof smoke web-smoke e2e epic-02-5 epic-02-6a epic-02-6b epic-02-6c epic-02-7 fds-contract fds-owner-demo epic-02-6b-owner-demo epic-02-6c-owner-demo verify evidence epic-02-6a-evidence epic-02-6b-evidence epic-02-6c-evidence
 
 bootstrap:
 	uv sync --frozen --all-groups
@@ -92,6 +92,14 @@ epic-02-6c:
 	uv run python scripts/check_architecture.py
 	pnpm --filter @forgeops/web run typecheck
 	pnpm --filter @forgeops/web run test
+
+epic-02-7:
+	pnpm --dir apps/web format:check
+	pnpm --dir apps/web lint
+	pnpm --dir apps/web typecheck
+	pnpm --dir apps/web test
+	pnpm --dir apps/web build
+	pnpm --dir apps/web exec playwright test e2e/selected-prototype.spec.ts
 
 verify: format lint type test contract security architecture artifact-architecture
 

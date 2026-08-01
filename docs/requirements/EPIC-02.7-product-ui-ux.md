@@ -1,6 +1,6 @@
 # EPIC-02.7 产品 UI/UX 与高保真原型要求
 
-状态：`IN_PROGRESS / WAITING_FOR_DIRECTION_SELECTION`
+状态：`IN_PROGRESS / DIRECTION_A_SELECTED`
 
 ## 目标
 
@@ -18,8 +18,8 @@
 
 ## 人工门
 
-1. 当前只允许达到 `WAITING_FOR_DIRECTION_SELECTION`；
-2. 产品负责人明确选择或组合 A/B/C 前，不进入完整高保真原型；
+1. 产品负责人已于 2026-08-01 明确选择 A「静默控制台」，阶段 B 可以实施；
+2. 执行型子 Agent 节点各自独立装配模型、Skill、MCP、权限、预算和失败出口；主 Agent 只做项目级目标理解、规划、协调、Builder 草稿与解释，不参与具体执行；
 3. 最终原型完成后仍须再次等待产品负责人明确验收；
 4. 在最终明确验收前，不得写入 `ACCEPTED_FOR_EPIC_03_IMPLEMENTATION`，不得进入 EPIC-03。
 

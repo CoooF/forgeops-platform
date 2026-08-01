@@ -20,7 +20,7 @@ const fallbackNode: StudioNode = {
   id: "agent",
   kind: "执行 Agent",
   title: "协调建议 Agent",
-  subtitle: "模型 / 工具 / 预算待配置",
+  subtitle: "独立装配 · 2 Skill · 1 MCP",
   x: 0,
   y: 0,
   inputs: ["受控上下文"],
@@ -28,6 +28,12 @@ const fallbackNode: StudioNode = {
   control: ["成功", "待人工", "失败"],
   status: "draft",
   layer: "reason",
+  assembly: {
+    model: "受控推理模型 / 待授权",
+    skills: ["需求约束解析", "候选方案生成"],
+    mcps: ["数据目录 MCP"],
+    permissionScope: "只读数据产品 · 禁止外部写入",
+  },
 };
 
 const fallbackDirection = {
@@ -116,7 +122,7 @@ export function DesignDirections() {
       <header className="preview-gate" data-testid="prototype-boundary">
         <div className="gate-title">
           <strong>EPIC—02.7</strong>
-          <span>第三轮视觉方向 · 等待产品负责人选择</span>
+          <span>方向 A 已选定 · 正在进入高保真原型阶段</span>
         </div>
         <div className="gate-boundaries">
           <span>本地合成</span>
@@ -227,7 +233,7 @@ export function DesignDirections() {
             <AgentSparkIcon />
             <div>
               <strong>主 Agent</strong>
-              <span>项目级协作，不是执行节点</span>
+              <span>项目级协调层 · 不参与具体执行</span>
             </div>
             <button
               aria-label="关闭主 Agent 预览"
@@ -242,11 +248,11 @@ export function DesignDirections() {
             <span>LOCAL PROTOTYPE</span>
             <h2>从目标开始，而不是从空白画布开始。</h2>
             <p>
-              可以讨论范围、生成 Builder
-              草稿和解释证据边界；当前未调用模型，也不会运行工作流。
+              可以讨论范围、生成 Builder 草稿、拆解任务和解释证据边界；它没有
+              DATA/CONTROL 端口，不安装执行节点的 Skill/MCP，也不会运行工作流。
             </p>
           </div>
-          <footer>未调用模型 · 无上下文发送 · 无后端状态</footer>
+          <footer>无执行端口 · 未调用模型 · 无上下文发送 · 无后端状态</footer>
         </aside>
       )}
     </main>
@@ -346,9 +352,50 @@ function QuietControl(props: WorkspaceProps) {
           </div>
           <div>
             <dt>模型</dt>
-            <dd>未配置</dd>
+            <dd>{props.selectedNode.assembly?.model ?? "不适用"}</dd>
           </div>
         </dl>
+        {props.selectedNode.assembly ? (
+          <section
+            className="agent-assembly"
+            aria-label="执行 Agent 独立能力装配"
+          >
+            <header>
+              <div>
+                <span>节点级装配</span>
+                <strong>仅属于此执行 Agent</strong>
+              </div>
+              <em>本地原型</em>
+            </header>
+            <div className="assembly-group">
+              <span>Skills</span>
+              <div>
+                {props.selectedNode.assembly.skills.map((skill) => (
+                  <b key={skill}>{skill}</b>
+                ))}
+                <button title="原型操作，不会实际安装 Skill">
+                  ＋ 安装 Skill
+                </button>
+              </div>
+            </div>
+            <div className="assembly-group">
+              <span>MCP Servers</span>
+              <div>
+                {props.selectedNode.assembly.mcps.map((mcp) => (
+                  <b key={mcp}>{mcp}</b>
+                ))}
+                <button title="原型操作，不会连接 MCP Server">
+                  ＋ 连接 MCP
+                </button>
+              </div>
+            </div>
+            <p>{props.selectedNode.assembly.permissionScope}</p>
+          </section>
+        ) : (
+          <div className="non-agent-boundary">
+            此节点不是执行 Agent，不提供 Skill / MCP 装配槽。
+          </div>
+        )}
         <div className="inspector-warning">
           <BoundaryIcon />
           <span>失败出口尚未连接</span>
@@ -585,14 +632,14 @@ function ProductNavigation({
 }
 
 const capabilityItems = [
-  "事件触发器",
-  "数据产品",
-  "知识检索",
-  "术语解析",
-  "数据转换",
-  "执行 Agent",
-  "Skill / MCP",
-  "算法 / 仿真",
+  { name: "事件触发器", action: "＋ 节点" },
+  { name: "数据产品", action: "＋ 节点" },
+  { name: "知识检索", action: "＋ 节点" },
+  { name: "术语解析", action: "＋ 节点" },
+  { name: "数据转换", action: "＋ 节点" },
+  { name: "执行 Agent", action: "＋ 节点" },
+  { name: "Skill 能力", action: "装配" },
+  { name: "MCP Server", action: "装配" },
 ];
 
 function CapabilityShelf({
@@ -611,10 +658,10 @@ function CapabilityShelf({
       </header>
       <div>
         {capabilityItems.map((item, index) => (
-          <button key={item} title={`${item}，仅用于视觉预览`}>
+          <button key={item.name} title={`${item.name}，仅用于视觉预览`}>
             <ModuleGlyph index={index} />
-            <span>{item}</span>
-            <b>＋</b>
+            <span>{item.name}</span>
+            <b>{item.action}</b>
           </button>
         ))}
       </div>
@@ -682,6 +729,12 @@ function NodeCard({
       </span>
       <strong>{node.title}</strong>
       <small>{node.subtitle}</small>
+      {node.assembly && (
+        <span className="node-assembly-summary">
+          <b>{node.assembly.skills.length} Skill</b>
+          <b>{node.assembly.mcps.length} MCP</b>
+        </span>
+      )}
       <span className="node-status">
         {node.status === "ready"
           ? "已配置"

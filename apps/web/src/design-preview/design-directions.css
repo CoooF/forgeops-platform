@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Outfit:wght@500;600;700&family=Roboto+Mono:wght@400;500&display=swap");
-
 * {
   box-sizing: border-box;
 }
@@ -548,6 +546,21 @@ button:disabled {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.node-assembly-summary {
+  display: flex;
+  gap: 4px;
+  margin-top: 7px;
+}
+.node-assembly-summary b {
+  padding: 2px 5px;
+  color: #365b50;
+  border: 1px solid #bed0c7;
+  background: #eef5f0;
+  border-radius: 3px;
+  font:
+    600 8px "Roboto Mono",
+    monospace;
+}
 .node-status {
   margin-top: auto;
   padding-top: 12px;
@@ -663,8 +676,84 @@ button:disabled {
   color: #7b8580;
 }
 .quiet-inspector dd {
+  max-width: 168px;
   margin: 0;
   font-weight: 650;
+  text-align: right;
+}
+.agent-assembly {
+  margin: -6px 0 14px;
+  padding: 12px;
+  border: 1px solid #ccd6cf;
+  background: #fff;
+  border-radius: 8px;
+}
+.agent-assembly > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e2e7e3;
+}
+.agent-assembly > header span,
+.agent-assembly > header strong {
+  display: block;
+}
+.agent-assembly > header span,
+.assembly-group > span {
+  color: #758079;
+  font:
+    500 9px "Roboto Mono",
+    monospace;
+  text-transform: uppercase;
+}
+.agent-assembly > header strong {
+  margin-top: 3px;
+  font-size: 11px;
+}
+.agent-assembly > header em {
+  padding: 3px 5px;
+  color: #7c5624;
+  background: #fff2d8;
+  border-radius: 3px;
+  font-size: 8px;
+  font-style: normal;
+}
+.assembly-group {
+  margin-top: 10px;
+}
+.assembly-group > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+.assembly-group b,
+.assembly-group button {
+  min-height: 27px;
+  padding: 0 7px;
+  border: 1px solid #d0d8d2;
+  color: #42534c;
+  background: #f4f6f3;
+  border-radius: 4px;
+  font-size: 9px;
+}
+.assembly-group button {
+  color: #9a4d27;
+  border-style: dashed;
+  background: #fffaf5;
+}
+.agent-assembly > p,
+.non-agent-boundary {
+  margin: 10px 0 0;
+  color: #7a5b34;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.non-agent-boundary {
+  padding: 10px;
+  border: 1px dashed #cbd3cd;
+  background: #f5f5f1;
 }
 .inspector-warning {
   display: flex;
@@ -1017,6 +1106,11 @@ button:disabled {
 .orbit-map .node-ports .control-port {
   color: var(--orbit-amber);
 }
+.orbit-map .node-assembly-summary b {
+  color: #c7f4ec;
+  border-color: #39665f;
+  background: #122e2b;
+}
 .orbit-map .node-0 {
   left: 3%;
   top: 9%;
@@ -1314,6 +1408,11 @@ button:disabled {
 }
 .blueprint-flow .node-status {
   color: currentColor;
+}
+.blueprint-flow .node-assembly-summary b {
+  color: #111;
+  border-color: #111;
+  background: #f7f6f0;
 }
 .blueprint-flow .node-ports {
   color: currentColor;
