@@ -1,0 +1,132 @@
+{
+  "contracts": {
+    "contracts/fds/compatibility-report.schema.json": "sha256:31f6223e194ad3692c6fcfd529f2c0fcf47806f9ed0cbfa9aecad852f5a9f0e5",
+    "contracts/fds/component-manifest.schema.json": "sha256:898259f1ccba958464ffcb1725d2494d86d7da3962fab5e8c98dea0b55f65a87",
+    "contracts/fds/dependency-lock.schema.json": "sha256:a74109b58c6a3996f2b68f6993ef55d2d262a56f22cfe651e9a70b7480326567",
+    "contracts/fds/domain-manifest.schema.json": "sha256:96e4068d1ba6f96c33fe8ed1f443064b43eb36cbbe7777b42bd2229cc208a0db",
+    "contracts/fds/examples/contract-shape.scenario.json": "sha256:42658b6fa3b1a83d1bf38626e4ea6a0213b7f3fa38549fbc80ccd017df69c3ce",
+    "contracts/fds/examples/core-semantics.component.json": "sha256:5b06c65d8daae1f0dc8778f336bced70e5dfa7b595e5e77a34d9e9558c21d6ff",
+    "contracts/fds/examples/dependency-lock.example.json": "sha256:556bf463b714d09c107ce2514e79a1bd1c20b51f00cf879457a16eaa100658d3",
+    "contracts/fds/examples/equipment-anomaly-diagnosis.compatibility-report.example.json": "sha256:7d962e97cd422d3ae24b1a469c55084ae0c3780625b0b0517334430d4a49e851",
+    "contracts/fds/examples/manufacturing-shape.domain.json": "sha256:987b613308672e9752b142c44874bb305f11e54daf9c59307553b8ea5843fe9b",
+    "contracts/fds/examples/negative-cases.json": "sha256:552df061efa3a9b40735c5f566b11502f22c11e983e2ca6fea8aa4425555432e",
+    "contracts/fds/examples/reference-domain-a.domain.json": "sha256:49a6361bcbfed1f8c0c7843ddec05a4e3f84ed8e3514b5ed69fba68bb88c1b75",
+    "contracts/fds/examples/steel-cord-scheduling.compatibility-report.example.json": "sha256:d75a682099ec174966a3eb7102d5926f1283f25779daf70ccf4b76071e38e8e2",
+    "contracts/fds/examples/steel-cord-shape.domain.json": "sha256:87b2963785f29fab0b7824d9d33ca68025f3da74fc9e37d5ceae86b97b2ae88f",
+    "contracts/fds/examples/synthetic-organization.overlay.json": "sha256:359969b5e07b5cb33faa450a0e655a6bd2fafdbf9e4c513d55d4049da5f669db",
+    "contracts/fds/fds-manifest.schema.json": "sha256:4eeec58fe8ffb5d2ed7d35f017902f13345054ccf6a5aace09996bba18d8be4f",
+    "contracts/fds/organization-overlay-manifest.schema.json": "sha256:2d11403a847d75d6d9e5d7e24195854e9f57365edbf1f124670d28fb5c15adf1",
+    "contracts/fds/scenario-descriptor.schema.json": "sha256:3ee574c28d6a1827e5b7ea2c66e920961c22461d7ba7182d8fc4030b509ed6dd",
+    "contracts/openapi/forgeops.openapi.json": "sha256:d7783d1f19aa641ba82a72a2f9aea47308c3bc22ab5e6db6a0f03c0c6e4cd86d"
+  },
+  "createdAt": "2026-08-01T09:17:04.708110+00:00",
+  "enterpriseApproval": "NOT_GRANTED",
+  "epicStatus": {
+    "EPIC-02.6A": "VERIFIED_FOR_LOCAL_SYNTHETIC_CONTRACT_ENGINEERING",
+    "EPIC-02.6B": "VERIFIED_FOR_LOCAL_SYNTHETIC_REGISTRY_ENGINEERING",
+    "EPIC-02.6C": "NOT_STARTED",
+    "EPIC-03": "NOT_STARTED"
+  },
+  "evidenceArtifactCommit": "RECORDED_AFTER_INITIAL_EVIDENCE_COMMIT",
+  "evidenceId": "EPIC-02.6B-20260801T091704Z",
+  "limitations": [
+    "REQ-FDS-001 and EPIC-02.6 remain CLARIFYING/PARTIAL",
+    "TEST-FDS-002 has Registry/DomainLock partial evidence only; Workflow Run and replay are unverified",
+    "TEST-FDS-004 enterprise signature, publisher, license and supply-chain verification remains NOT_STARTED/BLOCKED",
+    "semantic, knowledge, grounding and Context Compiler capabilities are EPIC-02.6C and not started",
+    "Workflow, Agent and Run runtime capabilities are EPIC-03 or later and not started",
+    "PostgreSQL service runtime, enterprise OIDC, PREPROD/PROD, real data and business UAT are unverified",
+    "local-sha256 and FIRST_PARTY_LOCAL are local synthetic integrity only, not enterprise trust",
+    "no G2, G4, G5A, G5B or production release gate is advanced by this evidence"
+  ],
+  "locks": {
+    "pnpm-lock.yaml": "sha256:4da6e73e1ae02854f69add80be2765873c5dca977646d5424deca9854f5b4154",
+    "uv.lock": "sha256:b54eb9e799d9348bce8b21315ed7623e285611b30f7c6e5e1e6fe30df21176ce"
+  },
+  "migration": {
+    "migrations/versions/0006_fds_registry_domain_locks.py": "sha256:66d359d5b3349a47788291525ee48bcf7a1c5f6a387b2b226781c6c18907e26b"
+  },
+  "node": "24.14.0",
+  "pnpm": "pnpm@11.1.2",
+  "python": "3.13.14",
+  "requirementStatus": {
+    "REQ-FDS-001": "CLARIFYING_PARTIAL"
+  },
+  "requirementsAndDecisions": {
+    "docs/adrs/0007-fds-registry-installation-project-domain-lock.md": "sha256:3c6668e776ae1ab7d5c00575480da100da4001579f8bca1991130ed7487e4ac6",
+    "docs/requirements/EPIC-02.6B-fds-registry-project-domain-lock.md": "sha256:5cdd37c75f183dec73c7058e21d10af1fcf357b7cf947f8b103d11790a93468f"
+  },
+  "results": {
+    "apiPersistedAcrossRestart": true,
+    "architectureScannedPythonFiles": 36,
+    "architectureScannedWebFiles": 9,
+    "architectureViolations": 0,
+    "authorizationEffectsCreated": 0,
+    "contractTests": {
+      "passed": 41
+    },
+    "crossOrganizationPrivateSuccessfulReads": 0,
+    "currentAndHistoryDomainLocksPersistedAcrossRestart": true,
+    "domainInstallationPersistedAcrossRestart": true,
+    "epic02_6bFocusedTests": {
+      "passed": 63
+    },
+    "externalWrites": false,
+    "fdsFocusedTests": {
+      "passed": 40
+    },
+    "migrationHead": "0006",
+    "migrationRoundTrip": "PASSED",
+    "nodeKnownVulnerabilities": 0,
+    "openApiAndFdsConsecutiveExportsIdentical": true,
+    "playwrightTests": {
+      "passed": 2
+    },
+    "pytestTotal": {
+      "coverageMetric": "combined-lines-and-branches",
+      "coveragePercent": 88.34,
+      "passed": 341
+    },
+    "pythonKnownVulnerabilities": 0,
+    "registryPersistedAcrossRestart": true,
+    "runtimeStatesCreated": 0,
+    "semanticRuntimesCreated": 0,
+    "webPreviewProxiedRealApiState": true,
+    "webTests": {
+      "passed": 6
+    },
+    "wheelArchitectureViolations": 0
+  },
+  "runtimeWheel": {
+    "dist/forgeops_platform-0.1.0-py3-none-any.whl": "sha256:8049271440a9fa5857cbe1533ba4f149f71500338a5d08e1b2e3e513db94521d"
+  },
+  "sboms": {
+    "artifacts/generated/node-sbom.cdx.json": "sha256:ff9d09bc48282d9e5256ed699ed34809c8e90988d295ffc5cc3dca22c0fb77ff",
+    "artifacts/generated/python-sbom.cdx.json": "sha256:189558e8c6b8491c0b579777e804ca422b8d08c06ddc1011370bf28c20675bd4"
+  },
+  "scope": "LOCAL_SYNTHETIC_REGISTRY_ENGINEERING",
+  "syntheticRegistryInstallationDomainLockFixtures": {
+    "apps/web/e2e/domain-registry.spec.ts": "sha256:881ed93c31b337c1a527141e3bf06b0b4b769a5f2856d6b150fc4010d86f5634",
+    "contracts/fds/examples/core-semantics.component.json": "sha256:5b06c65d8daae1f0dc8778f336bced70e5dfa7b595e5e77a34d9e9558c21d6ff",
+    "contracts/fds/examples/reference-domain-a.domain.json": "sha256:49a6361bcbfed1f8c0c7843ddec05a4e3f84ed8e3514b5ed69fba68bb88c1b75",
+    "scripts/epic_02_6b_owner_demo.py": "sha256:be5507b9c23f146458eafaf599fbe3738245fb292fc4e10a475627c1d9ce4c94",
+    "tests/integration/test_domain_registry_api.py": "sha256:be9798c14c09abf2f67f94a65a1e9ca97b9b59b80e919f8468bccdb3b3308eab"
+  },
+  "uv": "0.12.0 (CI-pinned)",
+  "verified": [
+    "TEST-FDS-REGISTRY-001",
+    "TEST-FDS-REGISTRY-SCOPE-001",
+    "TEST-FDS-INSTALL-001",
+    "TEST-FDS-INSTALL-NEG-001",
+    "TEST-FDS-DOMAINLOCK-001",
+    "TEST-FDS-DOMAINLOCK-NEG-001",
+    "TEST-FDS-IMPACT-001",
+    "TEST-FDS-AUTH-001",
+    "TEST-FDS-API-001",
+    "TEST-FDS-PERSISTENCE-001",
+    "TEST-FDS-LEGACY-002",
+    "TEST-WEB-FDS-001",
+    "TEST-ARCH-004"
+  ],
+  "verifiedSourceCommit": "a230cce94caada693e00d60e101c129e98a0f05a"
+}
