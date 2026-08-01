@@ -62,6 +62,9 @@ def main() -> None:
     evidence_artifact_commit = os.environ.get(
         "EPIC_02_6C_EVIDENCE_ARTIFACT_COMMIT", "RECORDED_AFTER_INITIAL_EVIDENCE_COMMIT"
     )
+    verified_source_commit = os.environ.get(
+        "EPIC_02_6C_VERIFIED_SOURCE_COMMIT", current_git_commit()
+    )
     now = datetime.now(UTC)
     evidence = {
         "evidenceId": f"EPIC-02.6C-{now.strftime('%Y%m%dT%H%M%SZ')}",
@@ -82,7 +85,7 @@ def main() -> None:
             "EPIC-03": "NOT_STARTED",
         },
         "enterpriseApproval": "NOT_GRANTED",
-        "verifiedSourceCommit": current_git_commit(),
+        "verifiedSourceCommit": verified_source_commit,
         "evidenceArtifactCommit": evidence_artifact_commit,
         "python": platform.python_version(),
         "node": (ROOT / ".node-version").read_text().strip(),
