@@ -40,6 +40,52 @@ test("EPIC-02.7 directions are comparable, bounded, and fit 1440x900", async ({
       "未接 Workflow / Run / Agent 后端",
     );
     await expect(page.getByText("未运行 · 建议未执行")).toBeVisible();
+    await expect(page.locator(".global-product-nav > button")).toHaveCount(8);
+    await expect(page.getByText("数据与数据库", { exact: true })).toBeVisible();
+    await expect(
+      page.getByText("主 Agent 中心", { exact: true }),
+    ).toBeVisible();
+    await page
+      .locator(".global-product-nav")
+      .getByRole("button", { name: /数据与数据库/ })
+      .click();
+    await expect(
+      page.getByRole("dialog", { name: "数据与数据库模块预览" }),
+    ).toContainText("数据源与数据库实例");
+    await expect(
+      page.getByRole("dialog", { name: "数据与数据库模块预览" }),
+    ).toContainText("未接对应后端");
+    if (direction.id === "precision") {
+      await page.screenshot({
+        path: path.join(
+          screenshotDirectory,
+          "module-data-and-databases-1440x900.png",
+        ),
+        fullPage: false,
+      });
+    }
+    await page.getByRole("button", { name: "关闭模块预览" }).click();
+    await page
+      .locator(".global-product-nav")
+      .getByRole("button", { name: /主 Agent 中心/ })
+      .click();
+    await expect(
+      page.getByRole("dialog", { name: "主 Agent 中心模块预览" }),
+    ).toContainText("主 Agent 配置");
+    if (direction.id === "precision") {
+      await page.screenshot({
+        path: path.join(
+          screenshotDirectory,
+          "module-main-agent-center-1440x900.png",
+        ),
+        fullPage: false,
+      });
+    }
+    await page.getByRole("button", { name: "关闭模块预览" }).click();
+    await page
+      .locator(".global-product-nav")
+      .getByRole("button", { name: /工作流/ })
+      .click();
     await expect(page.locator(".studio-node")).toHaveCount(8);
     await expect(page.getByText("主 Agent", { exact: true })).toBeVisible();
     await expect(page.getByText("失败出口尚未连接")).toBeVisible();

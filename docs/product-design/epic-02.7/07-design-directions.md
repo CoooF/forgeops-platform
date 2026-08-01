@@ -4,7 +4,11 @@
 预览入口：`/design-preview/directions`  
 共同边界：视觉方向预览、交互原型、本地合成、未接 Workflow/Run/Agent 后端、未运行、建议未执行。
 
-三套方向使用同一“订单与资源协调”领域无关 fixture、同一 8 节点拓扑和相同信息量，避免用内容差异掩盖视觉差异。每套均有全局上下文、能力库、近白全幅画布、DATA/CONTROL typed ports、节点检查器、运行/调试底栏和主 Agent 入口。
+三套方向使用同一“订单与资源协调”领域无关 fixture、同一 8 节点拓扑和相同信息量，避免用内容差异掩盖视觉差异。每套均有完整的 8 模块产品壳层、全局上下文、能力库、近白全幅画布、DATA/CONTROL typed ports、节点检查器、运行/调试底栏和主 Agent 入口。
+
+## 共用产品壳层
+
+左侧一级产品导航固定覆盖：项目、工作流、运行与推演、数据与数据库、主 Agent 中心、Agent 与能力、领域、治理。入口直接显示 `真实 API`、`混合边界` 或 `产品原型`；点击数据库、主 Agent 等非工作流模块只打开模块能力清单和“未接对应后端”说明，不离开 Phase A、不伪造完成态。详细层级与现有页面迁移关系见 `01-information-architecture.md`。
 
 ## A：精密工业工作台
 
@@ -40,8 +44,10 @@
 
 ## 截图基线
 
-- `screenshots/direction-a-precision-1440x900.png` · SHA-256 `9e04a3e5210da3651efde1c29ac8b8f46854ec91f631195fdc7b721c3844a7df`
-- `screenshots/direction-b-semantic-1440x900.png` · SHA-256 `766f63a413c80a7302f9cdadfc47425db4dae45ffaf29a8929a5e42ad88ee4bd`
-- `screenshots/direction-c-investigation-1440x900.png` · SHA-256 `c4e78e90d7ea0176c6e09fb13c11ee693be88ceb069cd7b60f2a0d5afcd807e8`
+- `screenshots/direction-a-precision-1440x900.png` · SHA-256 `780b56ff2f893bd98c8de3db7b7c02cfcdaf3d6de880b676abd42f4f0deaeda4`
+- `screenshots/direction-b-semantic-1440x900.png` · SHA-256 `ef6ed5b8dbb1494d0423c8fb4b3dc9f1711903feeb872b90b58ae0e7dc7a0fa2`
+- `screenshots/direction-c-investigation-1440x900.png` · SHA-256 `ac5c8e35308b448e7d289ac41469b4298d107ab47e15f5156c62a6a0bd87fa15`
+- `screenshots/module-data-and-databases-1440x900.png` · SHA-256 `60bba206cd4104c955692e1a2c7cf4824193e0f9266bf55045b47ba2359f8bac`
+- `screenshots/module-main-agent-center-1440x900.png` · SHA-256 `6ee6f1f96e3c35ed3e4b98bbc27c82a1583fec93b09bf8b97f2ca547c1a8e177`
 
-三张截图均由 `apps/web/e2e/design-directions.spec.ts` 在 1440×900 真实 Chrome 视口生成。测试同时检查页面横向溢出、节点超出画布、边界标签、主 Agent 开合、浏览器异常以及原型意外请求真实 API。
+三张截图均由 `apps/web/e2e/design-directions.spec.ts` 在 1440×900 真实 Chrome 视口生成。测试同时检查 8 个产品模块、数据库与主 Agent 模块清单、页面横向溢出、节点超出画布、边界标签、主 Agent 开合、浏览器异常以及原型意外请求真实 API。

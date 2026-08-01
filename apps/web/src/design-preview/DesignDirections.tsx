@@ -4,7 +4,9 @@ import {
   capabilityGroups,
   directions,
   nodes,
+  productModules,
   type DirectionId,
+  type ProductModuleId,
   type StudioNode,
 } from "./direction-fixture";
 import "./design-directions.css";
@@ -27,6 +29,9 @@ export function DesignDirections() {
   const [selectedNodeId, setSelectedNodeId] = useState("agent");
   const [consoleTab, setConsoleTab] = useState("端口发射");
   const [agentOpen, setAgentOpen] = useState(false);
+  const [productModuleId, setProductModuleId] =
+    useState<ProductModuleId>("workflows");
+  const [modulePreviewOpen, setModulePreviewOpen] = useState(false);
   const selectedNode = useMemo(
     () => nodes.find((node) => node.id === selectedNodeId) ?? nodes[0],
     [selectedNodeId],
@@ -51,6 +56,9 @@ export function DesignDirections() {
     semantic: "语义属性册",
     investigation: "节点调查卷宗",
   }[direction];
+  const selectedProductModule =
+    productModules.find((item) => item.id === productModuleId) ??
+    productModules[1];
 
   function chooseDirection(next: DirectionId) {
     setDirection(next);
@@ -124,6 +132,39 @@ export function DesignDirections() {
             </button>
           </div>
         </header>
+
+        <nav className="global-product-nav" aria-label="ForgeOps 产品模块">
+          <div className="product-nav-head">
+            <span>产品</span>
+            <small>LOCAL</small>
+          </div>
+          {productModules.map((item) => (
+            <button
+              key={item.id}
+              className={productModuleId === item.id ? "active" : ""}
+              aria-pressed={productModuleId === item.id}
+              onClick={() => {
+                setProductModuleId(item.id);
+                setModulePreviewOpen(item.id !== "workflows");
+              }}
+            >
+              <i>{item.icon}</i>
+              <span>{item.name}</span>
+              <small>{item.short}</small>
+              <em
+                className={
+                  item.source === "真实 API"
+                    ? "source-real"
+                    : item.source === "混合边界"
+                      ? "source-mixed"
+                      : "source-prototype"
+                }
+              >
+                {item.source}
+              </em>
+            </button>
+          ))}
+        </nav>
 
         <aside className="activity-rail" aria-label="工作室工具">
           {["库", "纲", "史", "版", "搜"].map((item, index) => (
@@ -352,6 +393,44 @@ export function DesignDirections() {
           </div>
         </section>
 
+        {modulePreviewOpen && selectedProductModule && (
+          <aside
+            className="module-preview-drawer"
+            role="dialog"
+            aria-label={`${selectedProductModule.name}模块预览`}
+          >
+            <header>
+              <div>
+                <span>{selectedProductModule.source}</span>
+                <h2>{selectedProductModule.name}</h2>
+                <p>{selectedProductModule.description}</p>
+              </div>
+              <button
+                aria-label="关闭模块预览"
+                onClick={() => {
+                  setModulePreviewOpen(false);
+                }}
+              >
+                ×
+              </button>
+            </header>
+            <div className="module-preview-items">
+              {selectedProductModule.items.map((item) => (
+                <button key={item.name} disabled>
+                  <span>{item.name}</span>
+                  <em className={`item-${item.state.replaceAll(" ", "-")}`}>
+                    {item.state}
+                  </em>
+                </button>
+              ))}
+            </div>
+            <footer>
+              <strong>产品框架预览</strong>
+              <span>未接对应后端 · 不产生数据库、Agent 或运行状态</span>
+            </footer>
+          </aside>
+        )}
+
         <button
           className="main-agent-entry"
           aria-expanded={agentOpen}
@@ -452,8 +531,8 @@ function nodePosition(node: StudioNode, direction: DirectionId) {
     knowledge: [240, 285],
     agent: [448, 105],
     decision: [448, 285],
-    human: [656, 105],
-    collector: [656, 285],
+    human: [640, 105],
+    collector: [640, 285],
   };
   const investigationPositions: Record<string, [number, number]> = {
     trigger: [30, 120],
@@ -462,8 +541,8 @@ function nodePosition(node: StudioNode, direction: DirectionId) {
     knowledge: [350, 295],
     agent: [350, 120],
     decision: [510, 120],
-    human: [670, 120],
-    collector: [670, 295],
+    human: [650, 120],
+    collector: [650, 295],
   };
   const selected =
     direction === "semantic"
@@ -487,9 +566,9 @@ function EdgeLayer({ direction }: { direction: DirectionId }) {
         <path d="M317 233 V285" />
         <path d="M394 349 H422 V169 H448" />
         <path d="M525 233 V285" />
-        <path d="M602 169 H656" />
-        <path d="M602 349 H628 V169 H656" />
-        <path className="control-edge" d="M733 233 V285" />
+        <path d="M602 169 H640" />
+        <path d="M602 349 H620 V169 H640" />
+        <path className="control-edge" d="M717 233 V285" />
       </svg>
     );
   }
@@ -503,12 +582,12 @@ function EdgeLayer({ direction }: { direction: DirectionId }) {
         <path className="actual-path" d="M158 164 H190" />
         <path className="actual-path" d="M318 164 H350" />
         <path className="actual-path" d="M478 164 H510" />
-        <path className="actual-path" d="M638 164 H670" />
+        <path className="actual-path" d="M638 164 H650" />
         <path d="M254 208 V295" />
         <path d="M318 339 H350" />
         <path d="M414 295 V208" />
-        <path d="M574 208 V339 H670" />
-        <path className="control-edge" d="M734 208 V295" />
+        <path d="M574 208 V339 H650" />
+        <path className="control-edge" d="M714 208 V295" />
       </svg>
     );
   }
@@ -519,9 +598,9 @@ function EdgeLayer({ direction }: { direction: DirectionId }) {
       <path d="M350 174 C374 174 365 304 390 304" />
       <path d="M532 130 C555 130 540 214 566 214" />
       <path d="M532 304 C555 304 545 232 566 232" />
-      <path d="M708 214 C720 214 704 130 716 130" />
-      <path d="M708 232 C720 232 704 334 716 334" />
-      <path className="control-edge" d="M858 180 C876 220 874 288 858 318" />
+      <path d="M708 214 C716 214 674 130 682 130" />
+      <path d="M708 232 C716 232 674 334 682 334" />
+      <path className="control-edge" d="M824 180 C842 220 840 288 824 318" />
     </svg>
   );
 }
