@@ -18,6 +18,7 @@
 
 **母题**：语义分层与关系建模。四条领域泳道、蓝灰/紫/赭的层级提示，让 DomainLock、SemanticRef 和数据关系更显性。
 
+- 结构：四列“事件与数据 → 语义与上下文 → 推演与决策 → 评审与结果”建模册；节点按列上下成组，不沿用 A 的自由拓扑；左侧改为带关系线的领域结构树，右侧改为蓝色文档式语义属性册，底栏压缩为轻量校验区；
 - 优点：最能表达 ForgeOps 的“本体驱动”和领域装配差异，语义/知识节点与执行节点的关系一眼可见；
 - 代价：泳道会占据部分画布注意力，复杂流程可能误导用户把视觉分组当执行语义；
 - 适合：领域管理员、语义建模密集项目或作为 A 的可选画布视图。
@@ -26,6 +27,7 @@
 
 **母题**：调查桌、证据账本、实际路径。红棕与青绿强调 Trace、风险、未连接出口和结果边界，底部调查台更强。
 
+- 结构：把未运行的预期主路径收敛成横向调查链，语义/知识作为下挂证据支路；节点改为紧凑记录条，顶部运行上下文变为石墨色，左侧能力库收窄，底部 Evidence/Trace 账本显著加高；
 - 优点：运行调查、Evidence、错误与 Advisory/Not Executed 边界最容易被理解；对项目负责人和调查人员最友好；
 - 代价：在“尚未运行”的搭建阶段略显紧张，底栏更高，纯搭建可用画布面积最小；
 - 适合：Run 调查/结果页，或作为 A 方向运行模式的增强层。
@@ -38,9 +40,8 @@
 
 ## 截图基线
 
-- `screenshots/direction-a-precision-1440x900.png` · SHA-256 `4437cc07b6fcae96e5af0383c78602bb6713bdafb8c8a001fd4fdee781dd0339`
-- `screenshots/direction-b-semantic-1440x900.png` · SHA-256 `f0f4428af69b72e49ef30b4749d17022a4bca56c05cf110804e817cc89c233f9`
-- `screenshots/direction-c-investigation-1440x900.png` · SHA-256 `b5942206669df995e136c488a81819d1ef44463ad023257e52aefe862d3308d9`
+- `screenshots/direction-a-precision-1440x900.png` · SHA-256 `9e04a3e5210da3651efde1c29ac8b8f46854ec91f631195fdc7b721c3844a7df`
+- `screenshots/direction-b-semantic-1440x900.png` · SHA-256 `766f63a413c80a7302f9cdadfc47425db4dae45ffaf29a8929a5e42ad88ee4bd`
+- `screenshots/direction-c-investigation-1440x900.png` · SHA-256 `c4e78e90d7ea0176c6e09fb13c11ee693be88ceb069cd7b60f2a0d5afcd807e8`
 
 三张截图均由 `apps/web/e2e/design-directions.spec.ts` 在 1440×900 真实 Chrome 视口生成。测试同时检查页面横向溢出、节点超出画布、边界标签、主 Agent 开合、浏览器异常以及原型意外请求真实 API。
-

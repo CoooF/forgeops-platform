@@ -37,6 +37,20 @@ export function DesignDirections() {
     name: "精密工业工作台",
     thesis: "工程图式秩序 · 高密度长时操作",
   };
+  const libraryCopy = {
+    precision: ["节点与能力", "当前 DomainLock 可见", "搜索节点、端口或能力"],
+    semantic: ["领域结构树", "按语义层级与依赖组织", "搜索概念、关系或能力"],
+    investigation: [
+      "路径与调查工具",
+      "按风险、证据和出口筛选",
+      "搜索路径、证据或节点",
+    ],
+  }[direction];
+  const inspectorTitle = {
+    precision: "节点检查器",
+    semantic: "语义属性册",
+    investigation: "节点调查卷宗",
+  }[direction];
 
   function chooseDirection(next: DirectionId) {
     setDirection(next);
@@ -128,14 +142,14 @@ export function DesignDirections() {
         <aside className="capability-library">
           <div className="panel-title">
             <div>
-              <strong>节点与能力</strong>
-              <small>当前 DomainLock 可见</small>
+              <strong>{libraryCopy[0]}</strong>
+              <small>{libraryCopy[1]}</small>
             </div>
             <button aria-label="关闭节点库">‹</button>
           </div>
           <label className="capability-search">
             <span>⌕</span>
-            <input aria-label="搜索节点" placeholder="搜索节点、端口或能力" />
+            <input aria-label="搜索节点" placeholder={libraryCopy[2]} />
             <kbd>⌘ K</kbd>
           </label>
           <div className="capability-groups">
@@ -188,24 +202,13 @@ export function DesignDirections() {
               <small>这里仅演示未来 Evidence / Trace 层级</small>
             </div>
           )}
-          <svg className="edge-layer" viewBox="0 0 1200 480" aria-hidden="true">
-            <path d="M176 154 C190 154 194 130 208 130" />
-            <path d="M350 130 C368 130 370 130 390 130" />
-            <path d="M350 174 C374 174 365 304 390 304" />
-            <path d="M532 130 C555 130 540 214 566 214" />
-            <path d="M532 304 C555 304 545 232 566 232" />
-            <path d="M708 214 C720 214 704 130 716 130" />
-            <path d="M708 232 C720 232 704 334 716 334" />
-            <path
-              className="control-edge"
-              d="M858 180 C876 220 874 288 858 318"
-            />
-          </svg>
+          <EdgeLayer direction={direction} />
           <div className="nodes-layer">
             {nodes.map((node) => (
               <NodeCard
                 key={node.id}
                 node={node}
+                direction={direction}
                 selected={node.id === selectedNodeId}
                 onSelect={setSelectedNodeId}
               />
@@ -230,7 +233,7 @@ export function DesignDirections() {
         <aside className="inspector-panel">
           <div className="panel-title inspector-title">
             <div>
-              <small>节点检查器</small>
+              <small>{inspectorTitle}</small>
               <strong>{selectedNode?.title}</strong>
             </div>
             <button aria-label="关闭检查器">×</button>
@@ -390,17 +393,19 @@ export function DesignDirections() {
 
 function NodeCard({
   node,
+  direction,
   selected,
   onSelect,
 }: {
   node: StudioNode;
+  direction: DirectionId;
   selected: boolean;
   onSelect: (id: string) => void;
 }) {
   return (
     <button
       className={`studio-node node-${node.kind.replaceAll(" ", "-")} status-${node.status} ${selected ? "selected" : ""}`}
-      style={{ left: node.x, top: node.y }}
+      style={nodePosition(node, direction)}
       onClick={() => {
         onSelect(node.id);
       }}
@@ -436,5 +441,87 @@ function NodeCard({
         <i title="控制端口" />
       </div>
     </button>
+  );
+}
+
+function nodePosition(node: StudioNode, direction: DirectionId) {
+  const semanticPositions: Record<string, [number, number]> = {
+    trigger: [32, 105],
+    quality: [32, 285],
+    semantic: [240, 105],
+    knowledge: [240, 285],
+    agent: [448, 105],
+    decision: [448, 285],
+    human: [656, 105],
+    collector: [656, 285],
+  };
+  const investigationPositions: Record<string, [number, number]> = {
+    trigger: [30, 120],
+    quality: [190, 120],
+    semantic: [190, 295],
+    knowledge: [350, 295],
+    agent: [350, 120],
+    decision: [510, 120],
+    human: [670, 120],
+    collector: [670, 295],
+  };
+  const selected =
+    direction === "semantic"
+      ? semanticPositions[node.id]
+      : direction === "investigation"
+        ? investigationPositions[node.id]
+        : undefined;
+  return { left: selected?.[0] ?? node.x, top: selected?.[1] ?? node.y };
+}
+
+function EdgeLayer({ direction }: { direction: DirectionId }) {
+  if (direction === "semantic") {
+    return (
+      <svg
+        className="edge-layer semantic-edges"
+        viewBox="0 0 900 500"
+        aria-hidden="true"
+      >
+        <path d="M109 233 V285" />
+        <path d="M186 339 H214 V169 H240" />
+        <path d="M317 233 V285" />
+        <path d="M394 349 H422 V169 H448" />
+        <path d="M525 233 V285" />
+        <path d="M602 169 H656" />
+        <path d="M602 349 H628 V169 H656" />
+        <path className="control-edge" d="M733 233 V285" />
+      </svg>
+    );
+  }
+  if (direction === "investigation") {
+    return (
+      <svg
+        className="edge-layer investigation-edges"
+        viewBox="0 0 900 500"
+        aria-hidden="true"
+      >
+        <path className="actual-path" d="M158 164 H190" />
+        <path className="actual-path" d="M318 164 H350" />
+        <path className="actual-path" d="M478 164 H510" />
+        <path className="actual-path" d="M638 164 H670" />
+        <path d="M254 208 V295" />
+        <path d="M318 339 H350" />
+        <path d="M414 295 V208" />
+        <path d="M574 208 V339 H670" />
+        <path className="control-edge" d="M734 208 V295" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="edge-layer" viewBox="0 0 900 480" aria-hidden="true">
+      <path d="M176 154 C190 154 194 130 208 130" />
+      <path d="M350 130 C368 130 370 130 390 130" />
+      <path d="M350 174 C374 174 365 304 390 304" />
+      <path d="M532 130 C555 130 540 214 566 214" />
+      <path d="M532 304 C555 304 545 232 566 232" />
+      <path d="M708 214 C720 214 704 130 716 130" />
+      <path d="M708 232 C720 232 704 334 716 334" />
+      <path className="control-edge" d="M858 180 C876 220 874 288 858 318" />
+    </svg>
   );
 }
