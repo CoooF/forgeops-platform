@@ -18,6 +18,6 @@ def test_migration_creates_missing_sqlite_parent(
     engine = create_engine(f"sqlite+pysqlite:///{database_path}")
     try:
         with engine.connect() as connection:
-            assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0007"
+            assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0008"
     finally:
         engine.dispose()

@@ -23,12 +23,15 @@ import {
   type Workspace,
 } from "./project-api";
 import { DomainRegistry } from "./DomainRegistry";
+import { ProjectContextPanel } from "./ProjectContext";
 import { ProjectDomainLockPanel } from "./ProjectDomainLock";
+import { SemanticKnowledge } from "./SemanticKnowledge";
 import type { PlatformStatus } from "./status";
 import "./styles.css";
 
-type Tab = "overview" | "members" | "packages" | "domain-lock" | "audit";
-type Surface = "projects" | "registry";
+type Tab =
+  "overview" | "members" | "packages" | "domain-lock" | "context" | "audit";
+type Surface = "projects" | "registry" | "semantic";
 type LoadState = "loading" | "ready" | "error";
 
 interface ProjectContext {
@@ -56,6 +59,7 @@ const TAB_LABELS: Record<Tab, string> = {
   members: "成员权限",
   packages: "场景包",
   "domain-lock": "领域锁",
+  context: "上下文",
   audit: "审计记录",
 };
 
@@ -331,7 +335,9 @@ export function App() {
             <small>
               {surface === "projects"
                 ? "工业智能体项目中心"
-                : "领域资产注册中心"}
+                : surface === "registry"
+                  ? "领域资产注册中心"
+                  : "语义与知识治理"}
             </small>
           </div>
         </div>
@@ -352,6 +358,15 @@ export function App() {
             }}
           >
             领域资产
+          </button>
+          <button
+            aria-label="语义与知识"
+            className={surface === "semantic" ? "active" : ""}
+            onClick={() => {
+              setSurface("semantic");
+            }}
+          >
+            语义与知识
           </button>
         </nav>
         <div className="boundary-strip" aria-label="平台安全边界">
@@ -452,6 +467,15 @@ export function App() {
           notice={notice}
           error={error}
         />
+      ) : surface === "semantic" ? (
+        <SemanticKnowledge
+          actor={actor}
+          organizationId={organizationId}
+          canManage={
+            hasPublicRegistryManager(me) ||
+            hasOrganizationAdmin(me, organizationId)
+          }
+        />
       ) : (
         <main className="workspace">
           <div className="workspace-heading">
@@ -510,7 +534,12 @@ export function App() {
               status="已可用"
               active
             />
-            <CapabilityStep index="03" title="语义与知识" status="下一阶段" />
+            <CapabilityStep
+              index="03"
+              title="语义与知识"
+              status="已可用"
+              active
+            />
             <CapabilityStep
               index="04"
               title="工作流与智能体"
@@ -624,6 +653,7 @@ export function App() {
                         "members",
                         "packages",
                         "domain-lock",
+                        "context",
                         "audit",
                       ] as const
                     ).map((item) => (
@@ -695,6 +725,20 @@ export function App() {
                       reload={() =>
                         loadProjectContext(actor, project.projectId)
                       }
+                    />
+                  )}
+                  {tab === "context" && (
+                    <ProjectContextPanel
+                      actor={actor}
+                      projectId={project.projectId}
+                      currentLock={
+                        projectContext.domainLocks.find(
+                          (item) => item.lockState.status === "CURRENT",
+                        ) ?? null
+                      }
+                      canQuery={can("semantic.query")}
+                      canCompile={can("context.compile")}
+                      canValidate={can("grounding.validate")}
                     />
                   )}
                   {tab === "audit" && (

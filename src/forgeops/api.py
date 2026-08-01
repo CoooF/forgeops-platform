@@ -20,6 +20,7 @@ from forgeops.config import ActionAdapterKind, Settings
 from forgeops.domain_registry_api import register_domain_registry_routes
 from forgeops.identity_api import register_identity_routes
 from forgeops.observability import configure_observability
+from forgeops.platform_adapters.object_storage import ContentAddressedFileStore
 from forgeops.platform_adapters.postgres.database import create_engine_and_session
 from forgeops.platform_adapters.postgres.domain_registry_repository import (
     SqlDomainRegistryRepository,
@@ -29,13 +30,19 @@ from forgeops.platform_adapters.postgres.repositories import (
     SqlAuditRepository,
     SqlInstallationRepository,
 )
+from forgeops.platform_adapters.postgres.semantic_knowledge_repository import (
+    SqlSemanticKnowledgeRepository,
+)
 from forgeops.platform_contracts.domain import Environment
 from forgeops.platform_contracts.errors import ErrorCode, ForgeOpsError
 from forgeops.platform_core.domain_registry.service import DomainRegistryService
 from forgeops.platform_core.identity_access.auth import auth_adapter_for_environment
 from forgeops.platform_core.identity_access.policy import Permission
 from forgeops.platform_core.identity_access.service import ActorContext, IdentityAccessService
+from forgeops.platform_core.knowledge_hub.service import KnowledgeHubService
 from forgeops.platform_core.scenario_registry.service import ScenarioPackageService
+from forgeops.platform_core.semantic_runtime.service import SemanticRuntimeService
+from forgeops.semantic_knowledge_api import register_semantic_knowledge_routes
 
 LOGGER = logging.getLogger("forgeops.api")
 REQUESTS = Counter("forgeops_http_requests_total", "HTTP requests", ("method", "path", "status"))
@@ -112,6 +119,24 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     domain_repository = SqlDomainRegistryRepository(session_factory)
     domain_registry = DomainRegistryService(domain_repository, identity_repository, audit)
+    semantic_knowledge_repository = SqlSemanticKnowledgeRepository(session_factory)
+    object_store = ContentAddressedFileStore(resolved.object_store_path)
+    knowledge_hub = KnowledgeHubService(
+        semantic_knowledge_repository,
+        domain_repository,
+        identity_repository,
+        audit,
+        object_store,
+    )
+    semantic_runtime = SemanticRuntimeService(
+        semantic_knowledge_repository,
+        semantic_knowledge_repository,
+        domain_repository,
+        domain_registry,
+        identity_repository,
+        audit,
+        knowledge_hub,
+    )
 
     @asynccontextmanager
     async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -128,8 +153,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(
         title="ForgeOps Platform API",
-        version="0.2.6b",
-        description="Local synthetic EPIC-01/02.6B Registry engineering; advisory-only",
+        version="0.2.6c",
+        description="Local synthetic EPIC-01/02.6C semantic engineering; advisory-only",
         lifespan=lifespan,
     )
     app.state.settings = resolved
@@ -139,8 +164,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.packages = packages
     app.state.identity = identity
     app.state.domain_registry = domain_registry
+    app.state.knowledge_hub = knowledge_hub
+    app.state.semantic_runtime = semantic_runtime
     register_identity_routes(app, identity)
     register_domain_registry_routes(app, domain_registry)
+    register_semantic_knowledge_routes(app, semantic_runtime, knowledge_hub)
 
     @app.exception_handler(ForgeOpsError)
     async def forgeops_error_handler(_: Request, exc: ForgeOpsError) -> JSONResponse:
@@ -207,7 +235,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "fdsRegistryEnabled": True,
             "organizationDomainInstallationEnabled": True,
             "projectDomainLockEnabled": True,
-            "semanticRuntimeEnabled": False,
+            "semanticRuntimeEnabled": True,
+            "knowledgeHubEnabled": True,
+            "contextCompilerEnabled": True,
+            "groundingValidationEnabled": True,
+            "agentRuntimeEnabled": False,
+            "llmEnabled": False,
+            "ragEnabled": False,
             "workflowRuntimeEnabled": False,
         }
 

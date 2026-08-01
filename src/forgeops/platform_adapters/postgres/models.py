@@ -484,3 +484,174 @@ class FdsIdempotencyRecordRow(Base):
     resource_type: Mapped[str] = mapped_column(String(40))
     resource_id: Mapped[UUID]
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+
+
+class SemanticPayloadRow(Base):
+    __tablename__ = "semantic_payloads"
+    __table_args__ = (
+        UniqueConstraint("package_version_id", name="uq_semantic_payload_package_version"),
+        CheckConstraint(
+            "payload_kind IN ('ONTOLOGY', 'TERMINOLOGY', 'DATA_MAPPING')",
+            name="ck_semantic_payload_kind",
+        ),
+        CheckConstraint(
+            "status IN ('DRAFT', 'VALIDATED_LOCAL_SYNTHETIC', "
+            "'PUBLISHED_LOCAL_SYNTHETIC', 'WITHDRAWN')",
+            name="ck_semantic_payload_status",
+        ),
+    )
+
+    semantic_payload_id: Mapped[UUID] = mapped_column(primary_key=True)
+    package_version_id: Mapped[UUID] = mapped_column(
+        ForeignKey("fds_package_versions.package_version_id"), index=True
+    )
+    package_id: Mapped[str] = mapped_column(String(128), index=True)
+    package_version: Mapped[str] = mapped_column(String(32))
+    payload_kind: Mapped[str] = mapped_column(String(32), index=True)
+    organization_id: Mapped[UUID | None] = mapped_column(
+        ForeignKey("organizations.organization_id"), nullable=True, index=True
+    )
+    definition: Mapped[dict[str, object]] = mapped_column(JSON)
+    canonical_payload: Mapped[str] = mapped_column(Text)
+    payload_digest: Mapped[str] = mapped_column(String(80), index=True)
+    provenance_ref: Mapped[str] = mapped_column(String(512))
+    status: Mapped[str] = mapped_column(String(48), index=True)
+    governance_reason: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    governed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by: Mapped[str] = mapped_column(String(256))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class KnowledgeAssetRow(Base):
+    __tablename__ = "knowledge_assets"
+
+    asset_id: Mapped[UUID] = mapped_column(primary_key=True)
+    organization_id: Mapped[UUID] = mapped_column(
+        ForeignKey("organizations.organization_id"), index=True
+    )
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str] = mapped_column(String(2000))
+    asset_type: Mapped[str] = mapped_column(String(32))
+    language: Mapped[str] = mapped_column(String(16))
+    owner: Mapped[str] = mapped_column(String(160))
+    reviewer: Mapped[str] = mapped_column(String(160))
+    created_by: Mapped[str] = mapped_column(String(256))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class KnowledgeAssetVersionRow(Base):
+    __tablename__ = "knowledge_asset_versions"
+    __table_args__ = (
+        UniqueConstraint("asset_id", "version_label", name="uq_knowledge_asset_version"),
+        UniqueConstraint("package_version_id", name="uq_knowledge_package_version"),
+        CheckConstraint(
+            "status IN ('DRAFT', 'VALIDATED_LOCAL_SYNTHETIC', "
+            "'PUBLISHED_LOCAL_SYNTHETIC', 'WITHDRAWN')",
+            name="ck_knowledge_version_status",
+        ),
+    )
+
+    knowledge_version_id: Mapped[UUID] = mapped_column(primary_key=True)
+    asset_id: Mapped[UUID] = mapped_column(ForeignKey("knowledge_assets.asset_id"), index=True)
+    organization_id: Mapped[UUID] = mapped_column(
+        ForeignKey("organizations.organization_id"), index=True
+    )
+    package_version_id: Mapped[UUID] = mapped_column(
+        ForeignKey("fds_package_versions.package_version_id"), index=True
+    )
+    package_id: Mapped[str] = mapped_column(String(128), index=True)
+    package_version: Mapped[str] = mapped_column(String(32))
+    version_label: Mapped[str] = mapped_column(String(32))
+    title: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str] = mapped_column(String(2000))
+    asset_type: Mapped[str] = mapped_column(String(32))
+    language: Mapped[str] = mapped_column(String(16))
+    owner: Mapped[str] = mapped_column(String(160))
+    reviewer: Mapped[str] = mapped_column(String(160))
+    source_ref: Mapped[str] = mapped_column(String(512))
+    provenance_digest: Mapped[str] = mapped_column(String(80))
+    license_id: Mapped[str] = mapped_column(String(120))
+    license_terms: Mapped[str] = mapped_column(String(1000))
+    content_classification: Mapped[str] = mapped_column(String(48), index=True)
+    allowed_purposes: Mapped[list[str]] = mapped_column(JSON)
+    valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    valid_to: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    status: Mapped[str] = mapped_column(String(48), index=True)
+    content_ref: Mapped[str] = mapped_column(String(96))
+    content_type: Mapped[str] = mapped_column(String(48))
+    size_bytes: Mapped[int] = mapped_column(Integer)
+    content_digest: Mapped[str] = mapped_column(String(80), index=True)
+    withdrawal_reason: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    withdrawn_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by: Mapped[str] = mapped_column(String(256))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class ContextManifestRow(Base):
+    __tablename__ = "context_manifests"
+    __table_args__ = (
+        UniqueConstraint("actor_ref", "request_digest", name="uq_context_actor_request"),
+    )
+
+    context_manifest_id: Mapped[UUID] = mapped_column(primary_key=True)
+    organization_id: Mapped[UUID] = mapped_column(
+        ForeignKey("organizations.organization_id"), index=True
+    )
+    project_id: Mapped[UUID] = mapped_column(ForeignKey("projects.project_id"), index=True)
+    actor_ref: Mapped[str] = mapped_column(String(256), index=True)
+    purpose: Mapped[str] = mapped_column(String(120))
+    project_domain_lock_id: Mapped[UUID] = mapped_column(
+        ForeignKey("project_domain_locks.project_domain_lock_id"), index=True
+    )
+    domain_lock_digest: Mapped[str] = mapped_column(String(80))
+    request_digest: Mapped[str] = mapped_column(String(80), index=True)
+    manifest_json: Mapped[dict[str, object]] = mapped_column(JSON)
+    canonical_digest: Mapped[str] = mapped_column(String(80), index=True)
+    compiled_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class GroundingResultRow(Base):
+    __tablename__ = "grounding_results"
+
+    grounding_result_id: Mapped[UUID] = mapped_column(primary_key=True)
+    context_manifest_id: Mapped[UUID] = mapped_column(
+        ForeignKey("context_manifests.context_manifest_id"), index=True
+    )
+    result_json: Mapped[dict[str, object]] = mapped_column(JSON)
+    digest: Mapped[str] = mapped_column(String(80), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class SemanticImpactReportRow(Base):
+    __tablename__ = "semantic_impact_reports"
+
+    impact_report_id: Mapped[UUID] = mapped_column(primary_key=True)
+    resource_type: Mapped[str] = mapped_column(String(24), index=True)
+    from_ref: Mapped[str] = mapped_column(String(160), index=True)
+    to_ref: Mapped[str] = mapped_column(String(160), index=True)
+    report_json: Mapped[dict[str, object]] = mapped_column(JSON)
+    digest: Mapped[str] = mapped_column(String(80), index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+
+
+class SemanticIdempotencyRecordRow(Base):
+    __tablename__ = "semantic_idempotency_records"
+    __table_args__ = (
+        UniqueConstraint(
+            "actor_ref", "action_key", "idempotency_key", name="uq_semantic_idempotency_key"
+        ),
+    )
+
+    record_id: Mapped[UUID] = mapped_column(primary_key=True)
+    actor_ref: Mapped[str] = mapped_column(String(256))
+    action_key: Mapped[str] = mapped_column(String(80))
+    idempotency_key: Mapped[str] = mapped_column(String(128))
+    request_digest: Mapped[str] = mapped_column(String(80))
+    resource_type: Mapped[str] = mapped_column(String(48))
+    resource_id: Mapped[UUID]
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

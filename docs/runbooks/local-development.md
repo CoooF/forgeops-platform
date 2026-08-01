@@ -50,6 +50,32 @@ The browser test starts a real local API and Web server. It does not use browser
 as Registry state and does not contact an external Registry, model, artifact service, or
 control system.
 
+## EPIC-02.6C semantic and knowledge walkthrough
+
+Start the same API and Web shell, open top-level **Semantic & Knowledge**, then select an
+ACTIVE Project and open its **Context** tab. The first page manages strict payload and
+KnowledgeAsset versions through the real database. Context resolves a term/source mapping,
+compiles an immutable manifest with explicit purpose/evaluation time/item-character budget,
+and validates structured JSON references. Ambiguity is shown as candidates; it is never guessed.
+
+The five-minute isolated success/refusal walkthrough is:
+
+```bash
+make epic-02-6c-owner-demo
+```
+
+It proves exact Registry/DomainLock binding, deterministic digest, exclusions/truncation,
+VALID/INVALID Grounding, v1-v2 impact, Viewer/Outsider refusal, restart persistence, and
+`agentRuntimeEnabled=false`, `llmEnabled=false`, `ragEnabled=false`,
+`workflowRuntimeEnabled=false`. All generated content is neutral and local synthetic.
+
+Run the focused contract/service/Web checks and the real browser path with:
+
+```bash
+make epic-02-6c
+pnpm --filter @forgeops/web run e2e -- semantic-knowledge.spec.ts
+```
+
 ## Verification and evidence
 
 ```bash
@@ -62,6 +88,9 @@ make evidence
 make epic-02-6b
 make epic-02-6b-owner-demo
 make epic-02-6b-evidence
+make epic-02-6c
+make epic-02-6c-owner-demo
+make epic-02-6c-evidence
 ```
 
 `make evidence` requires an existing Git commit and the SBOM outputs from the immediately preceding verified run; it binds their digests to that commit.
@@ -69,6 +98,9 @@ make epic-02-6b-evidence
 `make epic-02-6b-evidence` likewise requires a clean, committed, already verified source tree.
 It records local test/gate results and digests; it does not rerun enterprise or production
 checks and cannot grant enterprise approval.
+
+`make epic-02-6c-evidence` has the same clean-source rule. Run it only after all 02.6C gates,
+wheel and SBOM generation; it binds evidence but does not run a model or advance release gates.
 
 Run `uv run alembic downgrade base && uv run alembic upgrade head` only against a disposable local database. Do not use migration downgrade against any shared or enterprise environment.
 

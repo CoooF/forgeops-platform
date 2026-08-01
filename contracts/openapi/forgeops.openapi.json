@@ -24,6 +24,16 @@
         "title": "BindingRequest",
         "type": "object"
       },
+      "Cardinality": {
+        "enum": [
+          "ONE_TO_ONE",
+          "ONE_TO_MANY",
+          "MANY_TO_ONE",
+          "MANY_TO_MANY"
+        ],
+        "title": "Cardinality",
+        "type": "string"
+      },
       "CompareInstallationRequest": {
         "additionalProperties": false,
         "properties": {
@@ -37,6 +47,366 @@
           "toInstallationId"
         ],
         "title": "CompareInstallationRequest",
+        "type": "object"
+      },
+      "ConceptDefinition": {
+        "additionalProperties": false,
+        "properties": {
+          "aliases": {
+            "additionalProperties": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "title": "Aliases",
+            "type": "object"
+          },
+          "categoryRefs": {
+            "default": [],
+            "items": {
+              "maxLength": 300,
+              "minLength": 5,
+              "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+              "type": "string"
+            },
+            "title": "Categoryrefs",
+            "type": "array"
+          },
+          "conceptKind": {
+            "$ref": "#/components/schemas/ConceptKind"
+          },
+          "description": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Description",
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "object"
+          },
+          "parentRefs": {
+            "default": [],
+            "items": {
+              "maxLength": 300,
+              "minLength": 5,
+              "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+              "type": "string"
+            },
+            "title": "Parentrefs",
+            "type": "array"
+          },
+          "preferredLabel": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Preferredlabel",
+            "type": "string"
+          },
+          "provenanceRef": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Provenanceref",
+            "type": "string"
+          },
+          "semanticId": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Semanticid",
+            "type": "string"
+          },
+          "status": {
+            "default": "ACTIVE",
+            "enum": [
+              "ACTIVE",
+              "DEPRECATED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "semanticId",
+          "preferredLabel",
+          "description",
+          "conceptKind",
+          "version",
+          "provenanceRef"
+        ],
+        "title": "ConceptDefinition",
+        "type": "object"
+      },
+      "ConceptKind": {
+        "enum": [
+          "ENTITY",
+          "EVENT",
+          "ATTRIBUTE",
+          "VALUE",
+          "CATEGORY"
+        ],
+        "title": "ConceptKind",
+        "type": "string"
+      },
+      "ConstraintDefinition": {
+        "additionalProperties": false,
+        "properties": {
+          "allowedConceptKind": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConceptKind"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "constraintId": {
+            "maxLength": 160,
+            "pattern": "^[a-z][a-z0-9.-]+$",
+            "title": "Constraintid",
+            "type": "string"
+          },
+          "enumValues": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Enumvalues",
+            "type": "array"
+          },
+          "kind": {
+            "$ref": "#/components/schemas/ConstraintKind"
+          },
+          "maxCount": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maxcount"
+          },
+          "maximum": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Maximum"
+          },
+          "minCount": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mincount"
+          },
+          "minimum": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimum"
+          },
+          "provenanceRef": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Provenanceref",
+            "type": "string"
+          },
+          "relationRef": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "minLength": 5,
+                "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relationref"
+          },
+          "subjectRef": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Subjectref",
+            "type": "string"
+          },
+          "unitDimension": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unitdimension"
+          },
+          "valueType": {
+            "anyOf": [
+              {
+                "enum": [
+                  "STRING",
+                  "INTEGER",
+                  "NUMBER",
+                  "BOOLEAN"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valuetype"
+          }
+        },
+        "required": [
+          "constraintId",
+          "kind",
+          "subjectRef",
+          "provenanceRef"
+        ],
+        "title": "ConstraintDefinition",
+        "type": "object"
+      },
+      "ConstraintKind": {
+        "enum": [
+          "REQUIRED_RELATION",
+          "ALLOWED_CONCEPT_KIND",
+          "CARDINALITY",
+          "UNIT_DIMENSION",
+          "VALUE_TYPE",
+          "VALUE_ENUM",
+          "VALUE_RANGE"
+        ],
+        "title": "ConstraintKind",
+        "type": "string"
+      },
+      "ContextBudget": {
+        "additionalProperties": false,
+        "properties": {
+          "maxChars": {
+            "maximum": 100000.0,
+            "minimum": 1.0,
+            "title": "Maxchars",
+            "type": "integer"
+          },
+          "maxItems": {
+            "maximum": 500.0,
+            "minimum": 1.0,
+            "title": "Maxitems",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "maxItems",
+          "maxChars"
+        ],
+        "title": "ContextBudget",
+        "type": "object"
+      },
+      "ContextRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "budget": {
+            "$ref": "#/components/schemas/ContextBudget"
+          },
+          "evaluationTime": {
+            "format": "date-time",
+            "title": "Evaluationtime",
+            "type": "string"
+          },
+          "knowledgeVersionIds": {
+            "default": [],
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Knowledgeversionids",
+            "type": "array"
+          },
+          "locale": {
+            "default": "zh-CN",
+            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+            "title": "Locale",
+            "type": "string"
+          },
+          "mappingIds": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Mappingids",
+            "type": "array"
+          },
+          "purpose": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Purpose",
+            "type": "string"
+          },
+          "requestedTerms": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Requestedterms",
+            "type": "array"
+          },
+          "semanticIds": {
+            "default": [],
+            "items": {
+              "maxLength": 300,
+              "minLength": 5,
+              "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+              "type": "string"
+            },
+            "maxItems": 100,
+            "title": "Semanticids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "purpose",
+          "budget",
+          "evaluationTime"
+        ],
+        "title": "ContextRequest",
         "type": "object"
       },
       "CreateMembershipRequest": {
@@ -183,6 +553,57 @@
         "title": "GovernanceRequest",
         "type": "object"
       },
+      "GroundingCandidate": {
+        "additionalProperties": false,
+        "properties": {
+          "declaredConstraintIds": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Declaredconstraintids",
+            "type": "array"
+          },
+          "entityRefs": {
+            "default": [],
+            "items": {
+              "maxLength": 300,
+              "minLength": 5,
+              "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+              "type": "string"
+            },
+            "title": "Entityrefs",
+            "type": "array"
+          },
+          "knowledgeCitations": {
+            "default": [],
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Knowledgecitations",
+            "type": "array"
+          },
+          "mappingRefs": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Mappingrefs",
+            "type": "array"
+          },
+          "relationAssertions": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RelationAssertion"
+            },
+            "title": "Relationassertions",
+            "type": "array"
+          }
+        },
+        "title": "GroundingCandidate",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -194,6 +615,36 @@
           }
         },
         "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "ImpactRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "fromId": {
+            "format": "uuid",
+            "title": "Fromid",
+            "type": "string"
+          },
+          "resourceType": {
+            "enum": [
+              "SEMANTIC",
+              "KNOWLEDGE"
+            ],
+            "title": "Resourcetype",
+            "type": "string"
+          },
+          "toId": {
+            "format": "uuid",
+            "title": "Toid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "resourceType",
+          "fromId",
+          "toId"
+        ],
+        "title": "ImpactRequest",
         "type": "object"
       },
       "InstallationRequest": {
@@ -220,6 +671,198 @@
         "title": "InstallationRequest",
         "type": "object"
       },
+      "KnowledgeAssetSubmission": {
+        "additionalProperties": false,
+        "properties": {
+          "assetType": {
+            "$ref": "#/components/schemas/KnowledgeAssetType"
+          },
+          "description": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Description",
+            "type": "string"
+          },
+          "language": {
+            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+            "title": "Language",
+            "type": "string"
+          },
+          "owner": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Owner",
+            "type": "string"
+          },
+          "reviewer": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Reviewer",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "assetType",
+          "language",
+          "owner",
+          "reviewer"
+        ],
+        "title": "KnowledgeAssetSubmission",
+        "type": "object"
+      },
+      "KnowledgeAssetType": {
+        "enum": [
+          "TEXT",
+          "JSON",
+          "RULE_GUIDE",
+          "REFERENCE"
+        ],
+        "title": "KnowledgeAssetType",
+        "type": "string"
+      },
+      "KnowledgeClassification": {
+        "enum": [
+          "SYNTHETIC_PUBLIC",
+          "SYNTHETIC_INTERNAL",
+          "SYNTHETIC_RESTRICTED"
+        ],
+        "title": "KnowledgeClassification",
+        "type": "string"
+      },
+      "KnowledgeVersionSubmission": {
+        "additionalProperties": false,
+        "properties": {
+          "allowedPurposes": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "title": "Allowedpurposes",
+            "type": "array"
+          },
+          "content": {
+            "maxLength": 16384,
+            "minLength": 1,
+            "title": "Content",
+            "type": "string"
+          },
+          "contentClassification": {
+            "$ref": "#/components/schemas/KnowledgeClassification"
+          },
+          "contentType": {
+            "enum": [
+              "text/plain",
+              "application/json"
+            ],
+            "title": "Contenttype",
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Description",
+            "type": "string"
+          },
+          "licenseId": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Licenseid",
+            "type": "string"
+          },
+          "licenseTerms": {
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Licenseterms",
+            "type": "string"
+          },
+          "packageVersionId": {
+            "format": "uuid",
+            "title": "Packageversionid",
+            "type": "string"
+          },
+          "provenanceDigest": {
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "title": "Provenancedigest",
+            "type": "string"
+          },
+          "sourceRef": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Sourceref",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "validFrom": {
+            "format": "date-time",
+            "title": "Validfrom",
+            "type": "string"
+          },
+          "validTo": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validto"
+          },
+          "versionLabel": {
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+            "title": "Versionlabel",
+            "type": "string"
+          }
+        },
+        "required": [
+          "packageVersionId",
+          "versionLabel",
+          "title",
+          "description",
+          "sourceRef",
+          "provenanceDigest",
+          "licenseId",
+          "licenseTerms",
+          "contentClassification",
+          "allowedPurposes",
+          "validFrom",
+          "contentType",
+          "content"
+        ],
+        "title": "KnowledgeVersionSubmission",
+        "type": "object"
+      },
+      "LifecycleRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "title": "LifecycleRequest",
+        "type": "object"
+      },
       "ManifestSubmission": {
         "additionalProperties": false,
         "properties": {
@@ -239,6 +882,16 @@
         ],
         "title": "ManifestSubmission",
         "type": "object"
+      },
+      "MappingType": {
+        "enum": [
+          "EXACT",
+          "EQUIVALENT",
+          "NARROWER",
+          "BROADER"
+        ],
+        "title": "MappingType",
+        "type": "string"
       },
       "PackageKind": {
         "enum": [
@@ -418,6 +1071,109 @@
         "title": "RegistrySubmission",
         "type": "object"
       },
+      "RelationAssertion": {
+        "additionalProperties": false,
+        "properties": {
+          "relationSemanticId": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Relationsemanticid",
+            "type": "string"
+          },
+          "sourceSemanticId": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Sourcesemanticid",
+            "type": "string"
+          },
+          "targetSemanticId": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Targetsemanticid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "relationSemanticId",
+          "sourceSemanticId",
+          "targetSemanticId"
+        ],
+        "title": "RelationAssertion",
+        "type": "object"
+      },
+      "RelationDefinition": {
+        "additionalProperties": false,
+        "properties": {
+          "cardinality": {
+            "$ref": "#/components/schemas/Cardinality"
+          },
+          "direction": {
+            "$ref": "#/components/schemas/RelationDirection"
+          },
+          "externalControlledRef": {
+            "default": false,
+            "title": "Externalcontrolledref",
+            "type": "boolean"
+          },
+          "provenanceRef": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Provenanceref",
+            "type": "string"
+          },
+          "semanticId": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Semanticid",
+            "type": "string"
+          },
+          "sourceConceptRef": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Sourceconceptref",
+            "type": "string"
+          },
+          "status": {
+            "default": "ACTIVE",
+            "enum": [
+              "ACTIVE",
+              "DEPRECATED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "targetConceptRef": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Targetconceptref",
+            "type": "string"
+          }
+        },
+        "required": [
+          "semanticId",
+          "sourceConceptRef",
+          "targetConceptRef",
+          "direction",
+          "cardinality",
+          "provenanceRef"
+        ],
+        "title": "RelationDefinition",
+        "type": "object"
+      },
+      "RelationDirection": {
+        "enum": [
+          "DIRECTED",
+          "BIDIRECTIONAL"
+        ],
+        "title": "RelationDirection",
+        "type": "string"
+      },
       "ReleaseRequest": {
         "additionalProperties": false,
         "properties": {
@@ -459,6 +1215,405 @@
         "title": "ScopeType",
         "type": "string"
       },
+      "SemanticMapping": {
+        "additionalProperties": false,
+        "properties": {
+          "confidence": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "mappingId": {
+            "maxLength": 160,
+            "pattern": "^[a-z][a-z0-9.-]+$",
+            "title": "Mappingid",
+            "type": "string"
+          },
+          "mappingType": {
+            "$ref": "#/components/schemas/MappingType"
+          },
+          "owner": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Owner",
+            "type": "string"
+          },
+          "priority": {
+            "default": 100,
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "Priority",
+            "type": "integer"
+          },
+          "provenanceRef": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Provenanceref",
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/SourceReference"
+          },
+          "sourceValueType": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Sourcevaluetype",
+            "type": "string"
+          },
+          "status": {
+            "default": "ACTIVE",
+            "enum": [
+              "ACTIVE",
+              "DEPRECATED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "targetSemanticId": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Targetsemanticid",
+            "type": "string"
+          },
+          "timeSemantics": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timesemantics"
+          },
+          "unit": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit"
+          },
+          "validFrom": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validfrom"
+          },
+          "validTo": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validto"
+          }
+        },
+        "required": [
+          "mappingId",
+          "source",
+          "sourceValueType",
+          "targetSemanticId",
+          "mappingType",
+          "owner",
+          "provenanceRef"
+        ],
+        "title": "SemanticMapping",
+        "type": "object"
+      },
+      "SemanticNamespace": {
+        "additionalProperties": false,
+        "properties": {
+          "canonicalUri": {
+            "pattern": "^(?:urn:[^\\s]+|https://[^\\s]+)$",
+            "title": "Canonicaluri",
+            "type": "string"
+          },
+          "defaultLocale": {
+            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+            "title": "Defaultlocale",
+            "type": "string"
+          },
+          "namespaceId": {
+            "maxLength": 160,
+            "pattern": "^[a-z][a-z0-9.-]+$",
+            "title": "Namespaceid",
+            "type": "string"
+          },
+          "owner": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Owner",
+            "type": "string"
+          },
+          "provenanceRef": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Provenanceref",
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "PUBLIC",
+              "ORGANIZATION_PRIVATE",
+              "SYNTHETIC"
+            ],
+            "title": "Scope",
+            "type": "string"
+          },
+          "status": {
+            "default": "ACTIVE",
+            "enum": [
+              "ACTIVE",
+              "DEPRECATED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "namespaceId",
+          "canonicalUri",
+          "owner",
+          "scope",
+          "defaultLocale",
+          "version",
+          "provenanceRef"
+        ],
+        "title": "SemanticNamespace",
+        "type": "object"
+      },
+      "SemanticPayloadDefinition": {
+        "additionalProperties": false,
+        "properties": {
+          "concepts": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ConceptDefinition"
+            },
+            "title": "Concepts",
+            "type": "array"
+          },
+          "constraints": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ConstraintDefinition"
+            },
+            "title": "Constraints",
+            "type": "array"
+          },
+          "mappings": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SemanticMapping"
+            },
+            "title": "Mappings",
+            "type": "array"
+          },
+          "namespaces": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SemanticNamespace"
+            },
+            "title": "Namespaces",
+            "type": "array"
+          },
+          "payloadKind": {
+            "$ref": "#/components/schemas/SemanticPayloadKind"
+          },
+          "relations": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/RelationDefinition"
+            },
+            "title": "Relations",
+            "type": "array"
+          },
+          "schemaVersion": {
+            "const": "forgeops.semantic/v1",
+            "title": "Schemaversion",
+            "type": "string"
+          },
+          "terms": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/TermDefinition"
+            },
+            "title": "Terms",
+            "type": "array"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "payloadKind"
+        ],
+        "title": "SemanticPayloadDefinition",
+        "type": "object"
+      },
+      "SemanticPayloadKind": {
+        "enum": [
+          "ONTOLOGY",
+          "TERMINOLOGY",
+          "DATA_MAPPING"
+        ],
+        "title": "SemanticPayloadKind",
+        "type": "string"
+      },
+      "SemanticPayloadSubmission": {
+        "additionalProperties": false,
+        "properties": {
+          "definition": {
+            "$ref": "#/components/schemas/SemanticPayloadDefinition"
+          },
+          "packageVersionId": {
+            "format": "uuid",
+            "title": "Packageversionid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "packageVersionId",
+          "definition"
+        ],
+        "title": "SemanticPayloadSubmission",
+        "type": "object"
+      },
+      "SemanticQueryRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "evaluationTime": {
+            "format": "date-time",
+            "title": "Evaluationtime",
+            "type": "string"
+          },
+          "queryType": {
+            "$ref": "#/components/schemas/SemanticQueryType"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SourceReference"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "maxLength": 300,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "queryType",
+          "evaluationTime"
+        ],
+        "title": "SemanticQueryRequest",
+        "type": "object"
+      },
+      "SemanticQueryType": {
+        "enum": [
+          "TERM",
+          "SEMANTIC_ID",
+          "RELATION",
+          "CONSTRAINT",
+          "SOURCE_MAPPING"
+        ],
+        "title": "SemanticQueryType",
+        "type": "string"
+      },
+      "SourceReference": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "maxLength": 240,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "fieldRef": {
+            "anyOf": [
+              {
+                "maxLength": 240,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fieldref"
+          },
+          "objectRef": {
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Objectref",
+            "type": "string"
+          },
+          "refType": {
+            "maxLength": 80,
+            "pattern": "^[a-z][a-z0-9.-]+$",
+            "title": "Reftype",
+            "type": "string"
+          },
+          "sourceSystem": {
+            "maxLength": 160,
+            "pattern": "^[a-z][a-z0-9.-]+$",
+            "title": "Sourcesystem",
+            "type": "string"
+          }
+        },
+        "required": [
+          "sourceSystem",
+          "refType",
+          "objectRef"
+        ],
+        "title": "SourceReference",
+        "type": "object"
+      },
       "TargetVersions": {
         "additionalProperties": false,
         "properties": {
@@ -484,6 +1639,123 @@
           "scenarioSdk"
         ],
         "title": "TargetVersions",
+        "type": "object"
+      },
+      "TermDefinition": {
+        "additionalProperties": false,
+        "properties": {
+          "aliases": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Aliases",
+            "type": "array"
+          },
+          "disambiguationHint": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Disambiguationhint"
+          },
+          "language": {
+            "pattern": "^[a-z]{2}$",
+            "title": "Language",
+            "type": "string"
+          },
+          "locale": {
+            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+            "title": "Locale",
+            "type": "string"
+          },
+          "normalizedToken": {
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Normalizedtoken",
+            "type": "string"
+          },
+          "preferredTerm": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Preferredterm",
+            "type": "string"
+          },
+          "priority": {
+            "default": 100,
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "Priority",
+            "type": "integer"
+          },
+          "provenanceRef": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Provenanceref",
+            "type": "string"
+          },
+          "semanticId": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "title": "Semanticid",
+            "type": "string"
+          },
+          "status": {
+            "default": "ACTIVE",
+            "enum": [
+              "ACTIVE",
+              "DEPRECATED"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "termId": {
+            "maxLength": 160,
+            "pattern": "^[a-z][a-z0-9.-]+$",
+            "title": "Termid",
+            "type": "string"
+          },
+          "validFrom": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validfrom"
+          },
+          "validTo": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validto"
+          }
+        },
+        "required": [
+          "termId",
+          "preferredTerm",
+          "language",
+          "locale",
+          "normalizedToken",
+          "semanticId",
+          "provenanceRef"
+        ],
+        "title": "TermDefinition",
         "type": "object"
       },
       "ValidationError": {
@@ -554,9 +1826,9 @@
     }
   },
   "info": {
-    "description": "Local synthetic EPIC-01/02.6B Registry engineering; advisory-only",
+    "description": "Local synthetic EPIC-01/02.6C semantic engineering; advisory-only",
     "title": "ForgeOps Platform API",
-    "version": "0.2.6b"
+    "version": "0.2.6c"
   },
   "openapi": "3.1.0",
   "paths": {
@@ -684,6 +1956,149 @@
         "summary": "List Audit Events",
         "tags": [
           "audit"
+        ]
+      }
+    },
+    "/v1/context-manifests/{manifest_id}": {
+      "get": {
+        "operationId": "get_context_manifest_v1_context_manifests__manifest_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "manifest_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Manifest Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Context Manifest V1 Context Manifests  Manifest Id  Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Context Manifest",
+        "tags": [
+          "context-grounding"
+        ]
+      }
+    },
+    "/v1/context-manifests/{manifest_id}/grounding-validations": {
+      "post": {
+        "operationId": "validate_grounding_v1_context_manifests__manifest_id__grounding_validations_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "manifest_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Manifest Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GroundingCandidate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Validate Grounding V1 Context Manifests  Manifest Id  Grounding Validations Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Validate Grounding",
+        "tags": [
+          "context-grounding"
         ]
       }
     },
@@ -1737,6 +3152,408 @@
         ]
       }
     },
+    "/v1/knowledge-assets/{asset_id}/versions": {
+      "post": {
+        "operationId": "register_knowledge_version_v1_knowledge_assets__asset_id__versions_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Asset Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KnowledgeVersionSubmission"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Register Knowledge Version V1 Knowledge Assets  Asset Id  Versions Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register Knowledge Version",
+        "tags": [
+          "knowledge-hub"
+        ]
+      }
+    },
+    "/v1/knowledge-versions/{version_id}": {
+      "get": {
+        "operationId": "get_knowledge_version_v1_knowledge_versions__version_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Version Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Knowledge Version V1 Knowledge Versions  Version Id  Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Knowledge Version",
+        "tags": [
+          "knowledge-hub"
+        ]
+      }
+    },
+    "/v1/knowledge-versions/{version_id}/content": {
+      "get": {
+        "operationId": "get_knowledge_content_v1_knowledge_versions__version_id__content_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Version Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "maxChars",
+            "required": false,
+            "schema": {
+              "default": 4096,
+              "maximum": 16384,
+              "minimum": 1,
+              "title": "Maxchars",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Knowledge Content V1 Knowledge Versions  Version Id  Content Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Knowledge Content",
+        "tags": [
+          "knowledge-hub"
+        ]
+      }
+    },
+    "/v1/knowledge-versions/{version_id}:publish": {
+      "post": {
+        "operationId": "publish_knowledge_version_v1_knowledge_versions__version_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Version Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "maxLength": 32,
+              "minLength": 1,
+              "title": "If-Match",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LifecycleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Publish Knowledge Version V1 Knowledge Versions  Version Id  Publish Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Publish Knowledge Version",
+        "tags": [
+          "knowledge-hub"
+        ]
+      }
+    },
+    "/v1/knowledge-versions/{version_id}:withdraw": {
+      "post": {
+        "operationId": "withdraw_knowledge_version_v1_knowledge_versions__version_id__withdraw_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "version_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Version Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "maxLength": 32,
+              "minLength": 1,
+              "title": "If-Match",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LifecycleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Withdraw Knowledge Version V1 Knowledge Versions  Version Id  Withdraw Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Withdraw Knowledge Version",
+        "tags": [
+          "knowledge-hub"
+        ]
+      }
+    },
     "/v1/me": {
       "get": {
         "operationId": "me_v1_me_get",
@@ -2441,6 +4258,170 @@
         "summary": "Preview Installation",
         "tags": [
           "fds-installations"
+        ]
+      }
+    },
+    "/v1/organizations/{organization_id}/knowledge-assets": {
+      "get": {
+        "operationId": "list_knowledge_assets_v1_organizations__organization_id__knowledge_assets_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Organization Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response List Knowledge Assets V1 Organizations  Organization Id  Knowledge Assets Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Knowledge Assets",
+        "tags": [
+          "knowledge-hub"
+        ]
+      },
+      "post": {
+        "operationId": "create_knowledge_asset_v1_organizations__organization_id__knowledge_assets_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "organization_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Organization Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KnowledgeAssetSubmission"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Create Knowledge Asset V1 Organizations  Organization Id  Knowledge Assets Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Knowledge Asset",
+        "tags": [
+          "knowledge-hub"
         ]
       }
     },
@@ -3323,6 +5304,170 @@
         ]
       }
     },
+    "/v1/projects/{project_id}/context-manifests": {
+      "get": {
+        "operationId": "list_context_manifests_v1_projects__project_id__context_manifests_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response List Context Manifests V1 Projects  Project Id  Context Manifests Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Context Manifests",
+        "tags": [
+          "context-grounding"
+        ]
+      },
+      "post": {
+        "operationId": "compile_context_v1_projects__project_id__context_manifests_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContextRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Compile Context V1 Projects  Project Id  Context Manifests Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Compile Context",
+        "tags": [
+          "context-grounding"
+        ]
+      }
+    },
     "/v1/projects/{project_id}/domain-installations": {
       "get": {
         "operationId": "project_installations_v1_projects__project_id__domain_installations_get",
@@ -3927,6 +6072,138 @@
         "summary": "Project Permissions",
         "tags": [
           "identity-access"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/semantic-components": {
+      "get": {
+        "operationId": "project_semantic_components_v1_projects__project_id__semantic_components_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Project Semantic Components V1 Projects  Project Id  Semantic Components Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Project Semantic Components",
+        "tags": [
+          "semantic-query"
+        ]
+      }
+    },
+    "/v1/projects/{project_id}/semantic-query": {
+      "post": {
+        "operationId": "project_semantic_query_v1_projects__project_id__semantic_query_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Project Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemanticQueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Project Semantic Query V1 Projects  Project Id  Semantic Query Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Project Semantic Query",
+        "tags": [
+          "semantic-query"
         ]
       }
     },
@@ -4917,6 +7194,558 @@
         "summary": "Validate Package",
         "tags": [
           "scenario-packages"
+        ]
+      }
+    },
+    "/v1/semantic-impacts": {
+      "get": {
+        "operationId": "list_impacts_v1_semantic_impacts_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response List Impacts V1 Semantic Impacts Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Impacts",
+        "tags": [
+          "semantic-impact"
+        ]
+      },
+      "post": {
+        "operationId": "analyze_impact_v1_semantic_impacts_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImpactRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Analyze Impact V1 Semantic Impacts Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Analyze Impact",
+        "tags": [
+          "semantic-impact"
+        ]
+      }
+    },
+    "/v1/semantic/payloads": {
+      "get": {
+        "operationId": "list_payloads_v1_semantic_payloads_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "organization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Organization"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response List Payloads V1 Semantic Payloads Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Payloads",
+        "tags": [
+          "semantic-registry"
+        ]
+      },
+      "post": {
+        "operationId": "register_payload_v1_semantic_payloads_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SemanticPayloadSubmission"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Register Payload V1 Semantic Payloads Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register Payload",
+        "tags": [
+          "semantic-registry"
+        ]
+      }
+    },
+    "/v1/semantic/payloads/{payload_id}": {
+      "get": {
+        "operationId": "get_payload_v1_semantic_payloads__payload_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "payload_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Payload Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Payload V1 Semantic Payloads  Payload Id  Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Payload",
+        "tags": [
+          "semantic-registry"
+        ]
+      }
+    },
+    "/v1/semantic/payloads/{payload_id}:publish": {
+      "post": {
+        "operationId": "publish_payload_v1_semantic_payloads__payload_id__publish_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "payload_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Payload Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "maxLength": 32,
+              "minLength": 1,
+              "title": "If-Match",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LifecycleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Publish Payload V1 Semantic Payloads  Payload Id  Publish Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Publish Payload",
+        "tags": [
+          "semantic-registry"
+        ]
+      }
+    },
+    "/v1/semantic/payloads/{payload_id}:withdraw": {
+      "post": {
+        "operationId": "withdraw_payload_v1_semantic_payloads__payload_id__withdraw_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "payload_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Payload Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Idempotency-Key",
+            "required": true,
+            "schema": {
+              "maxLength": 128,
+              "minLength": 1,
+              "title": "Idempotency-Key",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "If-Match",
+            "required": true,
+            "schema": {
+              "maxLength": 32,
+              "minLength": 1,
+              "title": "If-Match",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "x-forgeops-actor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Forgeops-Actor"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LifecycleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Withdraw Payload V1 Semantic Payloads  Payload Id  Withdraw Post",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Withdraw Payload",
+        "tags": [
+          "semantic-registry"
         ]
       }
     },

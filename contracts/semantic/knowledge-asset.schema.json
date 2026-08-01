@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "KnowledgeAssetType": {
+      "enum": [
+        "TEXT",
+        "JSON",
+        "RULE_GUIDE",
+        "REFERENCE"
+      ],
+      "title": "KnowledgeAssetType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assetId": {
+      "format": "uuid",
+      "title": "Assetid",
+      "type": "string"
+    },
+    "assetType": {
+      "$ref": "#/$defs/KnowledgeAssetType"
+    },
+    "createdAt": {
+      "format": "date-time",
+      "title": "Createdat",
+      "type": "string"
+    },
+    "createdBy": {
+      "title": "Createdby",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "language": {
+      "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+      "title": "Language",
+      "type": "string"
+    },
+    "organizationId": {
+      "format": "uuid",
+      "title": "Organizationid",
+      "type": "string"
+    },
+    "owner": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Owner",
+      "type": "string"
+    },
+    "reviewer": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Reviewer",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "version": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "organizationId",
+    "title",
+    "description",
+    "assetType",
+    "language",
+    "owner",
+    "reviewer",
+    "createdBy"
+  ],
+  "title": "KnowledgeAsset",
+  "type": "object"
+}

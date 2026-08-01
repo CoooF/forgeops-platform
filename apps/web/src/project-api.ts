@@ -269,6 +269,172 @@ export interface PackageImpact {
   }>;
 }
 
+export type SemanticLifecycle =
+  "VALIDATED_LOCAL_SYNTHETIC" | "PUBLISHED_LOCAL_SYNTHETIC" | "WITHDRAWN";
+
+export interface SemanticReference {
+  refType: string;
+  refId: string;
+  semanticId: string | null;
+  packageVersionId: string;
+  packageId: string;
+  packageVersion: string;
+  payloadDigest: string;
+  provenanceRef: string;
+  status: string;
+  value: Record<string, unknown>;
+}
+
+export interface SemanticPayload {
+  semanticPayloadId: string;
+  packageVersionId: string;
+  packageId: string;
+  packageVersion: string;
+  componentKind: "ONTOLOGY" | "TERMINOLOGY" | "DATA_MAPPING";
+  organizationId: string | null;
+  definition: {
+    schemaVersion: string;
+    payloadKind: string;
+    namespaces: Array<Record<string, unknown>>;
+    concepts: Array<Record<string, unknown>>;
+    relations: Array<Record<string, unknown>>;
+    constraints: Array<Record<string, unknown>>;
+    terms: Array<Record<string, unknown>>;
+    mappings: Array<Record<string, unknown>>;
+  };
+  canonicalPayload: string;
+  payloadDigest: string;
+  provenanceRef: string;
+  status: SemanticLifecycle;
+  governanceReason: string | null;
+  version: number;
+}
+
+export interface KnowledgeVersion {
+  knowledgeVersionId: string;
+  assetId: string;
+  organizationId: string;
+  packageVersionId: string;
+  packageId: string;
+  packageVersion: string;
+  versionLabel: string;
+  title: string;
+  description: string;
+  assetType: string;
+  language: string;
+  owner: string;
+  reviewer: string;
+  sourceRef: string;
+  provenanceDigest: string;
+  licenseId: string;
+  licenseTerms: string;
+  contentClassification: string;
+  allowedPurposes: string[];
+  validFrom: string;
+  validTo: string | null;
+  status: SemanticLifecycle;
+  contentType: string;
+  sizeBytes: number;
+  contentDigest: string;
+  version: number;
+}
+
+export interface KnowledgeAsset {
+  assetId: string;
+  organizationId: string;
+  title: string;
+  description: string;
+  assetType: string;
+  language: string;
+  owner: string;
+  reviewer: string;
+  version: number;
+  versions: KnowledgeVersion[];
+}
+
+export interface SemanticQueryResult {
+  status: "RESOLVED" | "AMBIGUOUS" | "UNKNOWN" | "DENIED" | "INVALID";
+  queryType: string;
+  canonicalRefs: SemanticReference[];
+  candidates: SemanticReference[];
+  issues: string[];
+  projectDomainLockId: string;
+  domainLockDigest: string;
+  auditCorrelation: string;
+  authorizationEffect: "NONE";
+}
+
+export interface SemanticComponentInventory {
+  projectDomainLockId: string;
+  domainLockDigest: string;
+  derivedHealth: string;
+  components: Array<{
+    packageVersionId: string;
+    packageId: string;
+    packageVersion: string;
+    componentKind: string | null;
+    contentDigest: string;
+    semanticPayloadId: string | null;
+    semanticStatus: string | null;
+    knowledgeVersionId: string | null;
+    knowledgeStatus: string | null;
+  }>;
+  authorizationEffect: "NONE";
+  agentExecuted: false;
+  modelCalled: false;
+}
+
+export interface ContextManifest {
+  contextManifestId: string;
+  compilerVersion: string;
+  organizationId: string;
+  projectId: string;
+  purpose: string;
+  projectDomainLockId: string;
+  domainLockDigest: string;
+  requestDigest: string;
+  includedSemanticRefs: SemanticReference[];
+  includedMappingRefs: SemanticReference[];
+  includedKnowledgeRefs: Array<Record<string, unknown>>;
+  unresolvedTerms: string[];
+  ambiguousTerms: Array<Record<string, unknown>>;
+  excludedRefs: Array<{ ref: string; reason: string }>;
+  truncated: boolean;
+  budgetUsage: { items: number; chars: number };
+  evaluationTime: string;
+  compiledAt: string;
+  canonicalDigest: string;
+  authorizationEffect: "NONE";
+  agentExecuted: false;
+  modelCalled: false;
+  runtimeBindingCreated: false;
+}
+
+export interface GroundingResult {
+  groundingResultId: string;
+  contextManifestId: string;
+  contextManifestDigest: string;
+  status: "VALID" | "INVALID" | "NEEDS_CLARIFICATION";
+  issues: string[];
+  unresolvedRefs: string[];
+  constraintViolations: string[];
+  digest: string;
+  modelCalled: false;
+}
+
+export interface SemanticImpact {
+  impactReportId: string;
+  resourceType: "SEMANTIC" | "KNOWLEDGE";
+  fromRef: string;
+  toRef: string;
+  changes: Record<string, unknown>;
+  severity: string;
+  affectedInstallations: string[];
+  affectedProjectDomainLocks: string[];
+  workflowImpact: "NOT_EVALUATED";
+  digest: string;
+}
+
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
@@ -619,6 +785,158 @@ export const api = {
         method: "POST",
         headers: idempotencyHeaders(),
         body: JSON.stringify({ installationId, purpose }),
+      },
+    ),
+  semanticPayloads: (actor: string, organizationId: string) =>
+    request<Page<SemanticPayload>>(
+      `/v1/semantic/payloads?organization=${organizationId}&limit=100`,
+      actor,
+    ),
+  registerSemanticPayload: (
+    actor: string,
+    packageVersionId: string,
+    definition: Record<string, unknown>,
+  ) =>
+    request<SemanticPayload>("/v1/semantic/payloads", actor, {
+      method: "POST",
+      headers: idempotencyHeaders(),
+      body: JSON.stringify({ packageVersionId, definition }),
+    }),
+  transitionSemanticPayload: (
+    actor: string,
+    payload: SemanticPayload,
+    transition: "publish" | "withdraw",
+    reason: string,
+  ) =>
+    request<SemanticPayload>(
+      `/v1/semantic/payloads/${payload.semanticPayloadId}:${transition}`,
+      actor,
+      {
+        method: "POST",
+        headers: {
+          ...idempotencyHeaders(),
+          "If-Match": String(payload.version),
+        },
+        body: JSON.stringify({ reason }),
+      },
+    ),
+  knowledgeAssets: (actor: string, organizationId: string) =>
+    request<Page<KnowledgeAsset>>(
+      `/v1/organizations/${organizationId}/knowledge-assets?limit=100`,
+      actor,
+    ),
+  createKnowledgeAsset: (
+    actor: string,
+    organizationId: string,
+    body: {
+      title: string;
+      description: string;
+      assetType: string;
+      language: string;
+      owner: string;
+      reviewer: string;
+    },
+  ) =>
+    request<KnowledgeAsset>(
+      `/v1/organizations/${organizationId}/knowledge-assets`,
+      actor,
+      {
+        method: "POST",
+        headers: idempotencyHeaders(),
+        body: JSON.stringify(body),
+      },
+    ),
+  registerKnowledgeVersion: (
+    actor: string,
+    assetId: string,
+    body: Record<string, unknown>,
+  ) =>
+    request<KnowledgeVersion>(
+      `/v1/knowledge-assets/${assetId}/versions`,
+      actor,
+      {
+        method: "POST",
+        headers: idempotencyHeaders(),
+        body: JSON.stringify(body),
+      },
+    ),
+  transitionKnowledgeVersion: (
+    actor: string,
+    version: KnowledgeVersion,
+    transition: "publish" | "withdraw",
+    reason: string,
+  ) =>
+    request<KnowledgeVersion>(
+      `/v1/knowledge-versions/${version.knowledgeVersionId}:${transition}`,
+      actor,
+      {
+        method: "POST",
+        headers: {
+          ...idempotencyHeaders(),
+          "If-Match": String(version.version),
+        },
+        body: JSON.stringify({ reason }),
+      },
+    ),
+  semanticImpacts: (actor: string) =>
+    request<Page<SemanticImpact>>("/v1/semantic-impacts?limit=100", actor),
+  analyzeSemanticImpact: (
+    actor: string,
+    resourceType: "SEMANTIC" | "KNOWLEDGE",
+    fromId: string,
+    toId: string,
+  ) =>
+    request<SemanticImpact>("/v1/semantic-impacts", actor, {
+      method: "POST",
+      headers: idempotencyHeaders(),
+      body: JSON.stringify({ resourceType, fromId, toId }),
+    }),
+  projectSemanticComponents: (actor: string, projectId: string) =>
+    request<SemanticComponentInventory>(
+      `/v1/projects/${projectId}/semantic-components`,
+      actor,
+    ),
+  semanticQuery: (
+    actor: string,
+    projectId: string,
+    body: Record<string, unknown>,
+  ) =>
+    request<SemanticQueryResult>(
+      `/v1/projects/${projectId}/semantic-query`,
+      actor,
+      { method: "POST", body: JSON.stringify(body) },
+    ),
+  contextManifests: (actor: string, projectId: string) =>
+    request<Page<ContextManifest>>(
+      `/v1/projects/${projectId}/context-manifests?limit=100`,
+      actor,
+    ),
+  compileContext: (
+    actor: string,
+    projectId: string,
+    body: Record<string, unknown>,
+  ) =>
+    request<ContextManifest>(
+      `/v1/projects/${projectId}/context-manifests`,
+      actor,
+      {
+        method: "POST",
+        headers: idempotencyHeaders(),
+        body: JSON.stringify(body),
+      },
+    ),
+  validateGrounding: (
+    actor: string,
+    manifestId: string,
+    body: Record<string, unknown>,
+  ) =>
+    request<GroundingResult>(
+      `/v1/context-manifests/${manifestId}/grounding-validations`,
+      actor,
+      {
+        method: "POST",
+        headers: idempotencyHeaders(),
+        body: JSON.stringify(body),
       },
     ),
 };

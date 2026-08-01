@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "forgeops.semantic/v1",
+  "payloadKind": "DATA_MAPPING",
+  "namespaces": [],
+  "concepts": [],
+  "relations": [],
+  "constraints": [],
+  "terms": [],
+  "mappings": [
+    {
+      "mappingId": "catalog.mapping.item-primary",
+      "source": {
+        "sourceSystem": "synthetic.catalog",
+        "refType": "record",
+        "objectRef": "entry",
+        "fieldRef": "kind",
+        "code": "ITEM"
+      },
+      "sourceValueType": "STRING",
+      "unit": null,
+      "timeSemantics": "EVENT_TIME",
+      "targetSemanticId": "urn:forgeops:synthetic:catalog:item",
+      "mappingType": "EXACT",
+      "confidence": 1,
+      "priority": 10,
+      "owner": "ForgeOps Local Synthetic",
+      "provenanceRef": "local://semantic-fixtures/neutral-mapping-v1",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validTo": null,
+      "status": "ACTIVE"
+    },
+    {
+      "mappingId": "catalog.mapping.conflict-item",
+      "source": {
+        "sourceSystem": "synthetic.catalog",
+        "refType": "record",
+        "objectRef": "entry",
+        "fieldRef": "kind",
+        "code": "SHARED"
+      },
+      "sourceValueType": "STRING",
+      "unit": "synthetic-count",
+      "timeSemantics": "VALID_TIME",
+      "targetSemanticId": "urn:forgeops:synthetic:catalog:item",
+      "mappingType": "EQUIVALENT",
+      "confidence": 0.8,
+      "priority": 30,
+      "owner": "ForgeOps Local Synthetic",
+      "provenanceRef": "local://semantic-fixtures/neutral-mapping-v1",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validTo": null,
+      "status": "ACTIVE"
+    },
+    {
+      "mappingId": "catalog.mapping.conflict-collection",
+      "source": {
+        "sourceSystem": "synthetic.catalog",
+        "refType": "record",
+        "objectRef": "entry",
+        "fieldRef": "kind",
+        "code": "SHARED"
+      },
+      "sourceValueType": "STRING",
+      "unit": "synthetic-count",
+      "timeSemantics": "VALID_TIME",
+      "targetSemanticId": "urn:forgeops:synthetic:catalog:collection",
+      "mappingType": "EQUIVALENT",
+      "confidence": 0.8,
+      "priority": 30,
+      "owner": "ForgeOps Local Synthetic",
+      "provenanceRef": "local://semantic-fixtures/neutral-mapping-v1",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validTo": null,
+      "status": "ACTIVE"
+    }
+  ]
+}

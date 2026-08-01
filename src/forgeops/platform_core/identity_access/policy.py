@@ -42,6 +42,14 @@ class Permission(StrEnum):
     FDS_DOMAIN_LOCK_HISTORY_VIEW = "fds.domain-lock.history.view"
     FDS_DOMAIN_LOCK_MANAGE = "fds.domain-lock.manage"
     FDS_IMPACT_VIEW = "fds.impact.view"
+    SEMANTIC_REGISTRY_VIEW = "semantic.registry.view"
+    SEMANTIC_REGISTRY_MANAGE = "semantic.registry.manage"
+    SEMANTIC_QUERY = "semantic.query"
+    KNOWLEDGE_ASSET_VIEW = "knowledge.asset.view"
+    KNOWLEDGE_ASSET_MANAGE = "knowledge.asset.manage"
+    CONTEXT_COMPILE = "context.compile"
+    GROUNDING_VALIDATE = "grounding.validate"
+    SEMANTIC_IMPACT_VIEW = "semantic.impact.view"
 
 
 ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
@@ -70,6 +78,12 @@ ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
             Permission.FDS_DOMAIN_LOCK_HISTORY_VIEW,
             Permission.FDS_DOMAIN_LOCK_MANAGE,
             Permission.FDS_IMPACT_VIEW,
+            Permission.SEMANTIC_REGISTRY_VIEW,
+            Permission.SEMANTIC_QUERY,
+            Permission.KNOWLEDGE_ASSET_VIEW,
+            Permission.CONTEXT_COMPILE,
+            Permission.GROUNDING_VALIDATE,
+            Permission.SEMANTIC_IMPACT_VIEW,
         }
     ),
     Role.PROJECT_OWNER: frozenset(
@@ -87,6 +101,12 @@ ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
             Permission.FDS_DOMAIN_LOCK_HISTORY_VIEW,
             Permission.FDS_DOMAIN_LOCK_MANAGE,
             Permission.FDS_IMPACT_VIEW,
+            Permission.SEMANTIC_REGISTRY_VIEW,
+            Permission.SEMANTIC_QUERY,
+            Permission.KNOWLEDGE_ASSET_VIEW,
+            Permission.CONTEXT_COMPILE,
+            Permission.GROUNDING_VALIDATE,
+            Permission.SEMANTIC_IMPACT_VIEW,
         }
     ),
     Role.PROJECT_EDITOR: frozenset(
@@ -95,9 +115,24 @@ ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
             Permission.PROJECT_UPDATE,
             Permission.PROJECT_ACTIVATE,
             Permission.FDS_DOMAIN_LOCK_VIEW,
+            Permission.SEMANTIC_REGISTRY_VIEW,
+            Permission.SEMANTIC_QUERY,
+            Permission.KNOWLEDGE_ASSET_VIEW,
+            Permission.CONTEXT_COMPILE,
+            Permission.GROUNDING_VALIDATE,
         }
     ),
-    Role.PROJECT_VIEWER: frozenset({Permission.PROJECT_VIEW, Permission.FDS_DOMAIN_LOCK_VIEW}),
+    Role.PROJECT_VIEWER: frozenset(
+        {
+            Permission.PROJECT_VIEW,
+            Permission.FDS_DOMAIN_LOCK_VIEW,
+            Permission.SEMANTIC_REGISTRY_VIEW,
+            Permission.SEMANTIC_QUERY,
+            Permission.KNOWLEDGE_ASSET_VIEW,
+            Permission.CONTEXT_COMPILE,
+            Permission.GROUNDING_VALIDATE,
+        }
+    ),
     Role.PACKAGE_OPERATOR: frozenset(
         {
             Permission.PROJECT_VIEW,
@@ -107,6 +142,12 @@ ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
             Permission.FDS_REGISTRY_VIEW,
             Permission.FDS_REGISTRY_MANAGE,
             Permission.FDS_IMPACT_VIEW,
+            Permission.SEMANTIC_REGISTRY_VIEW,
+            Permission.SEMANTIC_REGISTRY_MANAGE,
+            Permission.SEMANTIC_QUERY,
+            Permission.KNOWLEDGE_ASSET_VIEW,
+            Permission.KNOWLEDGE_ASSET_MANAGE,
+            Permission.SEMANTIC_IMPACT_VIEW,
         }
     ),
     Role.AUDITOR: frozenset(
@@ -121,6 +162,10 @@ ROLE_PERMISSIONS: dict[Role, frozenset[Permission]] = {
             Permission.FDS_DOMAIN_LOCK_VIEW,
             Permission.FDS_DOMAIN_LOCK_HISTORY_VIEW,
             Permission.FDS_IMPACT_VIEW,
+            Permission.SEMANTIC_REGISTRY_VIEW,
+            Permission.SEMANTIC_QUERY,
+            Permission.KNOWLEDGE_ASSET_VIEW,
+            Permission.SEMANTIC_IMPACT_VIEW,
         }
     ),
 }

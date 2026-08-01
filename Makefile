@@ -1,4 +1,4 @@
-.PHONY: bootstrap format lint type test contract security architecture build artifact-architecture sbom migration-proof smoke web-smoke e2e epic-02-5 epic-02-6a epic-02-6b fds-contract fds-owner-demo epic-02-6b-owner-demo verify evidence epic-02-6a-evidence epic-02-6b-evidence
+.PHONY: bootstrap format lint type test contract security architecture build artifact-architecture sbom migration-proof smoke web-smoke e2e epic-02-5 epic-02-6a epic-02-6b epic-02-6c fds-contract fds-owner-demo epic-02-6b-owner-demo epic-02-6c-owner-demo verify evidence epic-02-6a-evidence epic-02-6b-evidence epic-02-6c-evidence
 
 bootstrap:
 	uv sync --frozen --all-groups
@@ -83,6 +83,16 @@ epic-02-6b: fds-contract
 	uv run python scripts/check_epic_02_6b_contract_determinism.py
 	uv run python scripts/check_architecture.py
 
+epic-02-6c-owner-demo:
+	uv run python scripts/epic_02_6c_owner_demo.py
+
+epic-02-6c:
+	uv run pytest -q tests/integration/test_semantic_knowledge_runtime_api.py tests/integration/test_domain_registry_migration.py tests/unit/test_identity_policy.py tests/architecture/test_fds_dependency_direction.py
+	uv run python scripts/check_epic_02_6c_contract_determinism.py
+	uv run python scripts/check_architecture.py
+	pnpm --filter @forgeops/web run typecheck
+	pnpm --filter @forgeops/web run test
+
 verify: format lint type test contract security architecture artifact-architecture
 
 evidence:
@@ -93,3 +103,6 @@ epic-02-6a-evidence:
 
 epic-02-6b-evidence:
 	uv run python scripts/collect_epic_02_6b_evidence.py
+
+epic-02-6c-evidence:
+	uv run python scripts/collect_epic_02_6c_evidence.py

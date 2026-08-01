@@ -65,7 +65,7 @@ export function ProjectDomainLockPanel({
             项目始终固定一份不可变依赖图；切换版本会创建新锁，旧锁作为历史版本保留。
           </p>
         </div>
-        <span className="truth-chip">语义运行时尚未启用</span>
+        <span className="truth-chip">语义查询按锁限域</span>
       </div>
 
       {current ? (
@@ -91,7 +91,9 @@ export function ProjectDomainLockPanel({
               </span>
             ))}
           </div>
-          <small>不产生授权 · 未创建运行绑定 · 语义运行时尚未启用</small>
+          <small>
+            不产生授权 · 未创建运行绑定 · 语义查询由“上下文”页显式调用
+          </small>
         </section>
       ) : (
         <div className="empty-state">当前项目还没有固定领域版本。</div>

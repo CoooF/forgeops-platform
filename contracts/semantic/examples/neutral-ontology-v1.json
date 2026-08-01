@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "forgeops.semantic/v1",
+  "payloadKind": "ONTOLOGY",
+  "namespaces": [
+    {
+      "namespaceId": "org.forgeops.synthetic.catalog",
+      "canonicalUri": "urn:forgeops:synthetic:catalog",
+      "owner": "ForgeOps Local Synthetic",
+      "scope": "SYNTHETIC",
+      "defaultLocale": "zh-CN",
+      "version": "1.0.0",
+      "status": "ACTIVE",
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1"
+    }
+  ],
+  "concepts": [
+    {
+      "semanticId": "urn:forgeops:synthetic:catalog:item",
+      "preferredLabel": "目录项",
+      "description": "领域无关的合成目录项。",
+      "conceptKind": "ENTITY",
+      "labels": {"en": "Catalog item", "zh-CN": "目录项"},
+      "aliases": {},
+      "status": "ACTIVE",
+      "version": "1.0.0",
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1",
+      "parentRefs": [],
+      "categoryRefs": []
+    },
+    {
+      "semanticId": "urn:forgeops:synthetic:catalog:collection",
+      "preferredLabel": "集合",
+      "description": "包含目录项的领域无关合成集合。",
+      "conceptKind": "ENTITY",
+      "labels": {"en": "Collection", "zh-CN": "集合"},
+      "aliases": {},
+      "status": "ACTIVE",
+      "version": "1.0.0",
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1",
+      "parentRefs": [],
+      "categoryRefs": []
+    },
+    {
+      "semanticId": "urn:forgeops:synthetic:catalog:tag",
+      "preferredLabel": "标签",
+      "description": "用于合成分类的标签。",
+      "conceptKind": "CATEGORY",
+      "labels": {"en": "Tag", "zh-CN": "标签"},
+      "aliases": {},
+      "status": "ACTIVE",
+      "version": "1.0.0",
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1",
+      "parentRefs": [],
+      "categoryRefs": []
+    },
+    {
+      "semanticId": "urn:forgeops:synthetic:catalog:observation",
+      "preferredLabel": "观察",
+      "description": "针对目录项的合成观察事件。",
+      "conceptKind": "EVENT",
+      "labels": {"en": "Observation", "zh-CN": "观察"},
+      "aliases": {},
+      "status": "ACTIVE",
+      "version": "1.0.0",
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1",
+      "parentRefs": [],
+      "categoryRefs": []
+    },
+    {
+      "semanticId": "urn:forgeops:synthetic:catalog:score",
+      "preferredLabel": "评分",
+      "description": "领域无关的合成数值属性。",
+      "conceptKind": "ATTRIBUTE",
+      "labels": {"en": "Score", "zh-CN": "评分"},
+      "aliases": {},
+      "status": "ACTIVE",
+      "version": "1.0.0",
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1",
+      "parentRefs": [],
+      "categoryRefs": []
+    }
+  ],
+  "relations": [
+    {
+      "semanticId": "urn:forgeops:synthetic:catalog:contains",
+      "sourceConceptRef": "urn:forgeops:synthetic:catalog:collection",
+      "targetConceptRef": "urn:forgeops:synthetic:catalog:item",
+      "direction": "DIRECTED",
+      "cardinality": "ONE_TO_MANY",
+      "status": "ACTIVE",
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1",
+      "externalControlledRef": false
+    },
+    {
+      "semanticId": "urn:forgeops:synthetic:catalog:tagged-with",
+      "sourceConceptRef": "urn:forgeops:synthetic:catalog:item",
+      "targetConceptRef": "urn:forgeops:synthetic:catalog:tag",
+      "direction": "DIRECTED",
+      "cardinality": "MANY_TO_MANY",
+      "status": "ACTIVE",
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1",
+      "externalControlledRef": false
+    }
+  ],
+  "constraints": [
+    {
+      "constraintId": "catalog.contains.required",
+      "kind": "REQUIRED_RELATION",
+      "subjectRef": "urn:forgeops:synthetic:catalog:collection",
+      "relationRef": "urn:forgeops:synthetic:catalog:contains",
+      "allowedConceptKind": null,
+      "minCount": null,
+      "maxCount": null,
+      "unitDimension": null,
+      "valueType": null,
+      "enumValues": [],
+      "minimum": null,
+      "maximum": null,
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1"
+    },
+    {
+      "constraintId": "catalog.score.range",
+      "kind": "VALUE_RANGE",
+      "subjectRef": "urn:forgeops:synthetic:catalog:score",
+      "relationRef": null,
+      "allowedConceptKind": null,
+      "minCount": null,
+      "maxCount": null,
+      "unitDimension": null,
+      "valueType": null,
+      "enumValues": [],
+      "minimum": 0,
+      "maximum": 100,
+      "provenanceRef": "local://semantic-fixtures/neutral-ontology-v1"
+    }
+  ],
+  "terms": [],
+  "mappings": []
+}

@@ -1,0 +1,819 @@
+{
+  "$defs": {
+    "Cardinality": {
+      "enum": [
+        "ONE_TO_ONE",
+        "ONE_TO_MANY",
+        "MANY_TO_ONE",
+        "MANY_TO_MANY"
+      ],
+      "title": "Cardinality",
+      "type": "string"
+    },
+    "ConceptDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Aliases",
+          "type": "object"
+        },
+        "categoryRefs": {
+          "default": [],
+          "items": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "type": "string"
+          },
+          "title": "Categoryrefs",
+          "type": "array"
+        },
+        "conceptKind": {
+          "$ref": "#/$defs/ConceptKind"
+        },
+        "description": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "labels": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Labels",
+          "type": "object"
+        },
+        "parentRefs": {
+          "default": [],
+          "items": {
+            "maxLength": 300,
+            "minLength": 5,
+            "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+            "type": "string"
+          },
+          "title": "Parentrefs",
+          "type": "array"
+        },
+        "preferredLabel": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Preferredlabel",
+          "type": "string"
+        },
+        "provenanceRef": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Provenanceref",
+          "type": "string"
+        },
+        "semanticId": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Semanticid",
+          "type": "string"
+        },
+        "status": {
+          "default": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "DEPRECATED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "semanticId",
+        "preferredLabel",
+        "description",
+        "conceptKind",
+        "version",
+        "provenanceRef"
+      ],
+      "title": "ConceptDefinition",
+      "type": "object"
+    },
+    "ConceptKind": {
+      "enum": [
+        "ENTITY",
+        "EVENT",
+        "ATTRIBUTE",
+        "VALUE",
+        "CATEGORY"
+      ],
+      "title": "ConceptKind",
+      "type": "string"
+    },
+    "ConstraintDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "allowedConceptKind": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ConceptKind"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "constraintId": {
+          "maxLength": 160,
+          "pattern": "^[a-z][a-z0-9.-]+$",
+          "title": "Constraintid",
+          "type": "string"
+        },
+        "enumValues": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Enumvalues",
+          "type": "array"
+        },
+        "kind": {
+          "$ref": "#/$defs/ConstraintKind"
+        },
+        "maxCount": {
+          "anyOf": [
+            {
+              "maximum": 1000,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maxcount"
+        },
+        "maximum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum"
+        },
+        "minCount": {
+          "anyOf": [
+            {
+              "maximum": 1000,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mincount"
+        },
+        "minimum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minimum"
+        },
+        "provenanceRef": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Provenanceref",
+          "type": "string"
+        },
+        "relationRef": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "minLength": 5,
+              "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Relationref"
+        },
+        "subjectRef": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Subjectref",
+          "type": "string"
+        },
+        "unitDimension": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unitdimension"
+        },
+        "valueType": {
+          "anyOf": [
+            {
+              "enum": [
+                "STRING",
+                "INTEGER",
+                "NUMBER",
+                "BOOLEAN"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valuetype"
+        }
+      },
+      "required": [
+        "constraintId",
+        "kind",
+        "subjectRef",
+        "provenanceRef"
+      ],
+      "title": "ConstraintDefinition",
+      "type": "object"
+    },
+    "ConstraintKind": {
+      "enum": [
+        "REQUIRED_RELATION",
+        "ALLOWED_CONCEPT_KIND",
+        "CARDINALITY",
+        "UNIT_DIMENSION",
+        "VALUE_TYPE",
+        "VALUE_ENUM",
+        "VALUE_RANGE"
+      ],
+      "title": "ConstraintKind",
+      "type": "string"
+    },
+    "MappingType": {
+      "enum": [
+        "EXACT",
+        "EQUIVALENT",
+        "NARROWER",
+        "BROADER"
+      ],
+      "title": "MappingType",
+      "type": "string"
+    },
+    "RelationDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "cardinality": {
+          "$ref": "#/$defs/Cardinality"
+        },
+        "direction": {
+          "$ref": "#/$defs/RelationDirection"
+        },
+        "externalControlledRef": {
+          "default": false,
+          "title": "Externalcontrolledref",
+          "type": "boolean"
+        },
+        "provenanceRef": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Provenanceref",
+          "type": "string"
+        },
+        "semanticId": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Semanticid",
+          "type": "string"
+        },
+        "sourceConceptRef": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Sourceconceptref",
+          "type": "string"
+        },
+        "status": {
+          "default": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "DEPRECATED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "targetConceptRef": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Targetconceptref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "semanticId",
+        "sourceConceptRef",
+        "targetConceptRef",
+        "direction",
+        "cardinality",
+        "provenanceRef"
+      ],
+      "title": "RelationDefinition",
+      "type": "object"
+    },
+    "RelationDirection": {
+      "enum": [
+        "DIRECTED",
+        "BIDIRECTIONAL"
+      ],
+      "title": "RelationDirection",
+      "type": "string"
+    },
+    "SemanticMapping": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence"
+        },
+        "mappingId": {
+          "maxLength": 160,
+          "pattern": "^[a-z][a-z0-9.-]+$",
+          "title": "Mappingid",
+          "type": "string"
+        },
+        "mappingType": {
+          "$ref": "#/$defs/MappingType"
+        },
+        "owner": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Owner",
+          "type": "string"
+        },
+        "priority": {
+          "default": 100,
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Priority",
+          "type": "integer"
+        },
+        "provenanceRef": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Provenanceref",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/SourceReference"
+        },
+        "sourceValueType": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Sourcevaluetype",
+          "type": "string"
+        },
+        "status": {
+          "default": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "DEPRECATED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "targetSemanticId": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Targetsemanticid",
+          "type": "string"
+        },
+        "timeSemantics": {
+          "anyOf": [
+            {
+              "maxLength": 120,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timesemantics"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "validFrom": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Validfrom"
+        },
+        "validTo": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Validto"
+        }
+      },
+      "required": [
+        "mappingId",
+        "source",
+        "sourceValueType",
+        "targetSemanticId",
+        "mappingType",
+        "owner",
+        "provenanceRef"
+      ],
+      "title": "SemanticMapping",
+      "type": "object"
+    },
+    "SemanticNamespace": {
+      "additionalProperties": false,
+      "properties": {
+        "canonicalUri": {
+          "pattern": "^(?:urn:[^\\s]+|https://[^\\s]+)$",
+          "title": "Canonicaluri",
+          "type": "string"
+        },
+        "defaultLocale": {
+          "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+          "title": "Defaultlocale",
+          "type": "string"
+        },
+        "namespaceId": {
+          "maxLength": 160,
+          "pattern": "^[a-z][a-z0-9.-]+$",
+          "title": "Namespaceid",
+          "type": "string"
+        },
+        "owner": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Owner",
+          "type": "string"
+        },
+        "provenanceRef": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Provenanceref",
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "PUBLIC",
+            "ORGANIZATION_PRIVATE",
+            "SYNTHETIC"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "status": {
+          "default": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "DEPRECATED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "version": {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "namespaceId",
+        "canonicalUri",
+        "owner",
+        "scope",
+        "defaultLocale",
+        "version",
+        "provenanceRef"
+      ],
+      "title": "SemanticNamespace",
+      "type": "object"
+    },
+    "SemanticPayloadKind": {
+      "enum": [
+        "ONTOLOGY",
+        "TERMINOLOGY",
+        "DATA_MAPPING"
+      ],
+      "title": "SemanticPayloadKind",
+      "type": "string"
+    },
+    "SourceReference": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Code"
+        },
+        "fieldRef": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fieldref"
+        },
+        "objectRef": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Objectref",
+          "type": "string"
+        },
+        "refType": {
+          "maxLength": 80,
+          "pattern": "^[a-z][a-z0-9.-]+$",
+          "title": "Reftype",
+          "type": "string"
+        },
+        "sourceSystem": {
+          "maxLength": 160,
+          "pattern": "^[a-z][a-z0-9.-]+$",
+          "title": "Sourcesystem",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourceSystem",
+        "refType",
+        "objectRef"
+      ],
+      "title": "SourceReference",
+      "type": "object"
+    },
+    "TermDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Aliases",
+          "type": "array"
+        },
+        "disambiguationHint": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Disambiguationhint"
+        },
+        "language": {
+          "pattern": "^[a-z]{2}$",
+          "title": "Language",
+          "type": "string"
+        },
+        "locale": {
+          "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+          "title": "Locale",
+          "type": "string"
+        },
+        "normalizedToken": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Normalizedtoken",
+          "type": "string"
+        },
+        "preferredTerm": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Preferredterm",
+          "type": "string"
+        },
+        "priority": {
+          "default": 100,
+          "maximum": 1000,
+          "minimum": 0,
+          "title": "Priority",
+          "type": "integer"
+        },
+        "provenanceRef": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Provenanceref",
+          "type": "string"
+        },
+        "semanticId": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Semanticid",
+          "type": "string"
+        },
+        "status": {
+          "default": "ACTIVE",
+          "enum": [
+            "ACTIVE",
+            "DEPRECATED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "termId": {
+          "maxLength": 160,
+          "pattern": "^[a-z][a-z0-9.-]+$",
+          "title": "Termid",
+          "type": "string"
+        },
+        "validFrom": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Validfrom"
+        },
+        "validTo": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Validto"
+        }
+      },
+      "required": [
+        "termId",
+        "preferredTerm",
+        "language",
+        "locale",
+        "normalizedToken",
+        "semanticId",
+        "provenanceRef"
+      ],
+      "title": "TermDefinition",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "concepts": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ConceptDefinition"
+      },
+      "title": "Concepts",
+      "type": "array"
+    },
+    "constraints": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ConstraintDefinition"
+      },
+      "title": "Constraints",
+      "type": "array"
+    },
+    "mappings": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SemanticMapping"
+      },
+      "title": "Mappings",
+      "type": "array"
+    },
+    "namespaces": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SemanticNamespace"
+      },
+      "title": "Namespaces",
+      "type": "array"
+    },
+    "payloadKind": {
+      "$ref": "#/$defs/SemanticPayloadKind"
+    },
+    "relations": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/RelationDefinition"
+      },
+      "title": "Relations",
+      "type": "array"
+    },
+    "schemaVersion": {
+      "const": "forgeops.semantic/v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "terms": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/TermDefinition"
+      },
+      "title": "Terms",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "payloadKind"
+  ],
+  "title": "SemanticPayloadDefinition",
+  "type": "object"
+}

@@ -1,0 +1,256 @@
+{
+  "$defs": {
+    "AssetLifecycle": {
+      "enum": [
+        "DRAFT",
+        "VALIDATED_LOCAL_SYNTHETIC",
+        "PUBLISHED_LOCAL_SYNTHETIC",
+        "WITHDRAWN"
+      ],
+      "title": "AssetLifecycle",
+      "type": "string"
+    },
+    "KnowledgeAssetType": {
+      "enum": [
+        "TEXT",
+        "JSON",
+        "RULE_GUIDE",
+        "REFERENCE"
+      ],
+      "title": "KnowledgeAssetType",
+      "type": "string"
+    },
+    "KnowledgeClassification": {
+      "enum": [
+        "SYNTHETIC_PUBLIC",
+        "SYNTHETIC_INTERNAL",
+        "SYNTHETIC_RESTRICTED"
+      ],
+      "title": "KnowledgeClassification",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "allowedPurposes": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50,
+      "minItems": 1,
+      "title": "Allowedpurposes",
+      "type": "array"
+    },
+    "assetId": {
+      "format": "uuid",
+      "title": "Assetid",
+      "type": "string"
+    },
+    "assetType": {
+      "$ref": "#/$defs/KnowledgeAssetType"
+    },
+    "contentClassification": {
+      "$ref": "#/$defs/KnowledgeClassification"
+    },
+    "contentDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Contentdigest",
+      "type": "string"
+    },
+    "contentRef": {
+      "pattern": "^file\\+sha256://[0-9a-f]{64}$",
+      "title": "Contentref",
+      "type": "string"
+    },
+    "contentType": {
+      "enum": [
+        "text/plain",
+        "application/json"
+      ],
+      "title": "Contenttype",
+      "type": "string"
+    },
+    "createdAt": {
+      "format": "date-time",
+      "title": "Createdat",
+      "type": "string"
+    },
+    "createdBy": {
+      "title": "Createdby",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "knowledgeVersionId": {
+      "format": "uuid",
+      "title": "Knowledgeversionid",
+      "type": "string"
+    },
+    "language": {
+      "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+      "title": "Language",
+      "type": "string"
+    },
+    "licenseId": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Licenseid",
+      "type": "string"
+    },
+    "licenseTerms": {
+      "maxLength": 1000,
+      "minLength": 1,
+      "title": "Licenseterms",
+      "type": "string"
+    },
+    "organizationId": {
+      "format": "uuid",
+      "title": "Organizationid",
+      "type": "string"
+    },
+    "owner": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Owner",
+      "type": "string"
+    },
+    "packageId": {
+      "title": "Packageid",
+      "type": "string"
+    },
+    "packageVersion": {
+      "title": "Packageversion",
+      "type": "string"
+    },
+    "packageVersionId": {
+      "format": "uuid",
+      "title": "Packageversionid",
+      "type": "string"
+    },
+    "provenanceDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Provenancedigest",
+      "type": "string"
+    },
+    "reviewer": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Reviewer",
+      "type": "string"
+    },
+    "sizeBytes": {
+      "maximum": 16384,
+      "minimum": 1,
+      "title": "Sizebytes",
+      "type": "integer"
+    },
+    "sourceRef": {
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Sourceref",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/AssetLifecycle",
+      "default": "VALIDATED_LOCAL_SYNTHETIC"
+    },
+    "title": {
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "updatedAt": {
+      "format": "date-time",
+      "title": "Updatedat",
+      "type": "string"
+    },
+    "validFrom": {
+      "format": "date-time",
+      "title": "Validfrom",
+      "type": "string"
+    },
+    "validTo": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Validto"
+    },
+    "version": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "versionLabel": {
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$",
+      "title": "Versionlabel",
+      "type": "string"
+    },
+    "withdrawalReason": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Withdrawalreason"
+    },
+    "withdrawnAt": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Withdrawnat"
+    }
+  },
+  "required": [
+    "assetId",
+    "organizationId",
+    "packageVersionId",
+    "packageId",
+    "packageVersion",
+    "versionLabel",
+    "title",
+    "description",
+    "assetType",
+    "language",
+    "owner",
+    "reviewer",
+    "sourceRef",
+    "provenanceDigest",
+    "licenseId",
+    "licenseTerms",
+    "contentClassification",
+    "allowedPurposes",
+    "validFrom",
+    "contentRef",
+    "contentType",
+    "sizeBytes",
+    "contentDigest",
+    "createdBy"
+  ],
+  "title": "KnowledgeAssetVersion",
+  "type": "object"
+}

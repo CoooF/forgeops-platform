@@ -1,0 +1,166 @@
+{
+  "$defs": {
+    "QueryStatus": {
+      "enum": [
+        "RESOLVED",
+        "AMBIGUOUS",
+        "UNKNOWN",
+        "DENIED",
+        "INVALID"
+      ],
+      "title": "QueryStatus",
+      "type": "string"
+    },
+    "SemanticQueryType": {
+      "enum": [
+        "TERM",
+        "SEMANTIC_ID",
+        "RELATION",
+        "CONSTRAINT",
+        "SOURCE_MAPPING"
+      ],
+      "title": "SemanticQueryType",
+      "type": "string"
+    },
+    "SemanticReference": {
+      "additionalProperties": false,
+      "properties": {
+        "packageId": {
+          "title": "Packageid",
+          "type": "string"
+        },
+        "packageVersion": {
+          "title": "Packageversion",
+          "type": "string"
+        },
+        "packageVersionId": {
+          "format": "uuid",
+          "title": "Packageversionid",
+          "type": "string"
+        },
+        "payloadDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Payloaddigest",
+          "type": "string"
+        },
+        "provenanceRef": {
+          "title": "Provenanceref",
+          "type": "string"
+        },
+        "refId": {
+          "title": "Refid",
+          "type": "string"
+        },
+        "refType": {
+          "title": "Reftype",
+          "type": "string"
+        },
+        "semanticId": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "minLength": 5,
+              "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Semanticid"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "additionalProperties": true,
+          "title": "Value",
+          "type": "object"
+        }
+      },
+      "required": [
+        "refType",
+        "refId",
+        "packageVersionId",
+        "packageId",
+        "packageVersion",
+        "payloadDigest",
+        "provenanceRef",
+        "status",
+        "value"
+      ],
+      "title": "SemanticReference",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "auditCorrelation": {
+      "title": "Auditcorrelation",
+      "type": "string"
+    },
+    "authorizationEffect": {
+      "const": "NONE",
+      "default": "NONE",
+      "title": "Authorizationeffect",
+      "type": "string"
+    },
+    "candidates": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SemanticReference"
+      },
+      "title": "Candidates",
+      "type": "array"
+    },
+    "canonicalRefs": {
+      "items": {
+        "$ref": "#/$defs/SemanticReference"
+      },
+      "title": "Canonicalrefs",
+      "type": "array"
+    },
+    "domainLockDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Domainlockdigest",
+      "type": "string"
+    },
+    "issues": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "projectDomainLockId": {
+      "format": "uuid",
+      "title": "Projectdomainlockid",
+      "type": "string"
+    },
+    "queryType": {
+      "$ref": "#/$defs/SemanticQueryType"
+    },
+    "schemaVersion": {
+      "const": "forgeops.semantic-query/v1",
+      "default": "forgeops.semantic-query/v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/QueryStatus"
+    }
+  },
+  "required": [
+    "status",
+    "queryType",
+    "canonicalRefs",
+    "projectDomainLockId",
+    "domainLockDigest",
+    "auditCorrelation"
+  ],
+  "title": "SemanticQueryResult",
+  "type": "object"
+}

@@ -1,0 +1,247 @@
+{
+  "$defs": {
+    "SemanticReference": {
+      "additionalProperties": false,
+      "properties": {
+        "packageId": {
+          "title": "Packageid",
+          "type": "string"
+        },
+        "packageVersion": {
+          "title": "Packageversion",
+          "type": "string"
+        },
+        "packageVersionId": {
+          "format": "uuid",
+          "title": "Packageversionid",
+          "type": "string"
+        },
+        "payloadDigest": {
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "title": "Payloaddigest",
+          "type": "string"
+        },
+        "provenanceRef": {
+          "title": "Provenanceref",
+          "type": "string"
+        },
+        "refId": {
+          "title": "Refid",
+          "type": "string"
+        },
+        "refType": {
+          "title": "Reftype",
+          "type": "string"
+        },
+        "semanticId": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "minLength": 5,
+              "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Semanticid"
+        },
+        "status": {
+          "title": "Status",
+          "type": "string"
+        },
+        "value": {
+          "additionalProperties": true,
+          "title": "Value",
+          "type": "object"
+        }
+      },
+      "required": [
+        "refType",
+        "refId",
+        "packageVersionId",
+        "packageId",
+        "packageVersion",
+        "payloadDigest",
+        "provenanceRef",
+        "status",
+        "value"
+      ],
+      "title": "SemanticReference",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "actorRef": {
+      "title": "Actorref",
+      "type": "string"
+    },
+    "agentExecuted": {
+      "const": false,
+      "default": false,
+      "title": "Agentexecuted",
+      "type": "boolean"
+    },
+    "ambiguousTerms": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Ambiguousterms",
+      "type": "array"
+    },
+    "authorizationEffect": {
+      "const": "NONE",
+      "default": "NONE",
+      "title": "Authorizationeffect",
+      "type": "string"
+    },
+    "budgetUsage": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Budgetusage",
+      "type": "object"
+    },
+    "canonicalDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Canonicaldigest",
+      "type": "string"
+    },
+    "compiledAt": {
+      "format": "date-time",
+      "title": "Compiledat",
+      "type": "string"
+    },
+    "compilerVersion": {
+      "const": "semantic-runtime-0.1",
+      "default": "semantic-runtime-0.1",
+      "title": "Compilerversion",
+      "type": "string"
+    },
+    "contextManifestId": {
+      "format": "uuid",
+      "title": "Contextmanifestid",
+      "type": "string"
+    },
+    "domainLockDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Domainlockdigest",
+      "type": "string"
+    },
+    "evaluationTime": {
+      "format": "date-time",
+      "title": "Evaluationtime",
+      "type": "string"
+    },
+    "excludedRefs": {
+      "items": {
+        "additionalProperties": {
+          "type": "string"
+        },
+        "type": "object"
+      },
+      "title": "Excludedrefs",
+      "type": "array"
+    },
+    "includedKnowledgeRefs": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Includedknowledgerefs",
+      "type": "array"
+    },
+    "includedMappingRefs": {
+      "items": {
+        "$ref": "#/$defs/SemanticReference"
+      },
+      "title": "Includedmappingrefs",
+      "type": "array"
+    },
+    "includedSemanticRefs": {
+      "items": {
+        "$ref": "#/$defs/SemanticReference"
+      },
+      "title": "Includedsemanticrefs",
+      "type": "array"
+    },
+    "modelCalled": {
+      "const": false,
+      "default": false,
+      "title": "Modelcalled",
+      "type": "boolean"
+    },
+    "organizationId": {
+      "format": "uuid",
+      "title": "Organizationid",
+      "type": "string"
+    },
+    "projectDomainLockId": {
+      "format": "uuid",
+      "title": "Projectdomainlockid",
+      "type": "string"
+    },
+    "projectId": {
+      "format": "uuid",
+      "title": "Projectid",
+      "type": "string"
+    },
+    "purpose": {
+      "title": "Purpose",
+      "type": "string"
+    },
+    "requestDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Requestdigest",
+      "type": "string"
+    },
+    "runtimeBindingCreated": {
+      "const": false,
+      "default": false,
+      "title": "Runtimebindingcreated",
+      "type": "boolean"
+    },
+    "schemaVersion": {
+      "const": "forgeops.context-manifest/v1",
+      "default": "forgeops.context-manifest/v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "truncated": {
+      "title": "Truncated",
+      "type": "boolean"
+    },
+    "unresolvedTerms": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unresolvedterms",
+      "type": "array"
+    }
+  },
+  "required": [
+    "organizationId",
+    "projectId",
+    "actorRef",
+    "purpose",
+    "projectDomainLockId",
+    "domainLockDigest",
+    "requestDigest",
+    "includedSemanticRefs",
+    "includedMappingRefs",
+    "includedKnowledgeRefs",
+    "unresolvedTerms",
+    "ambiguousTerms",
+    "excludedRefs",
+    "truncated",
+    "budgetUsage",
+    "evaluationTime",
+    "canonicalDigest"
+  ],
+  "title": "ContextManifestRecord",
+  "type": "object"
+}

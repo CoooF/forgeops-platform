@@ -1,6 +1,6 @@
 # EPIC-02.6B FDS Registry, organization installation, and Project DomainLock
 
-Status: `IMPLEMENTING_FOR_LOCAL_SYNTHETIC_REGISTRY_ENGINEERING`. `REQ-FDS-001`
+Status: `VERIFIED_FOR_LOCAL_SYNTHETIC_REGISTRY_ENGINEERING`. `REQ-FDS-001`
 remains `CLARIFYING / PARTIAL`; this slice cannot advance enterprise supply-chain,
 semantic/knowledge runtime, workflow runtime, real-data, business-UAT, or release gates.
 

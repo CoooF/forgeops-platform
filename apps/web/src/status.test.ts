@@ -17,6 +17,14 @@ describe("platform status contract", () => {
       identityMode: "LOCAL_SYNTHETIC",
       enterpriseIdentityConnected: false,
       projectScopeEnabled: true,
+      semanticRuntimeEnabled: true,
+      knowledgeHubEnabled: true,
+      contextCompilerEnabled: true,
+      groundingValidationEnabled: true,
+      agentRuntimeEnabled: false,
+      llmEnabled: false,
+      ragEnabled: false,
+      workflowRuntimeEnabled: false,
     });
     expect(result.advisoryMode).toBe(true);
   });
@@ -33,6 +41,14 @@ describe("platform status contract", () => {
         identityMode: "LOCAL_SYNTHETIC",
         enterpriseIdentityConnected: false,
         projectScopeEnabled: true,
+        semanticRuntimeEnabled: true,
+        knowledgeHubEnabled: true,
+        contextCompilerEnabled: true,
+        groundingValidationEnabled: true,
+        agentRuntimeEnabled: false,
+        llmEnabled: false,
+        ragEnabled: false,
+        workflowRuntimeEnabled: false,
       }),
     ).toThrow(/unsafe or incompatible/);
   });

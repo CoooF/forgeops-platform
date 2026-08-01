@@ -1,0 +1,97 @@
+{
+  "$defs": {
+    "ContextBudget": {
+      "additionalProperties": false,
+      "properties": {
+        "maxChars": {
+          "maximum": 100000,
+          "minimum": 1,
+          "title": "Maxchars",
+          "type": "integer"
+        },
+        "maxItems": {
+          "maximum": 500,
+          "minimum": 1,
+          "title": "Maxitems",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxItems",
+        "maxChars"
+      ],
+      "title": "ContextBudget",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "budget": {
+      "$ref": "#/$defs/ContextBudget"
+    },
+    "evaluationTime": {
+      "format": "date-time",
+      "title": "Evaluationtime",
+      "type": "string"
+    },
+    "knowledgeVersionIds": {
+      "default": [],
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Knowledgeversionids",
+      "type": "array"
+    },
+    "locale": {
+      "default": "zh-CN",
+      "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+      "title": "Locale",
+      "type": "string"
+    },
+    "mappingIds": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Mappingids",
+      "type": "array"
+    },
+    "purpose": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Purpose",
+      "type": "string"
+    },
+    "requestedTerms": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Requestedterms",
+      "type": "array"
+    },
+    "semanticIds": {
+      "default": [],
+      "items": {
+        "maxLength": 300,
+        "minLength": 5,
+        "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+        "type": "string"
+      },
+      "maxItems": 100,
+      "title": "Semanticids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "purpose",
+    "budget",
+    "evaluationTime"
+  ],
+  "title": "ContextRequest",
+  "type": "object"
+}

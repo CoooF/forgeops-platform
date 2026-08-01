@@ -8,7 +8,7 @@ from alembic.config import Config
 from sqlalchemy import create_engine, inspect, text
 
 
-def test_epic_02_6b_migration_round_trip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_epic_02_6c_migration_round_trip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     database_url = f"sqlite+pysqlite:///{tmp_path / 'migration-round-trip.db'}"
     monkeypatch.setenv("FORGEOPS_DATABASE_URL", database_url)
     configuration = Config("alembic.ini")
@@ -16,7 +16,7 @@ def test_epic_02_6b_migration_round_trip(tmp_path: Path, monkeypatch: pytest.Mon
     engine = create_engine(database_url)
     with engine.connect() as connection:
         assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-            "0007"
+            "0008"
         )
     expected = {
         "fds_package_versions",
@@ -25,15 +25,31 @@ def test_epic_02_6b_migration_round_trip(tmp_path: Path, monkeypatch: pytest.Mon
         "project_domain_locks",
         "project_domain_lock_package_refs",
         "fds_idempotency_records",
+        "semantic_payloads",
+        "knowledge_assets",
+        "knowledge_asset_versions",
+        "context_manifests",
+        "grounding_results",
+        "semantic_impact_reports",
+        "semantic_idempotency_records",
     }
     assert expected.issubset(inspect(engine).get_table_names())
-    command.downgrade(configuration, "0005")
-    assert expected.isdisjoint(inspect(engine).get_table_names())
+    semantic_tables = {
+        "semantic_payloads",
+        "knowledge_assets",
+        "knowledge_asset_versions",
+        "context_manifests",
+        "grounding_results",
+        "semantic_impact_reports",
+        "semantic_idempotency_records",
+    }
+    command.downgrade(configuration, "0007")
+    assert semantic_tables.isdisjoint(inspect(engine).get_table_names())
     command.upgrade(configuration, "head")
     assert expected.issubset(inspect(engine).get_table_names())
     with engine.connect() as connection:
         assert connection.execute(text("SELECT version_num FROM alembic_version")).scalar_one() == (
-            "0007"
+            "0008"
         )
     engine.dispose()
 

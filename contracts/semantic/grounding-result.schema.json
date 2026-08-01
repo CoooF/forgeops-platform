@@ -1,0 +1,105 @@
+{
+  "$defs": {
+    "GroundingStatus": {
+      "enum": [
+        "VALID",
+        "INVALID",
+        "NEEDS_CLARIFICATION"
+      ],
+      "title": "GroundingStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "authorizationEffect": {
+      "const": "NONE",
+      "default": "NONE",
+      "title": "Authorizationeffect",
+      "type": "string"
+    },
+    "constraintViolations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Constraintviolations",
+      "type": "array"
+    },
+    "contextManifestDigest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Contextmanifestdigest",
+      "type": "string"
+    },
+    "contextManifestId": {
+      "format": "uuid",
+      "title": "Contextmanifestid",
+      "type": "string"
+    },
+    "createdAt": {
+      "format": "date-time",
+      "title": "Createdat",
+      "type": "string"
+    },
+    "createdBy": {
+      "title": "Createdby",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Digest",
+      "type": "string"
+    },
+    "groundingResultId": {
+      "format": "uuid",
+      "title": "Groundingresultid",
+      "type": "string"
+    },
+    "issues": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "modelCalled": {
+      "const": false,
+      "default": false,
+      "title": "Modelcalled",
+      "type": "boolean"
+    },
+    "projectDomainLockId": {
+      "format": "uuid",
+      "title": "Projectdomainlockid",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "forgeops.grounding-result/v1",
+      "default": "forgeops.grounding-result/v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/GroundingStatus"
+    },
+    "unresolvedRefs": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unresolvedrefs",
+      "type": "array"
+    }
+  },
+  "required": [
+    "contextManifestId",
+    "contextManifestDigest",
+    "projectDomainLockId",
+    "status",
+    "issues",
+    "unresolvedRefs",
+    "constraintViolations",
+    "digest",
+    "createdBy"
+  ],
+  "title": "GroundingResultRecord",
+  "type": "object"
+}

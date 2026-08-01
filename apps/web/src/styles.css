@@ -1359,6 +1359,522 @@ label > textarea {
   }
 }
 
+/* EPIC-02.6C semantic and context work surfaces */
+.semantic-workspace {
+  background:
+    linear-gradient(90deg, rgba(11, 105, 70, 0.035) 1px, transparent 1px) 0 0 /
+      34px 34px,
+    #edf0eb;
+}
+
+.semantic-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 20px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+.semantic-summary > div {
+  display: flex;
+  min-height: 78px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 18px;
+  border-right: 1px solid var(--line-dark);
+}
+
+.semantic-summary > div:last-child {
+  border-right: 0;
+}
+
+.semantic-summary span,
+.semantic-summary strong {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+.semantic-summary span {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.semantic-summary strong {
+  color: var(--signal);
+  font-size: 27px;
+  font-weight: 500;
+}
+
+.semantic-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(310px, 0.75fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.semantic-panel {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 7px 7px 0 rgba(24, 35, 29, 0.08);
+}
+
+.semantic-panel h2,
+.semantic-panel h4,
+.context-panel h4 {
+  margin: 0;
+}
+
+.semantic-version-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line-dark);
+  border-left: 1px solid var(--line-dark);
+}
+
+.semantic-version {
+  display: flex;
+  min-width: 0;
+  min-height: 72px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border: 0;
+  border-right: 1px solid var(--line-dark);
+  border-bottom: 1px solid var(--line-dark);
+  border-radius: 0;
+  color: var(--ink);
+  background: #eef1ec;
+  text-align: left;
+}
+
+.semantic-version:hover:not(:disabled),
+.semantic-version.selected {
+  transform: none;
+  color: var(--ink);
+  background: #fff;
+}
+
+.semantic-version.selected {
+  box-shadow: inset 3px 0 0 var(--signal);
+}
+
+.semantic-version span:first-child,
+.semantic-version strong,
+.semantic-version small {
+  display: block;
+  min-width: 0;
+}
+
+.semantic-version strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.semantic-version small,
+.provenance-line {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.semantic-definition {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line-dark);
+}
+
+.semantic-tabs {
+  display: flex;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--line-dark);
+}
+
+.semantic-tabs button {
+  min-width: max-content;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--muted);
+  background: transparent;
+  font-size: 11px;
+}
+
+.semantic-tabs button:hover,
+.semantic-tabs button.active {
+  transform: none;
+  color: var(--signal);
+  background: var(--signal-soft);
+}
+
+.semantic-digest {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0;
+}
+
+.semantic-digest span {
+  color: var(--muted);
+  font:
+    9px ui-monospace,
+    "SFMono-Regular",
+    Menlo,
+    monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.semantic-digest code {
+  overflow-wrap: anywhere;
+  color: var(--signal);
+  font-size: 10px;
+}
+
+.definition-table details,
+.stacked-forms details,
+.manifest-investigation details {
+  border-top: 1px solid var(--line);
+}
+
+.definition-table summary,
+.stacked-forms summary,
+.manifest-investigation summary {
+  padding: 10px 4px;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.definition-table pre,
+.json-viewer {
+  max-height: 380px;
+  margin: 0 0 12px;
+  padding: 12px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  color: #d9eee3;
+  background: #17241e;
+  font:
+    10px/1.55 ui-monospace,
+    "SFMono-Regular",
+    Menlo,
+    monospace;
+  white-space: pre-wrap;
+}
+
+.stacked-forms {
+  display: grid;
+  gap: 14px;
+}
+
+.stacked-forms details[open] {
+  padding-bottom: 14px;
+}
+
+.stacked-forms label + label,
+.stacked-forms label + button,
+.stacked-forms textarea + button {
+  margin-top: 10px;
+}
+
+.knowledge-section,
+.impact-section {
+  margin-top: 18px;
+}
+
+.knowledge-table {
+  border-top: 1px solid var(--line-dark);
+}
+
+.knowledge-table article {
+  display: grid;
+  grid-template-columns:
+    minmax(210px, 1.2fr) minmax(180px, 0.9fr) minmax(170px, 0.7fr)
+    minmax(180px, 0.8fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+}
+
+.knowledge-table strong,
+.knowledge-table small {
+  display: block;
+}
+
+.knowledge-table small,
+.knowledge-table span {
+  color: var(--muted);
+}
+
+.knowledge-table code {
+  overflow-wrap: anywhere;
+  color: var(--signal);
+  font-size: 9px;
+}
+
+.impact-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.impact-result {
+  margin-top: 14px;
+}
+
+.context-panel {
+  display: grid;
+  gap: 22px;
+}
+
+.context-lock-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--ink);
+  background: #edf4ef;
+}
+
+.context-lock-summary div,
+.context-lock-summary strong,
+.context-lock-summary code {
+  display: block;
+}
+
+.context-lock-summary span,
+.context-lock-summary code {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.context-lock-summary code {
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+}
+
+.component-ledger {
+  border-top: 1px solid var(--line-dark);
+}
+
+.component-ledger article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 0.45fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  border-bottom: 1px solid var(--line);
+}
+
+.component-ledger strong,
+.component-ledger small {
+  display: block;
+}
+
+.component-ledger small,
+.component-ledger code {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.resolver-grid,
+.grounding-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.context-card,
+.context-compiler,
+.manifest-investigation,
+.locked-components {
+  padding: 18px;
+  border: 1px solid var(--line-dark);
+  background: #fff;
+}
+
+.context-card > p,
+.context-compiler p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.context-card label + button {
+  margin-top: 10px;
+}
+
+.query-result,
+.grounding-result {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid var(--line-dark);
+  background: var(--paper-2);
+}
+
+.query-result article {
+  display: grid;
+  gap: 3px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.query-result small,
+.query-result code,
+.grounding-result code,
+.grounding-result small {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.compiler-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.compiler-fields textarea {
+  min-height: 90px;
+}
+
+.manifest-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 12px 0;
+}
+
+.manifest-metrics span,
+.exclusion-list span {
+  padding: 5px 7px;
+  border: 1px solid var(--line-dark);
+  color: var(--muted);
+  background: var(--paper-2);
+  font:
+    9px ui-monospace,
+    "SFMono-Regular",
+    Menlo,
+    monospace;
+}
+
+.exclusion-list {
+  display: grid;
+  gap: 5px;
+  margin-bottom: 14px;
+}
+
+.context-history {
+  border-top: 1px solid var(--line-dark);
+}
+
+.context-history button {
+  display: grid;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--ink);
+  background: transparent;
+  text-align: left;
+}
+
+.context-history button:hover,
+.context-history button.selected {
+  transform: none;
+  background: var(--signal-soft);
+}
+
+.context-history strong,
+.context-history small {
+  display: block;
+}
+
+.context-history small,
+.context-history code {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.state-badge.published_local_synthetic,
+.state-badge.valid,
+.state-badge.resolved,
+.state-badge.complete,
+.state-badge.healthy_for_selection {
+  border-color: #74a88b;
+  color: var(--signal);
+  background: var(--signal-soft);
+}
+
+.state-badge.ambiguous,
+.state-badge.unknown,
+.state-badge.needs_clarification,
+.state-badge.truncated,
+.state-badge.at_risk {
+  border-color: #c9914d;
+  color: var(--amber);
+  background: var(--amber-soft);
+}
+
+.state-badge.withdrawn,
+.state-badge.invalid {
+  border-color: #bd7770;
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+@media (max-width: 1100px) {
+  .semantic-grid,
+  .resolver-grid,
+  .grounding-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .knowledge-table article {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .context-lock-summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .semantic-summary,
+  .semantic-version-list,
+  .compiler-fields,
+  .impact-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .semantic-summary > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--line-dark);
+  }
+
+  .semantic-summary > div:last-child {
+    border-bottom: 0;
+  }
+}
+
 /* 2026 product-facing visual refresh: calm industrial operations console. */
 :root {
   font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;

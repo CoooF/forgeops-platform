@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "forgeops.semantic/v1",
+  "payloadKind": "TERMINOLOGY",
+  "namespaces": [],
+  "concepts": [],
+  "relations": [],
+  "constraints": [],
+  "terms": [
+    {
+      "termId": "catalog.term.item",
+      "preferredTerm": "目录项",
+      "aliases": ["catalog item", "条目"],
+      "language": "zh",
+      "locale": "zh-CN",
+      "normalizedToken": "目录项",
+      "semanticId": "urn:forgeops:synthetic:catalog:item",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validTo": null,
+      "priority": 10,
+      "disambiguationHint": "领域无关的目录条目",
+      "provenanceRef": "local://semantic-fixtures/neutral-terminology-v1",
+      "status": "ACTIVE"
+    },
+    {
+      "termId": "catalog.term.shared-item",
+      "preferredTerm": "共享词",
+      "aliases": [],
+      "language": "zh",
+      "locale": "zh-CN",
+      "normalizedToken": "共享词",
+      "semanticId": "urn:forgeops:synthetic:catalog:item",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validTo": null,
+      "priority": 20,
+      "disambiguationHint": "可能表示目录项",
+      "provenanceRef": "local://semantic-fixtures/neutral-terminology-v1",
+      "status": "ACTIVE"
+    },
+    {
+      "termId": "catalog.term.shared-collection",
+      "preferredTerm": "共享词",
+      "aliases": [],
+      "language": "zh",
+      "locale": "zh-CN",
+      "normalizedToken": "共享词",
+      "semanticId": "urn:forgeops:synthetic:catalog:collection",
+      "validFrom": "2025-01-01T00:00:00Z",
+      "validTo": null,
+      "priority": 20,
+      "disambiguationHint": "可能表示集合",
+      "provenanceRef": "local://semantic-fixtures/neutral-terminology-v1",
+      "status": "ACTIVE"
+    }
+  ],
+  "mappings": []
+}

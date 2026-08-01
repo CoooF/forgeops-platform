@@ -21,6 +21,19 @@ from forgeops.fds_sdk.models import (
 )
 from forgeops.fds_sdk.resolver import DependencyResolver
 from forgeops.fds_sdk.validation import FdsManifestValidator
+from forgeops.platform_core.knowledge_hub.entities import (
+    KnowledgeAsset,
+    KnowledgeAssetVersion,
+)
+from forgeops.platform_core.semantic_runtime.entities import (
+    ContextManifestRecord,
+    ContextRequest,
+    GroundingCandidate,
+    GroundingResultRecord,
+    ImpactReportRecord,
+    SemanticPayloadDefinition,
+    SemanticQueryResult,
+)
 from forgeops.scenario_sdk.manifest import ScenarioManifest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -82,6 +95,25 @@ def export_fds_contracts() -> None:
         write_json(example_root / f"{package_id}.compatibility-report.example.json", result.report)
 
 
+def export_semantic_contracts() -> None:
+    schema_models: dict[str, type[BaseModel]] = {
+        "semantic-payload.schema.json": SemanticPayloadDefinition,
+        "semantic-query-result.schema.json": SemanticQueryResult,
+        "knowledge-asset.schema.json": KnowledgeAsset,
+        "knowledge-asset-version.schema.json": KnowledgeAssetVersion,
+        "context-request.schema.json": ContextRequest,
+        "context-manifest.schema.json": ContextManifestRecord,
+        "grounding-candidate.schema.json": GroundingCandidate,
+        "grounding-result.schema.json": GroundingResultRecord,
+        "semantic-impact.schema.json": ImpactReportRecord,
+    }
+    for filename, model in schema_models.items():
+        write_json(
+            ROOT / "contracts/semantic" / filename,
+            model.model_json_schema(by_alias=True),
+        )
+
+
 def main() -> None:
     write_json(ROOT / "contracts/openapi/forgeops.openapi.json", create_app().openapi())
     write_json(
@@ -89,6 +121,7 @@ def main() -> None:
         ScenarioManifest.model_json_schema(by_alias=True),
     )
     export_fds_contracts()
+    export_semantic_contracts()
 
 
 if __name__ == "__main__":

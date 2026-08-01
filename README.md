@@ -1,6 +1,6 @@
 # ForgeOps Platform
 
-Independent EPIC-01/02, EPIC-02.5, and EPIC-02.6A engineering baseline for the ForgeOps Platform Core, Scenario SDK, generic project boundary, and FDS v0.1 contract kernel. It is runnable with local synthetic fixtures and is not approved for enterprise, preproduction, production, real-data, business-UAT, scheduling, anomaly-diagnosis, FDS Registry, Project DomainLock, or semantic-runtime use.
+Independent EPIC-01/02, EPIC-02.5, and EPIC-02.6A/B/C engineering baseline for the ForgeOps Platform Core, Scenario SDK, generic project boundary, FDS v0.1, Registry/Project DomainLock, and a domain-neutral semantic/knowledge thin slice. It runs only with local synthetic fixtures and is not approved for enterprise, preproduction, production, real data, business UAT, reference business, Agent/LLM/RAG, or Workflow use.
 
 ## 产品负责人进度与五分钟验证
 
@@ -23,8 +23,12 @@ Independent EPIC-01/02, EPIC-02.5, and EPIC-02.6A engineering baseline for the F
 - strict domain-neutral FDS Domain/Organization Overlay/Scenario/Component contracts,
   deterministic offline dependency locks, permission/budget deltas, and an explicit
   non-mutating Scenario SDK 0.x compatibility adapter;
-- synthetic multi-layer and second-domain contract shapes only—no FDS Registry,
-  installation, Project DomainLock, semantic execution, knowledge indexing, or E2E claim.
+- persisted FDS Registry, Organization Installation, immutable current/history ProjectDomainLock,
+  withdrawal impact, and real Domain Registry/Project management pages;
+- strict Ontology/Terminology/Mapping and KnowledgeAsset versions bound to exact locked Registry
+  components, deterministic semantic query/ContextManifest, structural Grounding and impact;
+- real Semantic & Knowledge and Project Context pages backed by the API/database. There is no
+  Agent/model/RAG, graph/vector index, Workflow/Run, or reference-business claim.
 
 ## Explicit non-scope
 
@@ -72,10 +76,14 @@ make web-smoke
 make e2e
 make epic-02-5
 make epic-02-6a
+make epic-02-6b
+make epic-02-6c
+make epic-02-6c-owner-demo
 make sbom
 make evidence
 ```
 
-See `docs/acceptance/EPIC-02.6A-evidence.md` and `docs/requirements/EPIC-02.6A-fds-contract-kernel.md` for the FDS contract-only boundary. `docs/runbooks/local-development.md` contains operating steps.
-The non-code owner walkthrough is in `docs/acceptance/EPIC-02.6A-owner-summary.md` and runs
-with `make fds-owner-demo`.
+See [EPIC-02.6C Evidence](docs/acceptance/EPIC-02.6C-evidence.md) and the
+[02.6C requirement](docs/requirements/EPIC-02.6C-semantic-knowledge-runtime.md) for the exact
+local-only boundary. [Local development](docs/runbooks/local-development.md) contains the
+five-minute owner and browser walkthroughs.

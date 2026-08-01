@@ -11,6 +11,14 @@ export interface PlatformStatus {
   identityMode: "LOCAL_SYNTHETIC";
   enterpriseIdentityConnected: false;
   projectScopeEnabled: true;
+  semanticRuntimeEnabled: true;
+  knowledgeHubEnabled: true;
+  contextCompilerEnabled: true;
+  groundingValidationEnabled: true;
+  agentRuntimeEnabled: false;
+  llmEnabled: false;
+  ragEnabled: false;
+  workflowRuntimeEnabled: false;
 }
 
 export interface Installation {
@@ -36,7 +44,15 @@ export function assertPlatformStatus(value: unknown): PlatformStatus {
     value.enterpriseApproval !== "NOT_GRANTED" ||
     value.identityMode !== "LOCAL_SYNTHETIC" ||
     value.enterpriseIdentityConnected !== false ||
-    value.projectScopeEnabled !== true
+    value.projectScopeEnabled !== true ||
+    value.semanticRuntimeEnabled !== true ||
+    value.knowledgeHubEnabled !== true ||
+    value.contextCompilerEnabled !== true ||
+    value.groundingValidationEnabled !== true ||
+    value.agentRuntimeEnabled !== false ||
+    value.llmEnabled !== false ||
+    value.ragEnabled !== false ||
+    value.workflowRuntimeEnabled !== false
   ) {
     throw new Error("unsafe or incompatible platform status response");
   }

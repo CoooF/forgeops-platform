@@ -1,0 +1,99 @@
+{
+  "$defs": {
+    "ImpactSeverity": {
+      "enum": [
+        "BREAKING",
+        "POTENTIALLY_BREAKING",
+        "NON_BREAKING",
+        "UNKNOWN"
+      ],
+      "title": "ImpactSeverity",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "affectedInstallations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Affectedinstallations",
+      "type": "array"
+    },
+    "affectedProjectDomainLocks": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Affectedprojectdomainlocks",
+      "type": "array"
+    },
+    "changes": {
+      "additionalProperties": true,
+      "title": "Changes",
+      "type": "object"
+    },
+    "createdAt": {
+      "format": "date-time",
+      "title": "Createdat",
+      "type": "string"
+    },
+    "createdBy": {
+      "title": "Createdby",
+      "type": "string"
+    },
+    "digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "title": "Digest",
+      "type": "string"
+    },
+    "fromRef": {
+      "title": "Fromref",
+      "type": "string"
+    },
+    "impactReportId": {
+      "format": "uuid",
+      "title": "Impactreportid",
+      "type": "string"
+    },
+    "resourceType": {
+      "enum": [
+        "SEMANTIC",
+        "KNOWLEDGE"
+      ],
+      "title": "Resourcetype",
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": "forgeops.semantic-impact/v1",
+      "default": "forgeops.semantic-impact/v1",
+      "title": "Schemaversion",
+      "type": "string"
+    },
+    "severity": {
+      "$ref": "#/$defs/ImpactSeverity"
+    },
+    "toRef": {
+      "title": "Toref",
+      "type": "string"
+    },
+    "workflowImpact": {
+      "const": "NOT_EVALUATED",
+      "default": "NOT_EVALUATED",
+      "title": "Workflowimpact",
+      "type": "string"
+    }
+  },
+  "required": [
+    "resourceType",
+    "fromRef",
+    "toRef",
+    "changes",
+    "severity",
+    "affectedInstallations",
+    "affectedProjectDomainLocks",
+    "digest",
+    "createdBy"
+  ],
+  "title": "ImpactReportRecord",
+  "type": "object"
+}

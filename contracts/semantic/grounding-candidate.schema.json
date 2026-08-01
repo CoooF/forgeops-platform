@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "RelationAssertion": {
+      "additionalProperties": false,
+      "properties": {
+        "relationSemanticId": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Relationsemanticid",
+          "type": "string"
+        },
+        "sourceSemanticId": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Sourcesemanticid",
+          "type": "string"
+        },
+        "targetSemanticId": {
+          "maxLength": 300,
+          "minLength": 5,
+          "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+          "title": "Targetsemanticid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "relationSemanticId",
+        "sourceSemanticId",
+        "targetSemanticId"
+      ],
+      "title": "RelationAssertion",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "declaredConstraintIds": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Declaredconstraintids",
+      "type": "array"
+    },
+    "entityRefs": {
+      "default": [],
+      "items": {
+        "maxLength": 300,
+        "minLength": 5,
+        "pattern": "^[a-z][a-z0-9+.-]*:[^\\s]+$",
+        "type": "string"
+      },
+      "title": "Entityrefs",
+      "type": "array"
+    },
+    "knowledgeCitations": {
+      "default": [],
+      "items": {
+        "format": "uuid",
+        "type": "string"
+      },
+      "title": "Knowledgecitations",
+      "type": "array"
+    },
+    "mappingRefs": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Mappingrefs",
+      "type": "array"
+    },
+    "relationAssertions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/RelationAssertion"
+      },
+      "title": "Relationassertions",
+      "type": "array"
+    }
+  },
+  "title": "GroundingCandidate",
+  "type": "object"
+}
